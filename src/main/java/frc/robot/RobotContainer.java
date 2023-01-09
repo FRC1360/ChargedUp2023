@@ -10,7 +10,8 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.button.Button;
+
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.autos.AutoSequence;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.simulation.Simulator;
@@ -60,9 +61,9 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     // Back button zeros the gyroscope
-    new Button(m_controller::getBackButton)
+    new Trigger(m_controller::getBackButton)
             // No requirements because we don't need to interrupt anything
-            .whenPressed(m_drivetrainSubsystem::zeroGyroscope);
+            .onTrue(new InstantCommand(m_drivetrainSubsystem::zeroGyroscope));
   }
 
   /**
