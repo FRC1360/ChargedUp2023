@@ -17,7 +17,7 @@ import frc.robot.commands.Align;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.simulation.Simulator;
 import frc.robot.subsystems.DrivetrainSubsystem;
-import frc.robot.subsystems.Vision;
+import frc.robot.subsystems.vision.Vision;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a

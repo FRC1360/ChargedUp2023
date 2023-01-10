@@ -60,4 +60,9 @@ public final class Constants {
     public static final double TARGET_HEIGHT_METERS = 3; //FIXME get measurements
     public static final double CAMERA_MOUNT_ANGLE_DEG = 45; //FIXME get measurements
     public static final Transform3d CAMERA_TO_ROBOT = new Transform3d(new Translation3d(0, 0, 0), new Rotation3d(0, 0, 0)); //FIXME get measurements 
+
+
+    // Field 
+    public static final double FIELD_LENGTH_METERS = 0.0; //FIXME get measurements
+    public static final double FIELD_WIDTH_METERS = 0.0; //FIXME get measurements
 }

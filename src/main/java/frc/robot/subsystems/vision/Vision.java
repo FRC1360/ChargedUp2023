@@ -1,5 +1,6 @@
-package frc.robot.subsystems;
+package frc.robot.subsystems.vision;
 
+import java.util.Arrays;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -26,8 +27,8 @@ public class Vision extends SubsystemBase {
         
         //If want to use NetworkTables, add an additional parameter, otherwise use PhotonLib
         this.camera = new PhotonCamera(NetworkTableInstance.getDefault(), "AprilTag"); 
-        //this.aprilTagFieldLayout = new AprilTagFieldLayout() // Need to hold a list of apriltag poses, and field dimensions OR json file
-
+        this.aprilTagFieldLayout = new AprilTagFieldLayout(Arrays.asList(AprilTagPoses.aprilTagPosesList), 
+                                                            Constants.FIELD_LENGTH_METERS, Constants.FIELD_WIDTH_METERS); 
         camera.setPipelineIndex(pipelineIndex);
         
     }
