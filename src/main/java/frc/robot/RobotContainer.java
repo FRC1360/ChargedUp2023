@@ -13,9 +13,11 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.autos.AutoSequence;
+import frc.robot.commands.Align;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.simulation.Simulator;
 import frc.robot.subsystems.DrivetrainSubsystem;
+import frc.robot.subsystems.Vision;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -30,6 +32,11 @@ public class RobotContainer {
   private final XboxController m_controller = new XboxController(0);
 
   private final AutoSequence auto = new AutoSequence(m_drivetrainSubsystem); 
+
+  private final Vision vision = new Vision(0); 
+
+  private final Align align = new Align(vision); 
+  
 
 
   private final Simulator sim = new Simulator(m_drivetrainSubsystem); 
@@ -73,7 +80,7 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    return auto;
+    return align;
   }
 
   private static double deadband(double value, double deadband) {

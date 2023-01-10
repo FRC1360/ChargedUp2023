@@ -4,6 +4,10 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation3d;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. All constants should be declared
@@ -49,4 +53,11 @@ public final class Constants {
     public static final int BACK_RIGHT_MODULE_STEER_MOTOR = 31; // FIXME Set back right steer motor ID
     public static final int BACK_RIGHT_MODULE_STEER_ENCODER = 3; // FIXME Set back right steer encoder ID
     public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(132.645); // FIXME Measure and set back right steer offset
+
+
+    //Vision
+    public static final double CAMERA_MOUNT_HEIGHT_METERS = 2; //FIXME get measurements
+    public static final double TARGET_HEIGHT_METERS = 3; //FIXME get measurements
+    public static final double CAMERA_MOUNT_ANGLE_DEG = 45; //FIXME get measurements
+    public static final Transform3d CAMERA_TO_ROBOT = new Transform3d(new Translation3d(0, 0, 0), new Rotation3d(0, 0, 0)); //FIXME get measurements 
 }
