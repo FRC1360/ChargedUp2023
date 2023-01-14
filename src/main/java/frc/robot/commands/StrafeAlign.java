@@ -15,7 +15,7 @@ public class StrafeAlign extends CommandBase {
 
     private DoubleSupplier strafe;
 
-    private OrbitPID pid = new OrbitPID(0, 0, 0);
+    private OrbitPID pid = new OrbitPID(.25, 0, 0);
 
     public StrafeAlign(DrivetrainSubsystem dt, Vision vision, DoubleSupplier strafe) {
         this.dt = dt;
