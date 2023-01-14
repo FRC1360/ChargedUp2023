@@ -13,14 +13,16 @@ public class StrafeAlign extends CommandBase {
     private DrivetrainSubsystem dt;
     private Vision vision;
 
-    private DoubleSupplier strafe;
+    private DoubleSupplier ystrafe;
+    private DoubleSupplier xStrafe; 
 
-    private OrbitPID pid = new OrbitPID(.25, 0, 0);
+    private OrbitPID pid = new OrbitPID(-2.5, 0, 0);
 
-    public StrafeAlign(DrivetrainSubsystem dt, Vision vision, DoubleSupplier strafe) {
+    public StrafeAlign(DrivetrainSubsystem dt, Vision vision, DoubleSupplier ystrafe, DoubleSupplier xStrafe) {
         this.dt = dt;
         this.vision = vision;
-        this.strafe = strafe;
+        this.ystrafe = ystrafe;
+        this.xStrafe = xStrafe; 
     }
 
     @Override
@@ -36,10 +38,11 @@ public class StrafeAlign extends CommandBase {
             SmartDashboard.putNumber("Y-Offset:", yOffset);
             SmartDashboard.putNumber("Distance:", distance);
 
-            double str = strafe.getAsDouble();
+            double ystr = ystrafe.getAsDouble();
+            double xstr = xStrafe.getAsDouble(); 
             double rot = pid.calculate(0, xOffset);
 
-            ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(0, str, rot, dt.getGyroscopeRotation()); // field-relatives
+            ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(xstr, ystr, rot, dt.getGyroscopeRotation()); // field-relatives
             // ChassisSpeeds speeds = ChassisSpeeds(0, str, rot); // robot-relative
 
             dt.drive(speeds);
