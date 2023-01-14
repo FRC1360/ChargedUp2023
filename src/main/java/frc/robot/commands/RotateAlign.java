@@ -33,9 +33,9 @@ public class RotateAlign extends CommandBase {
         SmartDashboard.putNumber("X-Offset:", xOffset); 
         SmartDashboard.putNumber("Y-Offset:", yOffset);
         SmartDashboard.putNumber("Distance:", distance);
-
-        speeds.omegaRadiansPerSecond = Math.toRadians(xOffset);
         
+        speeds.omegaRadiansPerSecond = Math.toRadians(xOffset * 2.5);
+
         dt.drive(speeds); 
         }
     }

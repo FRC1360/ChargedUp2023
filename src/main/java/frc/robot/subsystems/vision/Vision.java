@@ -17,7 +17,7 @@ public class Vision extends SubsystemBase {
     }
 
     public boolean hasTargets() { 
-        return table.getEntry("tv").getBoolean(false); 
+        return table.getEntry("tv").getDouble(0.0) > 0.0 ? true : false; 
     }
 
     public double getX() { 
