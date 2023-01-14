@@ -17,6 +17,7 @@ import frc.robot.commands.TranslateAlign;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.DriveToTarget;
 import frc.robot.commands.RotateAlign;
+import frc.robot.commands.StrafeAlign;
 import frc.robot.simulation.Simulator;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.vision.Vision;
@@ -75,6 +76,13 @@ public class RobotContainer {
     new Trigger(m_controller::getBackButton)
             // No requirements because we don't need to interrupt anything
             .onTrue(new InstantCommand(m_drivetrainSubsystem::zeroGyroscope));
+
+    
+    new Trigger(m_controller::getAButton)
+            .whileTrue(new StrafeAlign(
+              m_drivetrainSubsystem, 
+              vision, 
+              () -> m_controller.getLeftX()));
   }
 
   /**
