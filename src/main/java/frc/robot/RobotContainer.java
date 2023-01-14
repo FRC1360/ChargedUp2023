@@ -13,8 +13,10 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.autos.AutoSequence;
-import frc.robot.commands.Align;
+import frc.robot.commands.TranslateAlign;
 import frc.robot.commands.DefaultDriveCommand;
+import frc.robot.commands.DriveToTarget;
+import frc.robot.commands.RotateAlign;
 import frc.robot.simulation.Simulator;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.vision.Vision;
@@ -33,11 +35,13 @@ public class RobotContainer {
 
   private final AutoSequence auto = new AutoSequence(m_drivetrainSubsystem); 
 
-  private final Vision vision = new Vision(0); 
+  private final Vision vision = new Vision(); 
 
-  private final Align align = new Align(vision); 
+  private final TranslateAlign align = new TranslateAlign(m_drivetrainSubsystem, vision);
   
+  private final RotateAlign rotAlign = new RotateAlign(m_drivetrainSubsystem, vision); 
 
+  private final DriveToTarget driveToTarget = new DriveToTarget(m_drivetrainSubsystem, vision);
 
   private final Simulator sim = new Simulator(m_drivetrainSubsystem); 
   /**
