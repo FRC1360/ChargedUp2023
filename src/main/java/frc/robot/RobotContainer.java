@@ -82,7 +82,7 @@ public class RobotContainer {
             .whileTrue(new StrafeAlign(
               m_drivetrainSubsystem, 
               vision, 
-              () -> m_controller.getLeftX()));
+              () -> -modifyAxis(m_controller.getLeftX()) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND / 4)); // limit speed (for now)
   }
 
   /**
