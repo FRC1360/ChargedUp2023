@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.autos.AutoSequence;
+import frc.robot.commands.AutoBalance;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.simulation.Simulator;
 import frc.robot.subsystems.DrivetrainSubsystem;
@@ -30,6 +31,10 @@ public class RobotContainer {
   private final XboxController m_controller = new XboxController(0);
 
   private final AutoSequence auto = new AutoSequence(m_drivetrainSubsystem); 
+
+  private final AutoBalance balance = new AutoBalance(m_drivetrainSubsystem); 
+
+
 
 
   private final Simulator sim = new Simulator(m_drivetrainSubsystem); 
@@ -73,7 +78,7 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    return auto;
+    return balance;
   }
 
   private static double deadband(double value, double deadband) {
