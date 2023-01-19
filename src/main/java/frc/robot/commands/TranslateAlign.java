@@ -9,48 +9,37 @@ import frc.robot.subsystems.vision.Vision;
 public class TranslateAlign extends CommandBase {
     
     private Vision vision; 
-    private DrivetrainSubsystem dt;  
-    private final double DESIRED_POSITION; 
-    private final ChassisSpeeds speeds = new ChassisSpeeds(); 
+    private DrivetrainSubsystem dt; 
+    private Vision.Pipeline pipe;
 
-    public TranslateAlign(DrivetrainSubsystem dt, Vision vision, double DESIRED_POSITION) { 
+    public TranslateAlign(DrivetrainSubsystem dt, Vision vision, Vision.Pipeline pipe) { 
         this.vision = vision; 
         this.dt = dt; 
-        this.DESIRED_POSITION = DESIRED_POSITION; 
-        
+        this.pipe = pipe;
+
         addRequirements(dt, vision); 
     }
 
     @Override
-    public void execute() { 
+    public void initialize() {
+        vision.setPipeline(pipe);
+    }
 
+    @Override
+    public void execute() { 
         SmartDashboard.putBoolean("Align Running", true); 
 
         if (vision.hasTargets()) 
         {
-        double camX = vision.getCamTran()[0]; 
+            double xOffset = vision.getX(); 
+            double yOffset = vision.getY(); 
+            double distance = vision.getDistanceFromTarget();
 
+            SmartDashboard.putNumber("X-Offset:", xOffset); 
+            SmartDashboard.putNumber("Y-Offset:", yOffset);
+            SmartDashboard.putNumber("Distance:", distance);
 
-        if (camX < DESIRED_POSITION) { 
-            speeds.vyMetersPerSecond = -0.2;
-        }
-        else if (camX > DESIRED_POSITION) { 
-            speeds.vyMetersPerSecond = 0.2;
-        }
-
-        /* 
-        double yOffset = vision.getY(); 
-        double distance = vision.getDistanceFromTarget();
-
-      
-
-        SmartDashboard.putNumber("X-Offset:", xOffset); 
-        SmartDashboard.putNumber("Y-Offset:", yOffset);
-        SmartDashboard.putNumber("Distance:", distance);
-
-        */
-
-        dt.drive(speeds); 
+            dt.drive(new ChassisSpeeds(0, -xOffset/10, 0)); 
         }
     }
 
@@ -61,7 +50,7 @@ public class TranslateAlign extends CommandBase {
 
     @Override
     public boolean isFinished() { 
-        return Math.abs(vision.getCamTran[0] - DESIRED_POSITION) < 1.5;  
+        return Math.abs(vision.getX()) < 1.5;  
     }
 
 }

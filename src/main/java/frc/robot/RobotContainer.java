@@ -38,7 +38,7 @@ public class RobotContainer {
 
   //private final Vision vision = new Vision(); 
 
-  //private final TranslateAlign align = new TranslateAlign(m_drivetrainSubsystem, vision);
+  ////private final TranslateAlign align = new TranslateAlign(m_drivetrainSubsystem, vision);
   
   //private final RotateAlign rotAlign = new RotateAlign(m_drivetrainSubsystem, vision); 
 
@@ -84,7 +84,27 @@ public class RobotContainer {
               vision, 
               () -> -modifyAxis(m_controller.getLeftX()) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND / 4, 
               () -> -modifyAxis(m_controller.getLeftY()) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND / 4)); // limit speed (for now)
-              */
+
+    new Trigger(() -> m_controller.getPOV() == 0)
+            .whileTrue(new TranslateAlign(
+              m_drivetrainSubsystem,
+              vision,
+              Vision.Pipeline.CENTER_TARGET
+            ));
+
+    new Trigger(() -> m_controller.getPOV() == 90)
+            .whileTrue(new TranslateAlign(
+              m_drivetrainSubsystem,
+              vision,
+              Vision.Pipeline.RIGHT_TARGET
+            ));
+
+    new Trigger(() -> m_controller.getPOV() == 270)
+            .whileTrue(new TranslateAlign(
+              m_drivetrainSubsystem,
+              vision,
+              Vision.Pipeline.LEFT_TARGET
+            ));
   }
 
   /**

@@ -10,10 +10,31 @@ import frc.robot.Constants;
 
 public class Vision extends SubsystemBase {
 
-    private final NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight"); 
+    private final NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
+
+    // TODO: Update to new NT API (pub/sub system)
 
     public Vision() { 
 
+    }
+
+    public enum Pipeline {
+        CENTER_TARGET(0),
+        RIGHT_TARGET(1),
+        LEFT_TARGET(2);
+
+        private final int id;
+        private
+         Pipeline(int id) {
+            this.id = id;
+        }
+        public int getId() {
+            return this.id;
+        }
+    }
+
+    public void setPipeline(Pipeline pipe) {
+        table.getEntry("pipeline").setDouble(pipe.getId());
     }
 
     public boolean hasTargets() { 
@@ -21,12 +42,24 @@ public class Vision extends SubsystemBase {
     }
 
     public double getX() { 
-        //Positive is too left
+        //Positive is too left        
         return table.getEntry("tx").getDouble(0.0); 
     }
 
     public double getY() { 
         return table.getEntry("ty").getDouble(0.0); 
+    }
+
+    public double[] getCamTran() {
+        Number[] cam_tran = table.getEntry("camtran").getNumberArray(new Number[1]);
+        if(cam_tran.length != 6) {
+            return new double[1];
+        }
+        double[] out = new double[6];
+        for(int i = 0; i < 6; i++) {
+            out[i] = cam_tran[i].doubleValue();
+        }
+        return out;
     }
 
     public double getDistanceFromTarget() {
