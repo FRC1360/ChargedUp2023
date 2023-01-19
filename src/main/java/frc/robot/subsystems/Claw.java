@@ -1,4 +1,4 @@
-package main.java.frc.robot.subsystems;
+package frc.robot.subsystems; // get rid of the main.java if this line of code is complaining
 
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
@@ -17,5 +17,9 @@ public class Claw extends SubsystemBase {
 
     public void set(boolean on) { 
         piston.set(on);
+    }
+
+    public void toggle(){
+        piston.toggle();
     }
 }
