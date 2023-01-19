@@ -36,13 +36,13 @@ public class RobotContainer {
 
   private final AutoSequence auto = new AutoSequence(m_drivetrainSubsystem); 
 
-  private final Vision vision = new Vision(); 
+  //private final Vision vision = new Vision(); 
 
-  private final TranslateAlign align = new TranslateAlign(m_drivetrainSubsystem, vision);
+  //private final TranslateAlign align = new TranslateAlign(m_drivetrainSubsystem, vision);
   
-  private final RotateAlign rotAlign = new RotateAlign(m_drivetrainSubsystem, vision); 
+  //private final RotateAlign rotAlign = new RotateAlign(m_drivetrainSubsystem, vision); 
 
-  private final DriveToTarget driveToTarget = new DriveToTarget(m_drivetrainSubsystem, vision);
+  //private final DriveToTarget driveToTarget = new DriveToTarget(m_drivetrainSubsystem, vision);
 
   private final Simulator sim = new Simulator(m_drivetrainSubsystem); 
   /**
@@ -77,13 +77,14 @@ public class RobotContainer {
             // No requirements because we don't need to interrupt anything
             .onTrue(new InstantCommand(m_drivetrainSubsystem::zeroGyroscope));
 
-    
+    /* 
     new Trigger(m_controller::getAButton)
             .whileTrue(new StrafeAlign(
               m_drivetrainSubsystem, 
               vision, 
               () -> -modifyAxis(m_controller.getLeftX()) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND / 4, 
               () -> -modifyAxis(m_controller.getLeftY()) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND / 4)); // limit speed (for now)
+              */
   }
 
   /**
@@ -93,7 +94,8 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    return rotAlign;
+    //return rotAlign;
+    return null;
   }
 
   private static double deadband(double value, double deadband) {
