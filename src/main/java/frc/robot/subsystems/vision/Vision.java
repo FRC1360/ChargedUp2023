@@ -51,9 +51,9 @@ public class Vision extends SubsystemBase {
     }
 
     public double[] getCamTran() {
-        Number[] cam_tran = table.getEntry("camtran").getNumberArray({0.0});
+        Number[] cam_tran = table.getEntry("camtran").getNumberArray(new Number[1]);
         if(cam_tran.length != 6) {
-            return {0.0};
+            return new double[1];
         }
         double[] out = new double[6];
         for(int i = 0; i < 6; i++) {
