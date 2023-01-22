@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -32,7 +33,9 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final DrivetrainSubsystem m_drivetrainSubsystem = new DrivetrainSubsystem();
 
-  private final XboxController m_controller = new XboxController(0);
+  //private final XboxController m_controller = new XboxController(0);
+  private final Joystick left_controller = new Joystick(0);
+  private final Joystick right_controller = new Joystick(1);
 
   private final AutoSequence auto = new AutoSequence(m_drivetrainSubsystem); 
 
@@ -54,12 +57,20 @@ public class RobotContainer {
     // Left stick Y axis -> forward and backwards movement
     // Left stick X axis -> left and right movement
     // Right stick X axis -> rotation
-    m_drivetrainSubsystem.setDefaultCommand(new DefaultDriveCommand(
+    /*m_drivetrainSubsystem.setDefaultCommand(new DefaultDriveCommand(
             m_drivetrainSubsystem,
             () -> -modifyAxis(m_controller.getLeftY()) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
             () -> -modifyAxis(m_controller.getLeftX()) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-            () -> -modifyAxis(m_controller.getRightX()) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
+            () -> modifyAxis(m_controller.getRightX()) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
+    ));*/
+
+    m_drivetrainSubsystem.setDefaultCommand(new DefaultDriveCommand(
+            m_drivetrainSubsystem,
+            () -> -modifyAxis(left_controller.getY()) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+            () -> -modifyAxis(left_controller.getX()) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+            () -> modifyAxis(right_controller.getX()) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
     ));
+    
 
     // Configure the button bindings
     configureButtonBindings();
@@ -73,39 +84,10 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     // Back button zeros the gyroscope
-    new Trigger(m_controller::getBackButton)
+    /*new Trigger(m_controller::getBackButton)
             // No requirements because we don't need to interrupt anything
-            .onTrue(new InstantCommand(m_drivetrainSubsystem::zeroGyroscope));
-
-    /* 
-    new Trigger(m_controller::getAButton)
-            .whileTrue(new StrafeAlign(
-              m_drivetrainSubsystem, 
-              vision, 
-              () -> -modifyAxis(m_controller.getLeftX()) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND / 4, 
-              () -> -modifyAxis(m_controller.getLeftY()) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND / 4)); // limit speed (for now)
-
-    new Trigger(() -> m_controller.getPOV() == 0)
-            .whileTrue(new TranslateAlign(
-              m_drivetrainSubsystem,
-              vision,
-              Vision.Pipeline.CENTER_TARGET
-            ));
-
-    new Trigger(() -> m_controller.getPOV() == 90)
-            .whileTrue(new TranslateAlign(
-              m_drivetrainSubsystem,
-              vision,
-              Vision.Pipeline.RIGHT_TARGET
-            ));
-
-    new Trigger(() -> m_controller.getPOV() == 270)
-            .whileTrue(new TranslateAlign(
-              m_drivetrainSubsystem,
-              vision,
-              Vision.Pipeline.LEFT_TARGET
-            ));
-            */
+            .onTrue(new InstantCommand(m_drivetrainSubsystem::zeroGyroscope));*/
+      new Trigger(() -> left_controller.getRawButton(0)).onTrue(new InstantCommand(m_drivetrainSubsystem::zeroGyroscope));
   }
 
   /**
