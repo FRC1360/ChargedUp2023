@@ -9,6 +9,9 @@ public class ArmHoldCommand extends CommandBase {
 
     public ArmHoldCommand(ArmSubsystem arm) {
         this.arm = arm;
+
+        // If doing Feedforward offset based off the pivot angle, add the pivot to the command params, but DON'T add to requirements,
+        // as we don't drive the pivot at all
         addRequirements(arm);
     }
     
@@ -18,7 +21,7 @@ public class ArmHoldCommand extends CommandBase {
         double input = (double)(this.arm.getEncoderPosition());
         double speed = this.arm.pidController.calculate(target, input);
 
-        this.arm.setArmNormalizedVoltage(speed);
+        this.arm.setArmNormalizedVoltage(speed);  // Probably going to need an offset based off the angle of the arm
     }
 
     @Override
