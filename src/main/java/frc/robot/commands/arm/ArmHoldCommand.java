@@ -18,7 +18,7 @@ public class ArmHoldCommand extends CommandBase {
         double input = (double)(this.arm.getEncoderPosition());
         double speed = this.arm.pidController.calculate(target, input);
 
-        this.arm.setArmSpeed(speed);
+        this.arm.setArmNormalizedVoltage(speed);
     }
 
     @Override

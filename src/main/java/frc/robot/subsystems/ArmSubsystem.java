@@ -46,8 +46,18 @@ public class ArmSubsystem extends SubsystemBase {
         this.armMotor.set(speed);
     }
 
+    /*
+     * Sets arm voltage based off 0.0 - 12.0
+     */
     public void setArmVoltage(double voltage) {
         this.armMotor.setVoltage(voltage);
+    }
+
+    /*
+     * Sets arm voltage based off 0.0 - 1.0 
+     */
+    public void setArmNormalizedVoltage(double voltage) {
+        this.setArmVoltage(voltage * 12.0);  // Should probably change this to a constant somewhere for ARM_VOLTAGE
     }
 
     public void setEncoderTargetPosition(int encoderTargetPosition) {
