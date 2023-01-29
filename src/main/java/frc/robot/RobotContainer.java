@@ -14,9 +14,12 @@ import frc.robot.autos.AutoSequence;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.arm.ArmGoToPositionCommand;
 import frc.robot.commands.arm.ArmHoldCommand;
+import frc.robot.commands.shoulder.ShoulderGoToPositionCommand;
+import frc.robot.commands.shoulder.ShoulderHoldCommand;
 import frc.robot.simulation.Simulator;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
+import frc.robot.subsystems.ShoulderSubsystem;
 import frc.robot.subsystems.ArmSubsystem.ARM_POSITION;
 
 /**
@@ -28,7 +31,9 @@ import frc.robot.subsystems.ArmSubsystem.ARM_POSITION;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final DrivetrainSubsystem m_drivetrainSubsystem = new DrivetrainSubsystem();
-  private final ArmSubsystem armSubsystem = new ArmSubsystem();
+  //private final ArmSubsystem armSubsystem = new ArmSubsystem();
+  private final ShoulderSubsystem shoulderSubsystem = new ShoulderSubsystem();
+  private final ShoulderSubsystem.ShoulderWristMessenger messenger = shoulderSubsystem.new ShoulderWristMessenger();
 
   private final XboxController m_controller = new XboxController(0);
   private final CommandXboxController operatorController = new CommandXboxController(1);
@@ -53,7 +58,9 @@ public class RobotContainer {
             () -> -modifyAxis(m_controller.getRightX()) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
     ));
 
-    armSubsystem.setDefaultCommand(new ArmHoldCommand(this.armSubsystem));
+    shoulderSubsystem.setDefaultCommand(new ShoulderHoldCommand(shoulderSubsystem));
+
+    //armSubsystem.setDefaultCommand(new ArmHoldCommand(this.armSubsystem));
 
     // Configure the button bindings
     configureButtonBindings();
@@ -71,9 +78,17 @@ public class RobotContainer {
             // No requirements because we don't need to interrupt anything
             .onTrue(new InstantCommand(m_drivetrainSubsystem::zeroGyroscope));
 
-    operatorController.a().onTrue(new ArmGoToPositionCommand(armSubsystem, ARM_POSITION.HIGH_GOAL));
+    /*operatorController.a().onTrue(new ArmGoToPositionCommand(armSubsystem, ARM_POSITION.HIGH_GOAL));
     operatorController.b().onTrue(new ArmGoToPositionCommand(armSubsystem, ARM_POSITION.MID_GOAL));
-    operatorController.x().onTrue(new ArmGoToPositionCommand(armSubsystem, ARM_POSITION.LOW_GOAL));
+    operatorController.x().onTrue(new ArmGoToPositionCommand(armSubsystem, ARM_POSITION.LOW_GOAL));*/
+
+    operatorController.a().onTrue(new InstantCommand(shoulderSubsystem::resetMotorRotations));
+    operatorController.x().onTrue(new ShoulderGoToPositionCommand(shoulderSubsystem, 0.0));
+    operatorController.y().onTrue(new ShoulderGoToPositionCommand(shoulderSubsystem, 90.0));
+    operatorController.b().onTrue(new ShoulderGoToPositionCommand(shoulderSubsystem, 150.0));
+
+
+
 
   }
 

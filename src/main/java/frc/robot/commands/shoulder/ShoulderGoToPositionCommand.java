@@ -6,15 +6,18 @@ import frc.robot.subsystems.ShoulderSubsystem;
 public class ShoulderGoToPositionCommand extends CommandBase {
     
     private ShoulderSubsystem shoulder;
+    private double angle;
 
-    public ShoulderGoToPositionCommand(ShoulderSubsystem shoulder) {
+    public ShoulderGoToPositionCommand(ShoulderSubsystem shoulder, double angle) {
         this.shoulder = shoulder;
+        this.angle = angle;
         addRequirements(shoulder);
     }
 
     @Override
     public void initialize() {
         this.shoulder.pidController.reset();
+        this.shoulder.setTargetAngle(angle);
     }
 
     @Override

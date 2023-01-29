@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.REVLibError;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
@@ -44,6 +45,15 @@ public class ShoulderSubsystem extends SubsystemBase {
         this.shoulderMotorMaster.set(speed);
     }
 
+    public void resetMotorRotations() {
+        if(this.shoulderMotorMaster.getEncoder().setPosition(0) == REVLibError.kOk) {
+            System.out.println("Reset Shoulder Rotations to 0");
+        } else {
+            System.out.println("Failed to reset Shoulder Rotations");
+        }
+        
+    }
+
     /*
      * Sets arm voltage based off 0.0 - 12.0
      */
@@ -76,7 +86,7 @@ public class ShoulderSubsystem extends SubsystemBase {
         return (encoderPosition * 360.0 * Constants.SHOULDER_GEAR_RATIO) % 360.0;
     }
 
-    class ShoulderWristMessenger {
+    public class ShoulderWristMessenger {
         public double getShoulderAngle() {
             return ShoulderSubsystem.this.getShoulderAngle();
         } 
