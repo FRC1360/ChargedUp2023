@@ -18,6 +18,10 @@ public class ShoulderHoldCommand extends CommandBase {
         double input = this.shoulder.getShoulderAngle();
         double speed = this.shoulder.pidController.calculate(target, input);
 
+        if(Math.abs(speed) > 0.5) {
+            speed = Math.copySign(0.5, speed);
+        }
+
         this.shoulder.setShoulderNormalizedVoltage(speed);
 
     }

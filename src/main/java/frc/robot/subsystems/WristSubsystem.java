@@ -4,6 +4,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.ShoulderSubsystem.ShoulderWristMessenger;
 import frc.robot.util.OrbitPID;
 
 public class WristSubsystem extends SubsystemBase {
@@ -12,14 +13,14 @@ public class WristSubsystem extends SubsystemBase {
     private double wristOffset;  // Angle offset for the shoulder
     public OrbitPID pidController;
 
-    private ShoulderSubsystem shoulder;
+    private ShoulderWristMessenger shoulderWristMessenger;
 
-    public WristSubsystem(final ShoulderSubsystem shoulder) {
+    public WristSubsystem(ShoulderWristMessenger shoulderWristMessenger) {
         this.wristMotor = new CANSparkMax(1, MotorType.kBrushless);
         this.wristOffset = -90.0;
         this.pidController = new OrbitPID(0.0, 0.0, 0.0);
 
-        this.shoulder = shoulder;
+        this.shoulderWristMessenger = shoulderWristMessenger;
     }
 
     public double getEncoderPosition() {
@@ -49,7 +50,7 @@ public class WristSubsystem extends SubsystemBase {
     }
 
     public double getTargetAngle() {
-        return this.shoulder.getShoulderAngle() + this.wristOffset;
+        return this.shoulderWristMessenger.getShoulderAngle() + this.wristOffset;
     }
 
     public void setWristOffset(double offset) {

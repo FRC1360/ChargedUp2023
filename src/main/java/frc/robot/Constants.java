@@ -49,4 +49,13 @@ public final class Constants {
     public static final int BACK_RIGHT_MODULE_STEER_MOTOR = 31; // FIXME Set back right steer motor ID
     public static final int BACK_RIGHT_MODULE_STEER_ENCODER = 3; // FIXME Set back right steer encoder ID
     public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(132.645); // FIXME Measure and set back right steer offset
+
+
+    //GENERAL
+    public static double NEO_ENCODER_TICKS_PER_REV = 42;
+
+    //SHOULDER
+    public static final int SHOULDER_MOTOR_MASTER = 0;
+    public static final int SHOULDER_MOTOR_SLAVE = 1;
+    public static final double SHOULDER_GEAR_RATIO = (11.0 / 52.0) * (30.0 / 68.0) * (16.0 / 72.0);
 }
