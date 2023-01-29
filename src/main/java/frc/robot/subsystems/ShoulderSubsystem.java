@@ -5,6 +5,7 @@ import com.revrobotics.REVLibError;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.util.OrbitPID;
@@ -31,7 +32,6 @@ public class ShoulderSubsystem extends SubsystemBase {
 
         this.shoulderMotorSlave.follow(this.shoulderMotorMaster);
     }
-
 
     public double getMotorRotations() {
         return this.shoulderMotorMaster.getEncoder().getPosition();
@@ -84,6 +84,15 @@ public class ShoulderSubsystem extends SubsystemBase {
         // angle of motor rotation * GEAR_RATIO = shoulder angle
         // shoulder angle % 360 = keep range between 0-360
         return (encoderPosition * 360.0 * Constants.SHOULDER_GEAR_RATIO) % 360.0;
+    }
+
+    public void updateSmartDashboard() {
+        SmartDashboard.putNumber("Shoulder_P_Gain", this.pidController.getPTerm());
+        SmartDashboard.putNumber("Shoulder_I_Gain", this.pidController.getITerm());
+        SmartDashboard.putNumber("Shoulder_D_Gain", this.pidController.getDTerm());
+
+        SmartDashboard.putNumber("Shoulder_Target_Angle", this.getTargetAngle());
+        SmartDashboard.putNumber("Shoulder_Angle", this.getShoulderAngle());
     }
 
     public class ShoulderWristMessenger {
