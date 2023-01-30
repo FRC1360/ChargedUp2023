@@ -23,12 +23,12 @@ public class WristSubsystem extends SubsystemBase {
         this.shoulderWristMessenger = shoulderWristMessenger;
     }
 
-    public double getEncoderPosition() {
+    public double getMotorRotations() {
         return this.wristMotor.getEncoder().getPosition();
     }
 
     public double getWristAngle() {
-        return this.encoderToAngleConversion(this.getEncoderPosition());
+        return this.encoderToAngleConversion(this.getMotorRotations());
     }
 
     public void setWristSpeed(double speed) {
@@ -59,13 +59,6 @@ public class WristSubsystem extends SubsystemBase {
 
     public double getWristOffset() {
         return this.wristOffset;
-    }
-
-    /*
-     * Converts angle (0 - 360) to encoder ticks
-     */
-    public double angleToEncoderConversion(double angle) {
-        return 0.0;
     }
 
     /*
