@@ -62,7 +62,7 @@ public class WristSubsystem extends SubsystemBase {
     }
 
     /*
-     * Converts encoder ticks to angle (0 - 360)
+     * Converts motor rotations to angle (0 - 360)
      */
     public double encoderToAngleConversion(double encoderPosition) {
         return 0.0;
