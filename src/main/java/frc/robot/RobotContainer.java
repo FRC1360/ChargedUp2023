@@ -32,7 +32,7 @@ public class RobotContainer {
 
   private final AutoSequence auto = new AutoSequence(m_drivetrainSubsystem); 
 
-  private final ShoulderSubsystem shoulder = new ShoulderSubsystem(0);
+  private final ShoulderSubsystem shoulder = new ShoulderSubsystem(Constants.MASTER_SHOULDER_MOTOR, Constants.SLAVE_SHOULDER_MOTOR);
 
   private final Simulator sim = new Simulator(m_drivetrainSubsystem); 
   /**
