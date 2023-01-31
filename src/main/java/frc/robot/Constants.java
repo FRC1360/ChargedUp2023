@@ -51,4 +51,6 @@ public final class Constants {
     public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(132.645); // FIXME Measure and set back right steer offset
 
     public static final int TICKS_PER_ANGLE_PIVOT = 1; // TODO EDIT THIS TO THE ENCODER TICKS PER DEGREE
+    public static final int MASTER_SHOULDER_MOTOR = 50;
+    public static final int SLAVE_SHOULDER_MOTOR = 51;
 }
