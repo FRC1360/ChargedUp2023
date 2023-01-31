@@ -16,6 +16,7 @@ import frc.robot.autos.AutoSequence;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.simulation.Simulator;
 import frc.robot.subsystems.DrivetrainSubsystem;
+import frc.robot.subsystems.ShoulderSubsystem;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -31,6 +32,7 @@ public class RobotContainer {
 
   private final AutoSequence auto = new AutoSequence(m_drivetrainSubsystem); 
 
+  private final ShoulderSubsystem shoulder = new ShoulderSubsystem(0);
 
   private final Simulator sim = new Simulator(m_drivetrainSubsystem); 
   /**
