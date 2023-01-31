@@ -5,37 +5,46 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMax.IdleMode;
 
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;    
 import frc.robot.Constants;
 import frc.robot.commands.ShoulderCommand;
 
 public class ShoulderSubsystem extends SubsystemBase {
 
-    private static CANSparkMax shoulder;
-    private static RelativeEncoder shoulderEncoder;
+    private static CANSparkMax masterShoulder;
+    private static CANSparkMax slaveShoulder;
+    private static RelativeEncoder masterShoulderEncoder;
+    private static RelativeEncoder slaveShoulderEncoder;
 
 
-    public ShoulderSubsystem (int shoulderID) {
-        shoulder = new CANSparkMax(shoulderID, MotorType.kBrushless);
+    public ShoulderSubsystem (int MasterShoulderID, int SlaveShoulderID) {
+        masterShoulder = new CANSparkMax(MasterShoulderID, MotorType.kBrushless);
+        slaveShoulder = new CANSparkMax(SlaveShoulderID, MotorType.kBrushless);
 
-        shoulderEncoder = shoulder.getEncoder();
+        masterShoulderEncoder = masterShoulder.getEncoder();
+        slaveShoulderEncoder = slaveShoulder.getEncoder();
 
-        shoulder.setIdleMode(IdleMode.kBrake); 
+        masterShoulder.setIdleMode(IdleMode.kBrake); 
+        slaveShoulder.setIdleMode(IdleMode.kBrake); 
+
+        slaveShoulder.follow(masterShoulder); // FIXME should the motors be inverted?
     } 
 
     public void setZero() {
-        shoulderEncoder.setPosition(0.0);
+        masterShoulderEncoder.setPosition(0.0);
+        slaveShoulderEncoder.setPosition(0.0);
     }
 
-    public static void setSpeed(double speed) {
-        shoulder.set(speed);
+    public void setSpeed(double speed) {
+        masterShoulder.set(speed);
+        slaveShoulder.set(speed);
     }
 
     public double getDegrees() {
-        return shoulderEncoder.getPosition() / Constants.TICKS_PER_ANGLE_PIVOT;
+        return masterShoulderEncoder.getPosition() / Constants.TICKS_PER_ANGLE_PIVOT;
     }
 
-    public static int getStepsfromDegrees(int degrees) {
+    public int getStepsfromDegrees(int degrees) {
         return Constants.TICKS_PER_ANGLE_PIVOT * degrees;
     }
 
@@ -51,7 +60,7 @@ public class ShoulderSubsystem extends SubsystemBase {
         ShoulderCommand.setAngle(45); // TODO Enter High target angle
     }
 
-    public static double getPositionOfEncoder() {
-        return shoulderEncoder.getPosition();
+    public double getPositionOfEncoder() {
+        return masterShoulderEncoder.getPosition();
     }
 }
