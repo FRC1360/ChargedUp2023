@@ -5,8 +5,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-
-
 public class Claw extends SubsystemBase {
     
     private CANSparkMax motor; // the motor to open and close the claw
@@ -27,6 +25,8 @@ public class Claw extends SubsystemBase {
     public void stop(){
         motor.stopMotor();
     }
+    
+    
 
     public void open(){
         motor.set(speed); 
