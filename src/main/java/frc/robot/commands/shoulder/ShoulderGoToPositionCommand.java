@@ -22,8 +22,7 @@ public class ShoulderGoToPositionCommand extends CommandBase {
 
     @Override
     public void execute() {
-        this.shoulder.updateSmartDashboard();
-        
+
         double target = this.shoulder.getTargetAngle();
         double input = this.shoulder.getShoulderAngle();
         double speed = this.shoulder.pidController.calculate(target, input);

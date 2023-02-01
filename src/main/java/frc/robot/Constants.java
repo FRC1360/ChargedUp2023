@@ -55,7 +55,7 @@ public final class Constants {
     public static double NEO_ENCODER_TICKS_PER_REV = 42;
 
     //SHOULDER
-    public static final int SHOULDER_MOTOR_MASTER = 0;
+    public static final int SHOULDER_MOTOR_MASTER = 12;
     public static final int SHOULDER_MOTOR_SLAVE = 1;
     public static final double SHOULDER_GEAR_RATIO = (11.0 / 52.0) * (30.0 / 68.0) * (16.0 / 72.0);
 }

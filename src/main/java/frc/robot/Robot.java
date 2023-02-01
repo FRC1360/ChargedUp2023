@@ -58,7 +58,8 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledPeriodic() {
-    
+    m_robotContainer.shoulderSubsystem.updateSmartDashboard();
+    m_robotContainer.wristSubsystem.updateSmartDashboard();
   }
 
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
@@ -89,7 +90,10 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    m_robotContainer.shoulderSubsystem.updateSmartDashboard();
+    m_robotContainer.wristSubsystem.updateSmartDashboard();
+  }
 
   @Override
   public void testInit() {
@@ -99,5 +103,7 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically during test mode. */
   @Override
-  public void testPeriodic() {}
+  public void testPeriodic() {
+    
+  }
 }

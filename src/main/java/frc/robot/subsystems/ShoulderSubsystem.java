@@ -18,19 +18,19 @@ public class ShoulderSubsystem extends SubsystemBase {
     public OrbitPID pidController;
 
     public ShoulderSubsystem() {
-        this.pidController = new OrbitPID(0.0055, 0, 0);
+        this.pidController = new OrbitPID(0.007, 0.000001, 0);
         this.targetAngle = 0;
 
         this.shoulderMotorMaster = new CANSparkMax(Constants.SHOULDER_MOTOR_MASTER, MotorType.kBrushless);
-        this.shoulderMotorSlave = new CANSparkMax(Constants.SHOULDER_MOTOR_SLAVE, MotorType.kBrushless);
+        //this.shoulderMotorSlave = new CANSparkMax(Constants.SHOULDER_MOTOR_SLAVE, MotorType.kBrushless);
 
         this.shoulderMotorMaster.restoreFactoryDefaults();
-        this.shoulderMotorSlave.restoreFactoryDefaults();
+        //this.shoulderMotorSlave.restoreFactoryDefaults();
 
         this.shoulderMotorMaster.setIdleMode(IdleMode.kBrake);
-        this.shoulderMotorSlave.setIdleMode(IdleMode.kBrake);
+        //this.shoulderMotorSlave.setIdleMode(IdleMode.kBrake);
 
-        this.shoulderMotorSlave.follow(this.shoulderMotorMaster);
+        //this.shoulderMotorSlave.follow(this.shoulderMotorMaster);
     }
 
     public double getMotorRotations() {
@@ -99,5 +99,9 @@ public class ShoulderSubsystem extends SubsystemBase {
         public double getShoulderAngle() {
             return ShoulderSubsystem.this.getShoulderAngle();
         } 
+
+        public double getTargetAngle() {
+            return ShoulderSubsystem.this.getTargetAngle();
+        }
     }
 }

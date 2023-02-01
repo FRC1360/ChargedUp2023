@@ -1,8 +1,11 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.REVLibError;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.ShoulderSubsystem.ShoulderWristMessenger;
 import frc.robot.util.OrbitPID;
@@ -16,11 +19,15 @@ public class WristSubsystem extends SubsystemBase {
     private ShoulderWristMessenger shoulderWristMessenger;
 
     public WristSubsystem(ShoulderWristMessenger shoulderWristMessenger) {
-        this.wristMotor = new CANSparkMax(1, MotorType.kBrushless);
-        this.wristOffset = -90.0;
-        this.pidController = new OrbitPID(0.0, 0.0, 0.0);
+        this.wristMotor = new CANSparkMax(5, MotorType.kBrushless);
+        this.wristOffset = 90.0;
+        this.pidController = new OrbitPID(0.004, 0.0, 0);
 
         this.shoulderWristMessenger = shoulderWristMessenger;
+
+        this.wristMotor.restoreFactoryDefaults();
+        this.wristMotor.setIdleMode(IdleMode.kBrake);
+        this.wristMotor.setInverted(true);
     }
 
     public double getMotorRotations() {
@@ -50,6 +57,7 @@ public class WristSubsystem extends SubsystemBase {
     }
 
     public double getTargetAngle() {
+        
         return this.shoulderWristMessenger.getShoulderAngle() + this.wristOffset;
     }
 
@@ -65,7 +73,26 @@ public class WristSubsystem extends SubsystemBase {
      * Converts motor rotations to angle (0 - 360)
      */
     public double encoderToAngleConversion(double encoderPosition) {
-        return 0.0;
+        return (encoderPosition * 360.0 * (1.0/12.0)) % 360.0;
+    }
+
+    public void resetMotorRotations() {
+        if(this.wristMotor.getEncoder().setPosition(0) == REVLibError.kOk) {
+            System.out.println("Reset Shoulder Rotations to 0");
+        } else {
+            System.out.println("Failed to reset Shoulder Rotations");
+        }
+        
+    }
+
+    public void updateSmartDashboard() {
+        SmartDashboard.putNumber("Wrist_P_Gain", this.pidController.getPTerm());
+        SmartDashboard.putNumber("Wrist_I_Gain", this.pidController.getITerm());
+        SmartDashboard.putNumber("Wrist_D_Gain", this.pidController.getDTerm());
+
+        SmartDashboard.putNumber("Wrist_Target_Angle", this.getTargetAngle());
+        SmartDashboard.putNumber("Wrist_Angle", this.getWristAngle());
+        SmartDashboard.putNumber("Wrist_Motor_Rotations", this.getMotorRotations());
     }
     
 }
