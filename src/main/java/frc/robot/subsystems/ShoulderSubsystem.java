@@ -29,7 +29,7 @@ public class ShoulderSubsystem extends SubsystemBase {
 
         slaveShoulder.follow(masterShoulder);
 
-        pid.configure(0.5, 0, 0);
+        pid = new OrbitPID(0.5, 0, 0);
     }
 
     public void setZero() {
