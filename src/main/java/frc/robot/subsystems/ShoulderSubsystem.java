@@ -27,11 +27,9 @@ public class ShoulderSubsystem extends SubsystemBase {
         masterShoulder.setIdleMode(IdleMode.kBrake); 
         slaveShoulder.setIdleMode(IdleMode.kBrake); 
 
-        slaveShoulder.follow(masterShoulder); // FIXME should the motors be inverted?
-    } 
+        slaveShoulder.follow(masterShoulder);
 
-    public void initialize() {
-
+        pid.configure(0.5, 0, 0);
     }
 
     public void execute() {
