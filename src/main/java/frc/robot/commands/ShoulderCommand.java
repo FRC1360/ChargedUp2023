@@ -3,32 +3,26 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ShoulderSubsystem;
 
 public class ShoulderCommand extends CommandBase {
-    private static int shoulderSteps;
-    private static double encoder;
+    private static double degrees;
     private static ShoulderSubsystem subsystem;
 
-    public ShoulderCommand(ShoulderSubsystem ssystem) {
+    public ShoulderCommand(ShoulderSubsystem ssystem, double degrees) {
         subsystem = ssystem;
         addRequirements(ssystem);
     }
 
     @Override
-    public void initialize() { 
-        encoder = subsystem.getPositionOfEncoder();
-    }
-
-    public static void setAngle(int degrees) {
-        shoulderSteps = subsystem.getStepsfromDegrees(degrees);
-        subsystem.setSpeed(0.25);
-
-        if (encoder >= shoulderSteps) {
-            subsystem.setSpeed(0);
-        }
+    public void execute() {
+        subsystem.setAngle(degrees);
     }
 
     @Override
-    public void end(boolean interrupted) {
-       // TODO make this look like a cmd 
+    public boolean isFinished() {
+        if (subsystem.getAngle()-degrees <= 0.1 && subsystem.getAngle()-degrees >= -0.1) return true;
+        else return false;
     }
- 
+
+    public void end() {
+        subsystem.setSpeed(0);
+    }
 }
