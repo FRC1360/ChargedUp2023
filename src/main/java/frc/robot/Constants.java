@@ -13,6 +13,9 @@ package frc.robot;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+    // The standard battery voltage
+    public static final double BATTERY_VOLTAGE = 12.0;
+
     /**
      * The left-to-right distance between the drivetrain wheels
      *

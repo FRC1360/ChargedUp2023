@@ -5,6 +5,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.util.OrbitPID;
 
 public class ArmSubsystem extends SubsystemBase {
@@ -50,14 +51,14 @@ public class ArmSubsystem extends SubsystemBase {
      * Sets arm voltage based off 0.0 - 12.0
      */
     public void setArmVoltage(double voltage) {
-        this.armMotor.setVoltage(voltage);
+        this.armMotor.setVoltage(voltage); // should we do input clamping here? what happens if you put in a negative voltage? or one greater than 12?
     }
 
     /*
      * Sets arm voltage based off 0.0 - 1.0 
      */
     public void setArmNormalizedVoltage(double voltage) {
-        this.setArmVoltage(voltage * 12.0);  // Should probably change this to a constant somewhere for ARM_VOLTAGE
+        this.setArmVoltage(voltage * Constants.BATTERY_VOLTAGE);
     }
 
     public void setEncoderTargetPosition(int encoderTargetPosition) {
