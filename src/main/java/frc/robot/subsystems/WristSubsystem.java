@@ -58,7 +58,7 @@ public class WristSubsystem extends SubsystemBase {
 
     public double getTargetAngle() {
         
-        return this.shoulderWristMessenger.getShoulderAngle() + this.wristOffset;
+        return this.shoulderWristMessenger.getShoulderAngle() + this.getWristOffset();
     }
 
     public void setWristOffset(double offset) {
