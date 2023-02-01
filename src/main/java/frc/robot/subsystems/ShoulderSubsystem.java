@@ -20,7 +20,7 @@ public class ShoulderSubsystem extends SubsystemBase {
     public ShoulderSubsystem (int MasterShoulderID, int SlaveShoulderID) {
         masterShoulder = new CANSparkMax(MasterShoulderID, MotorType.kBrushless);
         slaveShoulder = new CANSparkMax(SlaveShoulderID, MotorType.kBrushless);
-
+        
         masterShoulderEncoder = masterShoulder.getEncoder();
         slaveShoulderEncoder = slaveShoulder.getEncoder();
 
@@ -30,10 +30,6 @@ public class ShoulderSubsystem extends SubsystemBase {
         slaveShoulder.follow(masterShoulder);
 
         pid.configure(0.5, 0, 0);
-    }
-
-    public void execute() {
-
     }
 
     public void setZero() {
@@ -74,6 +70,5 @@ public class ShoulderSubsystem extends SubsystemBase {
         shoulderSteps = getStepsfromAngle(degrees);
         double pidoutput = pid.calculate(shoulderSteps, getPositionOfEncoder());
         setSpeed(pidoutput);
-        if (pidoutput < 0.1 && pidoutput > -0.1) setSpeed(0);
     }
 }
