@@ -31,7 +31,7 @@ public class ShoulderSubsystem extends SubsystemBase {
 
         slaveShoulder.follow(masterShoulder);
 
-        pid = new OrbitPID(0.007, 0, 0);
+        pid = new OrbitPID(0.1, 0, 0);
     }
 
     public void setZero() {
@@ -41,15 +41,16 @@ public class ShoulderSubsystem extends SubsystemBase {
 
     public void setSpeed(double speed) {
         masterShoulder.set(speed);
-        slaveShoulder.set(speed);
+        //slaveShoulder.set(speed);
     }
 
     public double getAngle() {
-        return getPositionOfEncoder() / Constants.TICKS_PER_ANGLE_PIVOT;
+        System.out.println(getPositionOfEncoder() / Constants.ROTATIONS_PER_ANGLE_PIVOT);
+        return getPositionOfEncoder() / Constants.ROTATIONS_PER_ANGLE_PIVOT;
     }
 
     public double getStepsfromAngle(double degrees) {
-        return Constants.TICKS_PER_ANGLE_PIVOT * degrees;
+        return Constants.ROTATIONS_PER_ANGLE_PIVOT * degrees;
     }
 
     public void setTargetLow() {
@@ -71,15 +72,16 @@ public class ShoulderSubsystem extends SubsystemBase {
     public void setAngle(double degrees) {
         shoulderSteps = getStepsfromAngle(degrees);
 
-        double pidoutput = pid.calculate(shoulderSteps, masterShoulderEncoder.getCountsPerRevolution() * getPositionOfEncoder());
+        double pidoutput = pid.calculate(shoulderSteps, getPositionOfEncoder());
         if (pidoutput > 0.25) pidoutput = 0.25;
         else if (pidoutput < -0.25) pidoutput = -0.25;
 
         SmartDashboard.putNumber("speed", pidoutput);
-        SmartDashboard.putNumber("encoder pos", masterShoulderEncoder.getCountsPerRevolution() * getPositionOfEncoder()); 
-        SmartDashboard.putNumber("steps", Constants.TICKS_PER_ANGLE_PIVOT * degrees);
+        SmartDashboard.putNumber("input", getPositionOfEncoder()); 
+        SmartDashboard.putNumber("target", Constants.ROTATIONS_PER_ANGLE_PIVOT * degrees);
 
         setSpeed(pidoutput);
         //setSpeed(0.25);
     }
+
 }
