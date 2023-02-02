@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.autos.Auto2;
 import frc.robot.autos.AutoSequence;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.simulation.Simulator;
@@ -31,6 +32,7 @@ public class RobotContainer {
 
   private final AutoSequence auto = new AutoSequence(m_drivetrainSubsystem); 
 
+  private final Auto2 auto2 = new Auto2(m_drivetrainSubsystem);
 
   private final Simulator sim = new Simulator(m_drivetrainSubsystem); 
   /**
@@ -73,7 +75,7 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    return auto;
+    return auto2;
   }
 
   private static double deadband(double value, double deadband) {

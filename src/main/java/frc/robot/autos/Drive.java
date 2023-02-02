@@ -12,11 +12,11 @@ public class Drive extends CommandBase {
 
     private final DrivetrainSubsystem dt; 
 
-    private ChassisSpeeds speeds; 
+    private ChassisSpeeds speeds = new ChassisSpeeds(0, 0, 0); 
 
     // To scale down the meters for speed (m/sec)
     // Aka how much secs it takes to complete 
-    private double scaleFactor = 1.5; 
+    private double scaleFactor = 1.1; 
 
     private Translation2d targetPose; 
 
@@ -27,8 +27,12 @@ public class Drive extends CommandBase {
         this.dt = dt;
         
         this.curPose = curPose; 
-
+        //TODO: Deal with scaling when one of x and y are less than 0.5
+        if (Math.abs(xMeters) < 0.5 && xMeters != 0.0) this.speeds.vxMetersPerSecond = Math.copySign(xMeters*2.5, xMeters); 
+        if (Math.abs(yMeters) < 0.5 && yMeters != 0.0) this.speeds.vyMetersPerSecond = Math.copySign(yMeters*2.5, yMeters);
+        else {
         this.speeds = new ChassisSpeeds(xMeters/scaleFactor, yMeters/scaleFactor, 0); // 0 Rotation
+        }
         
         //TODO: Check if Translation2d measures in meters
         this.targetPose = curPose.plus(new Translation2d(xMeters, yMeters)); 
@@ -69,9 +73,7 @@ public class Drive extends CommandBase {
     public boolean isFinished() { 
         // Drive stops when both x and y are sqrt(2) from target
         // getDistance() calculated by pythagorean theorem
-        return Math.abs(dt.getTranslation().getDistance(targetPose)) < 0.1;
+        return Math.abs(dt.getTranslation().getDistance(targetPose)) < 0.05;
     }
-
-
 
 }
