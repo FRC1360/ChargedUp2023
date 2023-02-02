@@ -168,6 +168,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
     return getPose().getTranslation(); 
   }
 
+  public void setPoseOdometry(Pose2d pose) { 
+        odometry = new SwerveDriveOdometry2022(m_kinematics, getGyroscopeRotation(), pose);
+  }
+  
   @Override
   public void periodic() {
     SwerveModuleState[] states = m_kinematics.toSwerveModuleStates(m_chassisSpeeds);
@@ -178,6 +182,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
     m_frontRightModule.set(states[2].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, states[2].angle.getRadians());
     m_backRightModule.set(states[3].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, states[3].angle.getRadians());    
 
-    odometry.update(getGyroscopeRotation(), states); 
+    odometry.update(getGyroscopeRotation(), states);
   } 
 }
