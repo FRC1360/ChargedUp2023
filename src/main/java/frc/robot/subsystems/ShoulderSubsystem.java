@@ -5,6 +5,7 @@ import com.revrobotics.REVLibError;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -13,24 +14,30 @@ import frc.robot.util.OrbitPID;
 public class ShoulderSubsystem extends SubsystemBase {
     
     private CANSparkMax shoulderMotorMaster;
-    private CANSparkMax shoulderMotorSlave;
     private double targetAngle;
-    public OrbitPID pidController;
+
+    public OrbitPID holdPIDController;  // PID Controller for HoldToTarget
+    public OrbitPID movePIDController;  // PID Controller for following Trapazoid Motion Profile
+    public TrapezoidProfile.Constraints shoulderMotionProfileConstraints;
+
+    private double angularVelocity;  // angular velocity in deg / second
+    private double lastAngle;
+    private long lastTime;
 
     public ShoulderSubsystem() {
-        this.pidController = new OrbitPID(0.007, 0.000001, 0);
+        this.holdPIDController = new OrbitPID(0.007, 0.00001, 0);
+        this.movePIDController = new OrbitPID(0.005, 0.0, 0.0);  // TODO - Tune
+
+        // This units are deg / second for velocity and deg / sec^2 for acceleration
+        this.shoulderMotionProfileConstraints = new TrapezoidProfile.Constraints(500, 250);  // TODO - Tune.
         this.targetAngle = 0;
 
         this.shoulderMotorMaster = new CANSparkMax(Constants.SHOULDER_MOTOR_MASTER, MotorType.kBrushless);
-        //this.shoulderMotorSlave = new CANSparkMax(Constants.SHOULDER_MOTOR_SLAVE, MotorType.kBrushless);
 
         this.shoulderMotorMaster.restoreFactoryDefaults();
-        //this.shoulderMotorSlave.restoreFactoryDefaults();
 
         this.shoulderMotorMaster.setIdleMode(IdleMode.kBrake);
-        //this.shoulderMotorSlave.setIdleMode(IdleMode.kBrake);
 
-        //this.shoulderMotorSlave.follow(this.shoulderMotorMaster);
     }
 
     public double getMotorRotations() {
@@ -86,13 +93,38 @@ public class ShoulderSubsystem extends SubsystemBase {
         return (encoderPosition * 360.0 * Constants.SHOULDER_GEAR_RATIO) % 360.0;
     }
 
+    private void updateAngularVelocity() {
+        long currentTime = System.currentTimeMillis();
+
+        double deltaTime = (currentTime - lastTime) / 1000.0;
+
+        this.angularVelocity = (this.getShoulderAngle() - lastAngle) / deltaTime;
+        this.lastAngle = this.getShoulderAngle();
+        this.lastTime = currentTime;
+    }
+
+    public double getAngluarVelocity() {
+        return this.angularVelocity;
+    }
+
+    @Override
+    public void periodic() {
+        updateAngularVelocity();
+    }
+
     public void updateSmartDashboard() {
-        SmartDashboard.putNumber("Shoulder_P_Gain", this.pidController.getPTerm());
-        SmartDashboard.putNumber("Shoulder_I_Gain", this.pidController.getITerm());
-        SmartDashboard.putNumber("Shoulder_D_Gain", this.pidController.getDTerm());
+        SmartDashboard.putNumber("Shoulder_Hold_P_Gain", this.holdPIDController.getPTerm());
+        SmartDashboard.putNumber("Shoulder_Hold_I_Gain", this.holdPIDController.getITerm());
+        SmartDashboard.putNumber("Shoulder_Hold_D_Gain", this.holdPIDController.getDTerm());
 
         SmartDashboard.putNumber("Shoulder_Target_Angle", this.getTargetAngle());
         SmartDashboard.putNumber("Shoulder_Angle", this.getShoulderAngle());
+
+        SmartDashboard.putNumber("Shoulder_Angular_Velocity", this.getAngluarVelocity());
+
+        SmartDashboard.putNumber("Shoulder_Move_P_Gain", this.movePIDController.getPTerm());
+        SmartDashboard.putNumber("Shoulder_Move_I_Gain", this.movePIDController.getITerm());
+        SmartDashboard.putNumber("Shoulder_Move_D_Gain", this.movePIDController.getDTerm());
     }
 
     public class ShoulderWristMessenger {

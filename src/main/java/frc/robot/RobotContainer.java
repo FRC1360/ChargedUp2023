@@ -90,7 +90,7 @@ public class RobotContainer {
     operatorController.a().onTrue(new InstantCommand(shoulderSubsystem::resetMotorRotations));
     operatorController.x().onTrue(new ShoulderGoToPositionCommand(shoulderSubsystem, 0.0));
     operatorController.y().onTrue(new ShoulderGoToPositionCommand(shoulderSubsystem, 90.0));
-    operatorController.b().onTrue(new ShoulderGoToPositionCommand(shoulderSubsystem, -90.0));
+    operatorController.b().onTrue(new ShoulderGoToPositionCommand(shoulderSubsystem, 150.0));
 
     operatorController.povDown().onTrue(new InstantCommand(wristSubsystem::resetMotorRotations));
     operatorController.povUp().onTrue(new InstantCommand( () -> wristSubsystem.setWristOffset(90)));

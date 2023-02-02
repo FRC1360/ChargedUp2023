@@ -13,11 +13,16 @@ public class ShoulderHoldCommand extends CommandBase {
     }
 
     @Override
+    public void initialize() {
+        this.shoulder.holdPIDController.reset();
+    }
+
+    @Override
     public void execute() {
 
         double target = this.shoulder.getTargetAngle();
         double input = this.shoulder.getShoulderAngle();
-        double speed = this.shoulder.pidController.calculate(target, input);
+        double speed = this.shoulder.holdPIDController.calculate(target, input);
 
         if(Math.abs(speed) > 0.5) {
             speed = Math.copySign(0.5, speed);
