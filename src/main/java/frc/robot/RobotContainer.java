@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.autos.AutoSequence;
 import frc.robot.commands.DefaultDriveCommand;
+import frc.robot.commands.ShoulderCommand;
 import frc.robot.simulation.Simulator;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.ShoulderSubsystem;
@@ -30,9 +31,11 @@ public class RobotContainer {
 
   private final XboxController m_controller = new XboxController(0);
 
-  private final AutoSequence auto = new AutoSequence(m_drivetrainSubsystem); 
-
   private final ShoulderSubsystem shoulder = new ShoulderSubsystem(Constants.MASTER_SHOULDER_MOTOR, Constants.SLAVE_SHOULDER_MOTOR);
+
+  private final ShoulderCommand shouldercmd = new ShoulderCommand(shoulder, 15);
+
+  private final AutoSequence auto = new AutoSequence(shoulder); 
 
   private final Simulator sim = new Simulator(m_drivetrainSubsystem); 
   /**
@@ -75,7 +78,7 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    return auto;
+    return shouldercmd;
   }
 
   private static double deadband(double value, double deadband) {

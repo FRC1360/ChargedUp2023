@@ -6,6 +6,8 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import frc.robot.util.OrbitPID;
 
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;    
 import frc.robot.Constants;
 
@@ -15,7 +17,7 @@ public class ShoulderSubsystem extends SubsystemBase {
     private static CANSparkMax slaveShoulder;
     private static RelativeEncoder masterShoulderEncoder;
     private static RelativeEncoder slaveShoulderEncoder;
-    private static double shoulderSteps;
+    private static double shoulderSteps = 0;
 
     public ShoulderSubsystem (int MasterShoulderID, int SlaveShoulderID) {
         masterShoulder = new CANSparkMax(MasterShoulderID, MotorType.kBrushless);
@@ -29,7 +31,7 @@ public class ShoulderSubsystem extends SubsystemBase {
 
         slaveShoulder.follow(masterShoulder);
 
-        pid = new OrbitPID(0.5, 0, 0);
+        pid = new OrbitPID(0.007, 0, 0);
     }
 
     public void setZero() {
@@ -68,7 +70,16 @@ public class ShoulderSubsystem extends SubsystemBase {
 
     public void setAngle(double degrees) {
         shoulderSteps = getStepsfromAngle(degrees);
-        double pidoutput = pid.calculate(shoulderSteps, getPositionOfEncoder());
+
+        double pidoutput = pid.calculate(shoulderSteps, masterShoulderEncoder.getCountsPerRevolution() * getPositionOfEncoder());
+        if (pidoutput > 0.25) pidoutput = 0.25;
+        else if (pidoutput < -0.25) pidoutput = -0.25;
+
+        SmartDashboard.putNumber("speed", pidoutput);
+        SmartDashboard.putNumber("encoder pos", masterShoulderEncoder.getCountsPerRevolution() * getPositionOfEncoder()); 
+        SmartDashboard.putNumber("steps", Constants.TICKS_PER_ANGLE_PIVOT * degrees);
+
         setSpeed(pidoutput);
+        //setSpeed(0.25);
     }
 }
