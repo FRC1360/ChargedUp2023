@@ -4,6 +4,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ShoulderSubsystem;
+import frc.robot.util.OrbitTimer;
 
 public class ShoulderGoToPositionCommand extends CommandBase {
     
@@ -14,11 +15,12 @@ public class ShoulderGoToPositionCommand extends CommandBase {
     private TrapezoidProfile.State startState;
     private TrapezoidProfile.State endState;
 
-    private long startTime;
+    private OrbitTimer timer;
 
     public ShoulderGoToPositionCommand(ShoulderSubsystem shoulder, double angle) {
         this.shoulder = shoulder;
         this.angle = angle;
+        this.timer = new OrbitTimer();
         addRequirements(shoulder);
     }
 
@@ -34,16 +36,14 @@ public class ShoulderGoToPositionCommand extends CommandBase {
              this.endState,
              this.startState);
 
-        this.startTime = System.currentTimeMillis();
+        this.timer.start();
+
     }
 
     @Override
     public void execute() {
 
-        long time = System.currentTimeMillis();
-        double deltaTime = (time - startTime) / 1000.0;
-
-        TrapezoidProfile.State profileTarget = this.motionProfile.calculate(deltaTime); // 0.02 is delta time = 20ms. Should probably fix this to actual time delta
+        TrapezoidProfile.State profileTarget = this.motionProfile.calculate(this.timer.getTimeDeltaSec());
 
         double target = profileTarget.position;
 
@@ -59,12 +59,7 @@ public class ShoulderGoToPositionCommand extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        // TODO - Change to motionProfile.isFinished()
-        //return Math.abs(this.shoulder.getShoulderAngle() - this.shoulder.getTargetAngle()) < 3;
-        long time = System.currentTimeMillis();
-        double deltaTime = (time - startTime) / 1000.0;
-
-        return this.motionProfile.isFinished(deltaTime);
+        return this.motionProfile.isFinished(this.timer.getTimeDeltaSec());
         
     }
 }

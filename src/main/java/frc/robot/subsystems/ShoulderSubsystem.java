@@ -25,8 +25,8 @@ public class ShoulderSubsystem extends SubsystemBase {
     private long lastTime;
 
     public ShoulderSubsystem() {
-        this.holdPIDController = new OrbitPID(0.007, 0.00001, 0);
-        this.movePIDController = new OrbitPID(0.005, 0.0, 0.0);  // TODO - Tune
+        this.holdPIDController = new OrbitPID(0.015, 0.00001, 0);
+        this.movePIDController = new OrbitPID(0.015, 0.0, 0.0);  // TODO - Tune
 
         // This units are deg / second for velocity and deg / sec^2 for acceleration
         this.shoulderMotionProfileConstraints = new TrapezoidProfile.Constraints(500, 250);  // TODO - Tune.

@@ -16,6 +16,7 @@ import frc.robot.commands.arm.ArmGoToPositionCommand;
 import frc.robot.commands.arm.ArmHoldCommand;
 import frc.robot.commands.shoulder.ShoulderGoToPositionCommand;
 import frc.robot.commands.shoulder.ShoulderHoldCommand;
+import frc.robot.commands.wrist.WristGoToPositionCommand;
 import frc.robot.commands.wrist.WristHoldCommand;
 import frc.robot.simulation.Simulator;
 import frc.robot.subsystems.ArmSubsystem;
@@ -93,9 +94,12 @@ public class RobotContainer {
     operatorController.b().onTrue(new ShoulderGoToPositionCommand(shoulderSubsystem, 150.0));
 
     operatorController.povDown().onTrue(new InstantCommand(wristSubsystem::resetMotorRotations));
-    operatorController.povUp().onTrue(new InstantCommand( () -> wristSubsystem.setWristOffset(90)));
+    /*operatorController.povUp().onTrue(new InstantCommand( () -> wristSubsystem.setWristOffset(90)));
     operatorController.povLeft().onTrue(new InstantCommand( () -> wristSubsystem.setWristOffset(45)));
-    operatorController.povRight().onTrue(new InstantCommand( () -> wristSubsystem.setWristOffset(135)));
+    operatorController.povRight().onTrue(new InstantCommand( () -> wristSubsystem.setWristOffset(135)));*/
+    operatorController.povUp().onTrue(new WristGoToPositionCommand(wristSubsystem, 90));
+    operatorController.povLeft().onTrue(new WristGoToPositionCommand(wristSubsystem, 45));
+    operatorController.povRight().onTrue(new WristGoToPositionCommand(wristSubsystem, 135));
 
   }
 
