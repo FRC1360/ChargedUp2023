@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.Encoder;
@@ -11,8 +12,8 @@ import frc.robot.util.OrbitPID;
 public class ArmSubsystem extends SubsystemBase {
     
     private CANSparkMax armMotor;
-    private Encoder encoder;
-    private int encoderTargetPosition;
+    private RelativeEncoder encoder;
+    private double encoderTargetPosition;
 
     public OrbitPID pidController;
 
@@ -23,25 +24,30 @@ public class ArmSubsystem extends SubsystemBase {
         INTAKE(0);
 
         // value represents the output of the encoder at that position
-        private final int value;
-        ARM_POSITION(final int value) {
+        private final double value;
+        ARM_POSITION(final double value) {
             this.value = value;
         }
 
-        public int getValue() {
+        public double getValue() {
             return this.value;
         }
     }
 
     public ArmSubsystem() {
-        this.armMotor = new CANSparkMax(Constants.ARM_MOTOR_ID, MotorType.kBrushless);  // TODO - Add constant
+        this.armMotor = new CANSparkMax(Constants.ARM_MOTOR_ID, MotorType.kBrushless);
         this.pidController = new OrbitPID(0, 0, 0);
         // TODO - Initialize the encoder
+        this.encoder = armMotor.getEncoder();
         this.encoderTargetPosition = 0;
     }
 
-    public int getEncoderPosition() {
-        return this.encoder.get();
+    public double getEncoderPosition() {
+        return this.encoder.getPosition();
+    }
+
+    public double getMotorRotations() {
+        return getEncoderPosition()/this.encoder.getCountsPerRevolution();
     }
 
     public void setArmSpeed(double speed) {
@@ -62,7 +68,7 @@ public class ArmSubsystem extends SubsystemBase {
         this.setArmVoltage(voltage * Constants.BATTERY_VOLTAGE);
     }
 
-    public void setEncoderTargetPosition(int encoderTargetPosition) {
+    public void setEncoderTargetPosition(double encoderTargetPosition) {
         this.encoderTargetPosition = encoderTargetPosition;
     }
 
@@ -70,7 +76,7 @@ public class ArmSubsystem extends SubsystemBase {
         this.setEncoderTargetPosition(position.getValue());
     }
 
-    public int getEncoderTargetPosition() {
+    public double getEncoderTargetPosition() {
         return this.encoderTargetPosition;
     }
 }
