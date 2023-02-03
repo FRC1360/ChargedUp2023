@@ -6,9 +6,9 @@ import frc.robot.subsystems.ArmSubsystem;
 public class ArmGoToPositionCommand extends CommandBase {
 
     private ArmSubsystem arm;
-    private int position;
+    private double position;
 
-    public ArmGoToPositionCommand(ArmSubsystem arm, int position) {
+    public ArmGoToPositionCommand(ArmSubsystem arm, double position) {
             this.arm = arm;
             
             this.position = position;
@@ -28,8 +28,8 @@ public class ArmGoToPositionCommand extends CommandBase {
 
     @Override
     public void execute() {
-        double target = (double)(this.arm.getEncoderTargetPosition());
-        double input = (double)(this.arm.getEncoderPosition());
+        double target = this.arm.getEncoderTargetPosition();
+        double input = this.arm.getEncoderPosition();
         double speed = this.arm.pidController.calculate(target, input);
 
         this.arm.setArmNormalizedVoltage(speed);

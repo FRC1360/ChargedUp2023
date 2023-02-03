@@ -17,8 +17,8 @@ public class ArmHoldCommand extends CommandBase {
     
     @Override
     public void execute() {
-        double target = (double)(this.arm.getEncoderTargetPosition());
-        double input = (double)(this.arm.getEncoderPosition());
+        double target = this.arm.getEncoderTargetPosition();
+        double input = this.arm.getEncoderPosition();
         double speed = this.arm.pidController.calculate(target, input);
 
         this.arm.setArmNormalizedVoltage(speed);  // Probably going to need an offset based off the angle of the arm
