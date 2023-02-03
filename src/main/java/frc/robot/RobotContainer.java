@@ -14,8 +14,10 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.autos.AutoSequence;
 import frc.robot.commands.DefaultDriveCommand;
+import frc.robot.commands.InputManual;
 import frc.robot.simulation.Simulator;
 import frc.robot.subsystems.DrivetrainSubsystem;
+import frc.robot.subsystems.Intake;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -31,6 +33,9 @@ public class RobotContainer {
 
   private final AutoSequence auto = new AutoSequence(m_drivetrainSubsystem); 
 
+  private final Intake intake = new Intake();
+
+  private final InputManual inputManualCommand = new InputManual(intake);
 
   private final Simulator sim = new Simulator(m_drivetrainSubsystem); 
   /**
@@ -64,8 +69,12 @@ public class RobotContainer {
     new Trigger(m_controller::getBackButton)
             // No requirements because we don't need to interrupt anything
             .onTrue(new InstantCommand(m_drivetrainSubsystem::zeroGyroscope));
+    new Trigger(m_controller::getAButton)
+            // No requirements because we don't need to interrupt anything
+            .onTrue(inputManualCommand);
   }
 
+  
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
