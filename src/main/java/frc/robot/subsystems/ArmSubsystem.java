@@ -33,7 +33,7 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
     public ArmSubsystem() {
-        this.armMotor = new CANSparkMax(0, MotorType.kBrushless);  // TODO - Add constant
+        this.armMotor = new CANSparkMax(Constants.ARM_MOTOR_ID, MotorType.kBrushless);  // TODO - Add constant
         this.pidController = new OrbitPID(0, 0, 0);
         // TODO - Initialize the encoder
         this.encoderTargetPosition = 0;
