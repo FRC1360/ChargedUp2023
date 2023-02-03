@@ -22,6 +22,7 @@ public class ArmSubsystem extends SubsystemBase {
         HIGH_GOAL(0),
         INTAKE(0);
 
+        // value represents the output of the encoder at that position
         private final int value;
         ARM_POSITION(final int value) {
             this.value = value;
