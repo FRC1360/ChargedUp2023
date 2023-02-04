@@ -27,7 +27,7 @@ public class ShoulderSubsystem extends SubsystemBase {
 
         // error checking to make sure motor config is successful
         // if the CAN bus starts getting weird, we'll notice it here
-        SmartDashboard.putBoolean("ShoulderSlaveFollowSuccess:", 
+        SmartDashboard.putBoolean("ShoulderMasterSetIdleModeSuccess:", 
                                     masterShoulder.setIdleMode(IdleMode.kBrake) == REVLibError.kOk);
 
         SmartDashboard.putBoolean("ShoulderSlaveFollowSuccess:", 
