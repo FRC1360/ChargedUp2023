@@ -4,7 +4,7 @@
 
 package frc.robot;
 
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -31,8 +31,6 @@ public final class Constants {
     public final static class ClawSubsystem {
         public static final int deviceId = 60; //motorID is 60
     }
-
-    public static final MotorType K_MOTOR_TYPE = MotorType.kBrushless;
 
     public static final int DRIVETRAIN_PIGEON_ID = 0; // FIXME Set Pigeon ID
 
