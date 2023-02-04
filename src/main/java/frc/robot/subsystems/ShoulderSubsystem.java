@@ -36,6 +36,22 @@ public class ShoulderSubsystem extends SubsystemBase {
         pid = new OrbitPID(0.1, 0, 0);
     }
 
+    public enum SHOULDER_POSITION {
+        LOW_GOAL(5),
+        MID_GOAL(20),
+        HIGH_GOAL(45),
+        INTAKE(0);
+
+        private final double value;
+        SHOULDER_POSITION(final double value) {
+            this.value = value;
+        }
+
+        public double getValue() {
+            return this.value;
+        }
+    }
+
     public void setZero() {
         masterShoulderEncoder.setPosition(0.0);
     }
@@ -51,22 +67,6 @@ public class ShoulderSubsystem extends SubsystemBase {
 
     public double getStepsfromAngle(double degrees) {
         return Constants.ROTATIONS_PER_ANGLE_PIVOT * degrees;
-    }
-
-    public enum SHOULDER_POSITION {
-        LOW_GOAL(5),
-        MID_GOAL(20),
-        HIGH_GOAL(45),
-        INTAKE(0);
-
-        private final double value;
-        SHOULDER_POSITION(final double value) {
-            this.value = value;
-        }
-
-        public double getValue() {
-            return this.value;
-        }
     }
 
     public double getPositionOfEncoder() {

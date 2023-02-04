@@ -6,11 +6,11 @@ import frc.robot.Constants;
 
 public class RotateShoulderCommand extends CommandBase {
     private static double degrees = 0.0;
-    private static ShoulderSubsystem subsystem;
+    private static ShoulderSubsystem shoulder;
     private static double shoulderSteps = 0;
 
     public RotateShoulderCommand(ShoulderSubsystem ssystem, double degrees) {
-        subsystem = ssystem;
+        shoulder = ssystem;
         this.degrees = degrees; 
         addRequirements(ssystem);
     }
@@ -18,42 +18,39 @@ public class RotateShoulderCommand extends CommandBase {
     @Override
     public void initialize() { 
         //subsystem.setZero();
-        subsystem.setEncoderTargetPosition(degrees);
+        shoulder.setEncoderTargetPosition(degrees);
     }
 
     @Override
     public void execute() {
         SmartDashboard.putBoolean("command running", true);
         setAngle(degrees);
-        SmartDashboard.putNumber("current angle", subsystem.getAngle());
+        SmartDashboard.putNumber("current angle", shoulder.getAngle());
     }
 
     @Override
     public boolean isFinished() {
-        if (subsystem.getAngle()-degrees <= 0.5 && subsystem.getAngle()-degrees >= -0.5) return true;
-        else {
-            return false; 
-        }
+        return Math.abs(shoulder.getAngle()-degrees) <= 0.5;
     }
 
     @Override
     public void end(boolean interrupted) {
         SmartDashboard.putBoolean("command running", false);
-        subsystem.setSpeed(0);
+        shoulder.setSpeed(0);
     }
 
     public void setAngle(double degrees) {
         //degrees = angle.getValue();
-        shoulderSteps = subsystem.getStepsfromAngle(degrees);
+        shoulderSteps = shoulder.getStepsfromAngle(degrees);
         
-        double pidoutput = subsystem.pid.calculate(shoulderSteps, subsystem.getPositionOfEncoder());
+        double pidoutput = shoulder.pid.calculate(shoulderSteps, shoulder.getPositionOfEncoder());
         if (pidoutput > 0.25) pidoutput = 0.25;
         else if (pidoutput < -0.25) pidoutput = -0.25;
 
         SmartDashboard.putNumber("speed", pidoutput);
-        SmartDashboard.putNumber("input", subsystem.getPositionOfEncoder()); 
+        SmartDashboard.putNumber("input", shoulder.getPositionOfEncoder()); 
         SmartDashboard.putNumber("target", Constants.ROTATIONS_PER_ANGLE_PIVOT * degrees);
 
-        subsystem.setSpeed(pidoutput);
+        shoulder.setSpeed(pidoutput);
     }
 }
