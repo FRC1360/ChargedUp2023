@@ -10,30 +10,39 @@ public class IntakeCommand extends CommandBase{
     public IntakeCommand(IntakeSubsystem motor) {
         this.motor = motor;
         addRequirements(motor);
-        getInterruptionBehavior();
+        getInterruptionBehavior();//makes it so telop takes priority to auto command.
     }
 
     public void intake(){
-        motor.set(speed); 
+        motor.activate(speed); 
         if (motor.shouldMotorStopMoving(5)) { //the five is a placeholder
             motor.stop();
         }
     }
 
     public void putDown(){
-        motor.set(-speed); //not sure if num should be - or + be it's opposite of close
+        motor.activate(-speed); //not sure if num should be - or + be it's opposite of close
         if (motor.shouldMotorStopMoving(5)) { //the five is a placeholder
             motor.stop();
         }
     }
 
-    @Override
-    public void initialize(){
-        intake();
+    public boolean isRobotReadyToDropOff(){
+        return true;
+        // Since the motor insn't going to keep moving during transport, 
+        // we should have some way for the robot to determine if it is ready to place down the object other then encoder ticks. 
+
     }
 
     @Override
-    public void execute() {           
+    public void initialize(){
+        intake();
+        
+    }
+
+    @Override
+    public void execute() {      
+
     }
 
     @Override
@@ -43,7 +52,12 @@ public class IntakeCommand extends CommandBase{
 
     @Override
     public boolean isFinished() { 
-        motor.stop();
-        return true;
+        if (isRobotReadyToDropOff()) {
+            return true;
+        }
+        else{
+            return false;
+        }
+        
     }
 }
