@@ -14,10 +14,11 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.autos.AutoSequence;
 import frc.robot.commands.DefaultDriveCommand;
-import frc.robot.commands.InputManual;
+import frc.robot.commands.ManualIntakeCommand;
+import frc.robot.commands.ManualIntakeCommand;
 import frc.robot.simulation.Simulator;
 import frc.robot.subsystems.DrivetrainSubsystem;
-import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.IntakeSubsystem;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -33,9 +34,9 @@ public class RobotContainer {
 
   private final AutoSequence auto = new AutoSequence(m_drivetrainSubsystem); 
 
-  private final Intake intake = new Intake();
+  private final IntakeSubsystem intake = new IntakeSubsystem();
 
-  private final InputManual inputManualCommand = new InputManual(intake);
+  private final ManualIntakeCommand inputManualCommand = new ManualIntakeCommand(intake);
 
   private final Simulator sim = new Simulator(m_drivetrainSubsystem); 
   /**
