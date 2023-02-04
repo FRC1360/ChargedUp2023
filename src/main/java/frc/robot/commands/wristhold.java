@@ -9,8 +9,6 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 public class wristhold extends CommandBase {
     private static double degrees = 0.0;
     private static wristhold wrist;
-    private Object motor;
-    private Object stopMotor; 
 
 
 
@@ -27,6 +25,8 @@ public class wristhold extends CommandBase {
     private void addRequirements(wristhold subsystem2) {
     }
 
+    
+     
 
 
 
