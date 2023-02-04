@@ -22,6 +22,8 @@ public class WristSubsystem extends SubsystemBase {
 
     private ShoulderWristMessenger shoulderWristMessenger;
 
+    private double cacheOffset;
+
     public WristSubsystem(ShoulderWristMessenger shoulderWristMessenger) {
         this.wristMotor = new CANSparkMax(5, MotorType.kBrushless);
         this.wristOffset = 90.0;
@@ -34,12 +36,16 @@ public class WristSubsystem extends SubsystemBase {
         this.wristMotor.restoreFactoryDefaults();
         this.wristMotor.setIdleMode(IdleMode.kBrake);
         this.wristMotor.setInverted(true);
+
+        this.cacheOffset = 0.0;
     }
 
     public double getMotorRotations() {
         return this.wristMotor.getEncoder().getPosition();
     }
 
+    
+    // Returns the wrist GLOBAL angle. The global angle is the angle relative to the shoulder
     public double getWristAngle() {
         return this.encoderToAngleConversion(this.getMotorRotations());
     }
@@ -62,17 +68,31 @@ public class WristSubsystem extends SubsystemBase {
         this.setWristVoltage(voltage * 12.0);  // Should probably change this to a constant somewhere for ARM_VOLTAGE
     }
 
+    // This return a GLOBAL angle. The global angle is the angle relative to the encoder
     public double getTargetAngle() {  // Use getTargetAngle() when doing commands to move the wrist
         
         return this.shoulderWristMessenger.getShoulderAngle() + this.getWristOffset();
     }
-
+ 
     public void setWristOffset(double offset) {
         this.wristOffset = offset;
     }
 
+    // The offset is more akin to a LOCAL angle. The local angle is the angle relative to wrist starting position.
+    // This angle ensures the wrist doesn't move relative to the starting location while the shoulder rotates
+    // For example, if the wrist starts pointing directly up and the wrist offset is 0, the wrist will stay pointing up
+    // regardless of the shoulder's orientation.  Change this value when you want to change the angle of the wrist
     public double getWristOffset() {
         return this.wristOffset;
+    }
+
+    public void setCacheOffset() {
+        System.out.println("Setting cache offset to " + this.getWristOffset());
+        this.cacheOffset = this.getWristOffset();
+    }
+
+    public double getCacheOffset() {
+        return this.cacheOffset;
     }
 
     /*
@@ -99,6 +119,8 @@ public class WristSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Wrist_Target_Angle", this.getTargetAngle());
         SmartDashboard.putNumber("Wrist_Angle", this.getWristAngle());
         SmartDashboard.putNumber("Wrist_Motor_Rotations", this.getMotorRotations());
+        SmartDashboard.putNumber("Wrist_Cache_Offset", this.getCacheOffset());
+        SmartDashboard.putNumber("Wrist_Offset", this.getWristOffset());
     }
     
 }

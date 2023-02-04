@@ -1,5 +1,8 @@
 package frc.robot.subsystems;
 
+import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.REVLibError;
 import com.revrobotics.CANSparkMax.IdleMode;
@@ -24,19 +27,25 @@ public class ShoulderSubsystem extends SubsystemBase {
     private double lastAngle;
     private long lastTime;
 
+    private boolean transitioning;
+    private double scheduledAngle;
+
     public ShoulderSubsystem() {
         this.holdPIDController = new OrbitPID(0.015, 0.00001, 0);
         this.movePIDController = new OrbitPID(0.015, 0.0, 0.0);  // TODO - Tune
 
         // This units are deg / second for velocity and deg / sec^2 for acceleration
         this.shoulderMotionProfileConstraints = new TrapezoidProfile.Constraints(500, 250);  // TODO - Tune.
-        this.targetAngle = 0;
+        this.targetAngle = 0.0;
 
         this.shoulderMotorMaster = new CANSparkMax(Constants.SHOULDER_MOTOR_MASTER, MotorType.kBrushless);
 
         this.shoulderMotorMaster.restoreFactoryDefaults();
 
         this.shoulderMotorMaster.setIdleMode(IdleMode.kBrake);
+
+        this.transitioning = false;
+        this.scheduledAngle = Double.NaN;
 
     }
 
@@ -107,9 +116,37 @@ public class ShoulderSubsystem extends SubsystemBase {
         return this.angularVelocity;
     }
 
+    public boolean atTarget() {
+        return Math.abs(this.getTargetAngle() - this.getShoulderAngle()) <= 3.0;  // Should make this a constant
+    }
+
+    public BooleanSupplier inTransitionState() {
+        return () -> this.transitioning;
+    }
+
+    public void setScheduledAngle(double angle) {
+        this.scheduledAngle = angle;
+    }
+
+    public double getScheduledAngle() {
+        return this.scheduledAngle;
+    }
+
+    public void checkTransitioning() {
+        transitioning = !(Math.abs(this.getShoulderAngle()) < 2) && (this.getScheduledAngle() > 0.0 && this.getShoulderAngle() < 0.0) || (this.getScheduledAngle() < 0.0 && this.getShoulderAngle() > 0.0);
+    }
+
     @Override
     public void periodic() {
         updateAngularVelocity();
+
+        if(!transitioning)
+            checkTransitioning();
+
+        if(transitioning && this.atTarget() && (this.getScheduledAngle() == this.getTargetAngle())) {
+            transitioning = false;
+            this.setScheduledAngle(Double.NaN);
+        }
     }
 
     public void updateSmartDashboard() {
@@ -119,12 +156,15 @@ public class ShoulderSubsystem extends SubsystemBase {
 
         SmartDashboard.putNumber("Shoulder_Target_Angle", this.getTargetAngle());
         SmartDashboard.putNumber("Shoulder_Angle", this.getShoulderAngle());
+        SmartDashboard.putNumber("shoulder_Scheduled_Angle", this.getScheduledAngle());
 
         SmartDashboard.putNumber("Shoulder_Angular_Velocity", this.getAngluarVelocity());
 
         SmartDashboard.putNumber("Shoulder_Move_P_Gain", this.movePIDController.getPTerm());
         SmartDashboard.putNumber("Shoulder_Move_I_Gain", this.movePIDController.getITerm());
         SmartDashboard.putNumber("Shoulder_Move_D_Gain", this.movePIDController.getDTerm());
+
+        SmartDashboard.putBoolean("Shoulder_Transition_State", transitioning);
     }
 
     public class ShoulderWristMessenger {

@@ -6,10 +6,9 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.WristSubsystem;
 import frc.robot.util.OrbitTimer;
 
-public class WristGoToPositionCommand extends CommandBase {
+public class WristGoToCachePositionCommand extends CommandBase {
     
     private WristSubsystem wrist;
-    private double angle;
 
     private TrapezoidProfile motionProfile;
     private TrapezoidProfile.State startState;
@@ -17,9 +16,8 @@ public class WristGoToPositionCommand extends CommandBase {
 
     private OrbitTimer timer;
 
-    public WristGoToPositionCommand(WristSubsystem wrist, double angle) {
+    public WristGoToCachePositionCommand(WristSubsystem wrist) {
         this.wrist = wrist;
-        this.angle = angle;
         this.timer = new OrbitTimer();
         addRequirements(wrist);
     }
@@ -27,7 +25,7 @@ public class WristGoToPositionCommand extends CommandBase {
     @Override
     public void initialize() {
         this.wrist.movePIDController.reset();
-        this.wrist.setWristOffset(angle);
+        this.wrist.setWristOffset(this.wrist.getCacheOffset());
 
         this.startState = new TrapezoidProfile.State(this.wrist.getWristAngle(), 0.0);
         this.endState = new TrapezoidProfile.State(this.wrist.getTargetAngle(), 0.0);
@@ -37,8 +35,6 @@ public class WristGoToPositionCommand extends CommandBase {
             this.startState);
         
         this.timer.start();
-
-        System.out.println("Set Wrist Offset = " + this.angle);
     }
 
     @Override

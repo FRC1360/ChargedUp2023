@@ -9,21 +9,13 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.autos.AutoSequence;
-import frc.robot.commands.DefaultDriveCommand;
-import frc.robot.commands.arm.ArmGoToPositionCommand;
-import frc.robot.commands.arm.ArmHoldCommand;
+import frc.robot.commands.assembly.AssemblyGoToPositionCommand;
 import frc.robot.commands.shoulder.ShoulderGoToPositionCommand;
 import frc.robot.commands.shoulder.ShoulderHoldCommand;
 import frc.robot.commands.wrist.WristGoToPositionCommand;
 import frc.robot.commands.wrist.WristHoldCommand;
-import frc.robot.simulation.Simulator;
-import frc.robot.subsystems.ArmSubsystem;
-import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.ShoulderSubsystem;
 import frc.robot.subsystems.WristSubsystem;
-import frc.robot.subsystems.ArmSubsystem.ARM_POSITION;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -90,13 +82,11 @@ public class RobotContainer {
 
     operatorController.a().onTrue(new InstantCommand(shoulderSubsystem::resetMotorRotations));
     operatorController.x().onTrue(new ShoulderGoToPositionCommand(shoulderSubsystem, 0.0));
-    operatorController.y().onTrue(new ShoulderGoToPositionCommand(shoulderSubsystem, 90.0));
-    operatorController.b().onTrue(new ShoulderGoToPositionCommand(shoulderSubsystem, 150.0));
+    operatorController.y().onTrue(new AssemblyGoToPositionCommand(shoulderSubsystem, wristSubsystem, 90.0));
+    operatorController.b().onTrue(new AssemblyGoToPositionCommand(shoulderSubsystem, wristSubsystem, 150.0));
+    operatorController.rightBumper().onTrue(new AssemblyGoToPositionCommand(shoulderSubsystem, wristSubsystem, -50.0));
 
     operatorController.povDown().onTrue(new InstantCommand(wristSubsystem::resetMotorRotations));
-    /*operatorController.povUp().onTrue(new InstantCommand( () -> wristSubsystem.setWristOffset(90)));
-    operatorController.povLeft().onTrue(new InstantCommand( () -> wristSubsystem.setWristOffset(45)));
-    operatorController.povRight().onTrue(new InstantCommand( () -> wristSubsystem.setWristOffset(135)));*/
     operatorController.povUp().onTrue(new WristGoToPositionCommand(wristSubsystem, 90));
     operatorController.povLeft().onTrue(new WristGoToPositionCommand(wristSubsystem, 45));
     operatorController.povRight().onTrue(new WristGoToPositionCommand(wristSubsystem, 135));
