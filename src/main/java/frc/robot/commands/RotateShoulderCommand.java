@@ -24,8 +24,18 @@ public class RotateShoulderCommand extends CommandBase {
     @Override
     public void execute() {
         SmartDashboard.putBoolean("command running", true);
-        setAngle(degrees);
+        shoulderSteps = shoulder.getStepsfromAngle(degrees);
+            
+        double pidoutput = shoulder.pid.calculate(shoulderSteps, shoulder.getPositionOfEncoder());
+        if (pidoutput > 0.25) pidoutput = 0.25;
+        else if (pidoutput < -0.25) pidoutput = -0.25;
+    
+        SmartDashboard.putNumber("speed", pidoutput);
+        SmartDashboard.putNumber("input", shoulder.getPositionOfEncoder()); 
+        SmartDashboard.putNumber("target", Constants.ROTATIONS_PER_ANGLE_PIVOT * degrees);
         SmartDashboard.putNumber("current angle", shoulder.getAngle());
+
+        shoulder.setSpeed(pidoutput);
     }
 
     @Override
@@ -37,20 +47,5 @@ public class RotateShoulderCommand extends CommandBase {
     public void end(boolean interrupted) {
         SmartDashboard.putBoolean("command running", false);
         shoulder.setSpeed(0);
-    }
-
-    public void setAngle(double degrees) {
-        //degrees = angle.getValue();
-        shoulderSteps = shoulder.getStepsfromAngle(degrees);
-        
-        double pidoutput = shoulder.pid.calculate(shoulderSteps, shoulder.getPositionOfEncoder());
-        if (pidoutput > 0.25) pidoutput = 0.25;
-        else if (pidoutput < -0.25) pidoutput = -0.25;
-
-        SmartDashboard.putNumber("speed", pidoutput);
-        SmartDashboard.putNumber("input", shoulder.getPositionOfEncoder()); 
-        SmartDashboard.putNumber("target", Constants.ROTATIONS_PER_ANGLE_PIVOT * degrees);
-
-        shoulder.setSpeed(pidoutput);
     }
 }
