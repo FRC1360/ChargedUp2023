@@ -24,12 +24,6 @@ public class ManualIntakeCommand extends CommandBase{
 
     @Override
     public boolean isFinished() { 
-        if (isTeleopOver()) {
-            return true;
-        }
-        else {
-            return false;
-        }
+        return isTeleopOver();
     }
-
 }
