@@ -7,9 +7,9 @@ public class AutoIntakeCommand extends CommandBase{
     private IntakeSubsystem intake; // that piston that open and closes the claw
     private double speed = 0.5; //Also placeholder! IDK how fast the motor should be spinning.
 
-    public AutoIntakeCommand(IntakeSubsystem motor) {
+    public AutoIntakeCommand(IntakeSubsystem intake) {
         this.intake = intake;
-        addRequirements(motor);
+        addRequirements(intake);
         getInterruptionBehavior();//makes it so telop takes priority to auto command.
     }
 
