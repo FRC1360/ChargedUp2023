@@ -68,7 +68,7 @@ public class WristSubsystem extends SubsystemBase {
         this.setWristVoltage(voltage * 12.0);  // Should probably change this to a constant somewhere for ARM_VOLTAGE
     }
 
-    // This return a GLOBAL angle. The global angle is the angle relative to the encoder
+    // This return a GLOBAL angle. The global angle is the angle relative to the shoulder
     public double getTargetAngle() {  // Use getTargetAngle() when doing commands to move the wrist
         
         return this.shoulderWristMessenger.getShoulderAngle() + this.getWristOffset();
@@ -86,6 +86,9 @@ public class WristSubsystem extends SubsystemBase {
         return this.wristOffset;
     }
 
+    // The CACHE is a means of saving an arbitrary wrist position to return to later
+    // Setting the cache offset saves the current angle
+    // Getting the cache offset gets the angle that the wrist was at when it was last set
     public void setCacheOffset() {
         System.out.println("Setting cache offset to " + this.getWristOffset());
         this.cacheOffset = this.getWristOffset();
