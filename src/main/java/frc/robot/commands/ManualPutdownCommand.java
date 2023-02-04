@@ -8,8 +8,9 @@ public class ManualPutdownCommand extends CommandBase {
     //make a command that will take in a value that will spin it in a certain speed
     private double userInputSpeed;
 
-    public ManualPutdownCommand(IntakeSubsystem intake) {
+    public ManualPutdownCommand(IntakeSubsystem intake, double userInputSpeed) {
         this.intake = intake;
+        this.userInputSpeed = userInputSpeed;
         addRequirements(intake);
         withInterruptBehavior(InterruptionBehavior.kCancelIncoming);
     }

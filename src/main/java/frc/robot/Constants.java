@@ -28,9 +28,8 @@ public final class Constants {
      */
     public static final double DRIVETRAIN_WHEELBASE_METERS = 0.62; // FIXME Measure and set wheelbase
 
-    public final static class ClawSubsystem {
-        public static final int deviceId = 60; //motorID is 60
-    }
+    public static final int LEAD_INTAKE_MOTOR_ID = 60; //motorID is 60
+    public static final int FOLLOW_INTAKE_MOTOR_ID = 61;
 
     public static final int DRIVETRAIN_PIGEON_ID = 0; // FIXME Set Pigeon ID
 

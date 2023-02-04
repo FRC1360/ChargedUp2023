@@ -35,7 +35,7 @@ public class RobotContainer {
 
   private final IntakeSubsystem intake = new IntakeSubsystem();
 
-  private final ManualIntakeCommand ManualIntakeCommand = new ManualIntakeCommand(intake);
+  private final ManualIntakeCommand ManualIntakeCommand = new ManualIntakeCommand(intake, 5);
 
   private final Simulator sim = new Simulator(m_drivetrainSubsystem); 
   /**

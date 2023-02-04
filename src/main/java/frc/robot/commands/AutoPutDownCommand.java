@@ -11,7 +11,6 @@ public class AutoPutDownCommand extends CommandBase{
         this.intake = intake;
         this.speed = speed;
         addRequirements(intake);
-        getInterruptionBehavior();//makes it so telop takes priority to auto command.
     }
 
     @Override

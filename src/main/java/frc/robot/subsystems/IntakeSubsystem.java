@@ -18,8 +18,8 @@ public class IntakeSubsystem extends SubsystemBase {
     private int whenItShouldClose;
 
     public IntakeSubsystem() { 
-        this.leadMotor = new CANSparkMax(Constants.ClawSubsystem.deviceId, MotorType.kBrushless);
-        this.followingMotor = new CANSparkMax(61, MotorType.kBrushless);
+        this.leadMotor = new CANSparkMax(Constants.LEAD_INTAKE_MOTOR_ID, MotorType.kBrushless);
+        this.followingMotor = new CANSparkMax(Constants.FOLLOW_INTAKE_MOTOR_ID, MotorType.kBrushless);
         followingMotor.follow(leadMotor);
     }
 
