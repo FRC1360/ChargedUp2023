@@ -15,7 +15,6 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.autos.AutoSequence;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.ManualIntakeCommand;
-import frc.robot.commands.ManualIntakeCommand;
 import frc.robot.simulation.Simulator;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -36,7 +35,7 @@ public class RobotContainer {
 
   private final IntakeSubsystem intake = new IntakeSubsystem();
 
-  private final ManualIntakeCommand inputManualCommand = new ManualIntakeCommand(intake);
+  private final ManualIntakeCommand ManualIntakeCommand = new ManualIntakeCommand(intake, 5);
 
   private final Simulator sim = new Simulator(m_drivetrainSubsystem); 
   /**
@@ -68,11 +67,9 @@ public class RobotContainer {
   private void configureButtonBindings() {
     // Back button zeros the gyroscope
     new Trigger(m_controller::getBackButton)
-            // No requirements because we don't need to interrupt anything
             .onTrue(new InstantCommand(m_drivetrainSubsystem::zeroGyroscope));
     new Trigger(m_controller::getAButton)
-            // No requirements because we don't need to interrupt anything
-            .onTrue(inputManualCommand);
+            .onTrue(ManualIntakeCommand);
   }
 
   

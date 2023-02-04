@@ -6,23 +6,24 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 public class AutoIntakeCommand extends CommandBase{
     private IntakeSubsystem intake; // that piston that open and closes the claw
     private double speed = 0.5; //Also placeholder! IDK how fast the motor should be spinning.
+    private int whenItShouldClose = 5;
 
     public AutoIntakeCommand(IntakeSubsystem intake) {
         this.intake = intake;
         addRequirements(intake);
-        getInterruptionBehavior();//makes it so telop takes priority to auto command.
+        withInterruptBehavior(InterruptionBehavior.kCancelSelf); //makes it so telop takes priority to auto command.
     }
 
     public void intake(){
         intake.activate(speed); 
-        if (intake.shouldMotorStopMoving(5)) { //the five is a placeholder
+        if (intake.shouldMotorStopMoving(whenItShouldClose)) { //the five is a placeholder
             intake.stop();
         }
     }
 
     public void putDown(){
         intake.activate(-speed); //not sure if num should be - or + be it's opposite of close
-        if (intake.shouldMotorStopMoving(5)) { //the five is a placeholder
+        if (intake.shouldMotorStopMoving(whenItShouldClose)) { //the five is a placeholder
             intake.stop();
         }
     }
@@ -49,13 +50,7 @@ public class AutoIntakeCommand extends CommandBase{
 
     @Override
     public boolean isFinished() { 
-        if (isRobotReadyToDropOff()) {
-            return true;
-        }
-        else{
-            return false;
-        }
-        
+        return isRobotReadyToDropOff();
     }
 
 }
