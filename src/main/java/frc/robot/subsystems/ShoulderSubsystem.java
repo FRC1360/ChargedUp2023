@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.REVLibError;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMax.IdleMode;
 import frc.robot.util.OrbitPID;
@@ -22,11 +23,15 @@ public class ShoulderSubsystem extends SubsystemBase {
         masterShoulder = new CANSparkMax(MasterShoulderID, MotorType.kBrushless);
         slaveShoulder = new CANSparkMax(SlaveShoulderID, MotorType.kBrushless);
         
-        masterShoulderEncoder = masterShoulder.getEncoder();
+        masterShoulderEncoder = masterShoulder.getEncoder(); 
 
-        masterShoulder.setIdleMode(IdleMode.kBrake); 
+        // error checking to make sure motor config is successful
+        // if the CAN bus starts getting weird, we'll notice it here
+        SmartDashboard.putBoolean("ShoulderSlaveFollowSuccess:", 
+                                    masterShoulder.setIdleMode(IdleMode.kBrake) == REVLibError.kOk);
 
-        slaveShoulder.follow(masterShoulder);
+        SmartDashboard.putBoolean("ShoulderSlaveFollowSuccess:", 
+                                    slaveShoulder.follow(masterShoulder) == REVLibError.kOk);
 
         pid = new OrbitPID(0.1, 0, 0);
     }
