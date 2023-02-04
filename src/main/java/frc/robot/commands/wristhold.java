@@ -8,34 +8,29 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 
 public class wristhold extends CommandBase {
     private static double degrees = 0.0;
-    private static wristhold subsystem;
+    private static wristhold wrist;
     private Object motor;
+    private Object stopMotor; 
 
 
 
 
-    public wristhold(wristhold ssystem, double degrees) {
-        subsystem = ssystem;
+    public wristhold(wristhold wrist, double degrees) {
+        this.wrist = wrist;
         wristhold.degrees = degrees;
-        addRequirements(ssystem);
+        addRequirements(wrist);
     }
 
 
 
 
-    public void stop(){
-        ((Object) motor).stopMotor();
+    private void addRequirements(wristhold subsystem2) {
     }
-   
-   
 
 
 
 
-    public void set(){
-        Object speed;
-        ((Object) motor).set(0);
-    }
+    
 
 
 
@@ -43,3 +38,4 @@ public class wristhold extends CommandBase {
 
 
 }
+

@@ -86,13 +86,17 @@ public double getStepsfromAngle(double degrees) {
         SmartDashboard.putNumber("encoder pos", pivotWristEncoder.getCountsPerRevolution() * getPositionOfEncoder());
          SmartDashboard.putNumber("steps", Constants.TICKS_PER_ANGLE_PIVOT * degrees);
 
-     setSpeed(pidoutput);
+     setSpeed(pidoutput); 
      //setSpeed(0.25);
 
 
+     public void stop(){
+        pivotWrist.stopMotor();
+    
+    }
 
 
-     }
+    
 }
 
 

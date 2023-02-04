@@ -49,7 +49,7 @@ public double getStepsfromAngle(double degrees) {
 
 
 
-     public set pos() {
+     public void setTargetLow() {
         setAngle(5); // TODO Enter low target angle
      }
  
@@ -72,11 +72,11 @@ public double getStepsfromAngle(double degrees) {
     }
 
 
-     public void setAngle(double degrees) {
+    public void setAngle(double degrees) {
          wristSteps = getStepsfromAngle(degrees);
 
          double pidoutput = pid.calculate(wristSteps, pivotWristEncoder.getCountsPerRevolution() * getPositionOfEncoder());
           if (pidoutput > 0.25) pidoutput = 0.25;
         else if (pidoutput < -0.25) pidoutput = -0.25;
-
-     } 
+    }
+} 
