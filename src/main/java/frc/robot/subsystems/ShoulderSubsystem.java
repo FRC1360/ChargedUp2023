@@ -12,22 +12,19 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class ShoulderSubsystem extends SubsystemBase {
-    private static OrbitPID pid;
+    public static OrbitPID pid;
     private static CANSparkMax masterShoulder;
     private static CANSparkMax slaveShoulder;
     private static RelativeEncoder masterShoulderEncoder;
-    private static RelativeEncoder slaveShoulderEncoder;
-    private static double shoulderSteps = 0;
+    private double encoderTargetPosition;
 
     public ShoulderSubsystem (int MasterShoulderID, int SlaveShoulderID) {
         masterShoulder = new CANSparkMax(MasterShoulderID, MotorType.kBrushless);
         slaveShoulder = new CANSparkMax(SlaveShoulderID, MotorType.kBrushless);
         
         masterShoulderEncoder = masterShoulder.getEncoder();
-        slaveShoulderEncoder = slaveShoulder.getEncoder();
 
         masterShoulder.setIdleMode(IdleMode.kBrake); 
-        slaveShoulder.setIdleMode(IdleMode.kBrake); 
 
         slaveShoulder.follow(masterShoulder);
 
@@ -36,12 +33,10 @@ public class ShoulderSubsystem extends SubsystemBase {
 
     public void setZero() {
         masterShoulderEncoder.setPosition(0.0);
-        slaveShoulderEncoder.setPosition(0.0);
     }
 
     public void setSpeed(double speed) {
         masterShoulder.set(speed);
-        //slaveShoulder.set(speed);
     }
 
     public double getAngle() {
@@ -53,35 +48,31 @@ public class ShoulderSubsystem extends SubsystemBase {
         return Constants.ROTATIONS_PER_ANGLE_PIVOT * degrees;
     }
 
-    public void setTargetLow() {
-        setAngle(5); // TODO Enter low target angle
-    }
-    
-    public void setTargetMiddle() {
-        setAngle(20); // TODO Enter Middle target angle
-    }
+    public enum SHOULDER_POSITION {
+        LOW_GOAL(5),
+        MID_GOAL(20),
+        HIGH_GOAL(45),
+        INTAKE(0);
 
-    public void setTargetHigh() {
-        setAngle(45); // TODO Enter High target angle
+        private final double value;
+        SHOULDER_POSITION(final double value) {
+            this.value = value;
+        }
+
+        public double getValue() {
+            return this.value;
+        }
     }
 
     public double getPositionOfEncoder() {
         return masterShoulderEncoder.getPosition();
     }   
 
-    public void setAngle(double degrees) {
-        shoulderSteps = getStepsfromAngle(degrees);
-
-        double pidoutput = pid.calculate(shoulderSteps, getPositionOfEncoder());
-        if (pidoutput > 0.25) pidoutput = 0.25;
-        else if (pidoutput < -0.25) pidoutput = -0.25;
-
-        SmartDashboard.putNumber("speed", pidoutput);
-        SmartDashboard.putNumber("input", getPositionOfEncoder()); 
-        SmartDashboard.putNumber("target", Constants.ROTATIONS_PER_ANGLE_PIVOT * degrees);
-
-        setSpeed(pidoutput);
-        //setSpeed(0.25);
+    public void setEncoderTargetPosition(double encoderTargetPosition) {
+        this.encoderTargetPosition = encoderTargetPosition;
     }
 
+    public void setEncoderTargetPosition(SHOULDER_POSITION position) {
+        this.setEncoderTargetPosition(position.getValue());
+    }
 }

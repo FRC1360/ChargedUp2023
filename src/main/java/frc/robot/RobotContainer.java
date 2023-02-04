@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.autos.AutoSequence;
 import frc.robot.commands.DefaultDriveCommand;
-import frc.robot.commands.ShoulderCommand;
+import frc.robot.commands.RotateShoulderCommand;
 import frc.robot.simulation.Simulator;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.ShoulderSubsystem;
@@ -34,7 +34,7 @@ public class RobotContainer {
 
   private final ShoulderSubsystem shoulder = new ShoulderSubsystem(Constants.MASTER_SHOULDER_MOTOR, Constants.SLAVE_SHOULDER_MOTOR);
 
-  private final ShoulderCommand shouldercmd = new ShoulderCommand(shoulder, 90.0);
+  private final RotateShoulderCommand shouldercmd = new RotateShoulderCommand(shoulder, 90.0);
 
   private final AutoSequence auto = new AutoSequence(shoulder); 
 
