@@ -10,7 +10,7 @@ public class AutoIntakeCommand extends CommandBase{
     public AutoIntakeCommand(IntakeSubsystem motor) {
         this.intake = intake;
         addRequirements(motor);
-        getInterruptionBehavior();//makes it so telop takes priority to auto command.
+        withInterruptBehavior(InterruptionBehavior.kCancelSelf); //makes it so telop takes priority to auto command.
     }
 
     public void intake(){

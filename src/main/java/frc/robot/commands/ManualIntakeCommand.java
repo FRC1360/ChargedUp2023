@@ -11,6 +11,7 @@ public class ManualIntakeCommand extends CommandBase{
     public ManualIntakeCommand(IntakeSubsystem intake) {
         this.intake = intake;
         addRequirements(intake);
+        withInterruptBehavior(InterruptionBehavior.kCancelIncoming);
     }
     
     public boolean isTeleopOver(){
