@@ -91,6 +91,10 @@ public class RobotContainer {
     operatorController.povLeft().onTrue(new WristGoToPositionCommand(wristSubsystem, 45));
     operatorController.povRight().onTrue(new WristGoToPositionCommand(wristSubsystem, 135));
 
+    operatorController.leftBumper().whileTrue(new InstantCommand(
+      () -> wristSubsystem.setManualOffset(operatorController.getLeftY())));
+    operatorController.leftBumper().whileFalse(new InstantCommand(
+        () -> wristSubsystem.setManualOffset(0)));
   }
 
   /**

@@ -58,4 +58,7 @@ public final class Constants {
     public static final int SHOULDER_MOTOR_MASTER = 12;
     public static final int SHOULDER_MOTOR_SLAVE = 1;
     public static final double SHOULDER_GEAR_RATIO = (11.0 / 52.0) * (30.0 / 68.0) * (16.0 / 72.0);
+
+    // WRIST
+    public static final double WRIST_MANUAL_OVERRIDE_RANGE = 20.0;
 }
