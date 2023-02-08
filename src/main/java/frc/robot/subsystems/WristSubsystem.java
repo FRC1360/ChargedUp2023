@@ -15,6 +15,7 @@ public class WristSubsystem extends SubsystemBase {
 
     private CANSparkMax wristMotor;
     private double wristOffset;  // Angle offset for the shoulder
+    private double manualOffset; // Manual offset for override control
 
     public OrbitPID holdPIDController;
     public OrbitPID movePIDController;
@@ -27,6 +28,7 @@ public class WristSubsystem extends SubsystemBase {
     public WristSubsystem(ShoulderWristMessenger shoulderWristMessenger) {
         this.wristMotor = new CANSparkMax(5, MotorType.kBrushless);
         this.wristOffset = 90.0;
+        this.manualOffset = 0.0;
         this.holdPIDController = new OrbitPID(0.004, 0.0000005, 0);
         this.movePIDController = new OrbitPID(0.004, 0.0, 0.0);  // TODO - Tune
         this.wristMotionProfileConstraints = new TrapezoidProfile.Constraints(2000.0, 1000.0);  // TODO - Tune
@@ -71,7 +73,7 @@ public class WristSubsystem extends SubsystemBase {
     // This return a GLOBAL angle. The global angle is the angle relative to the shoulder
     public double getTargetAngle() {  // Use getTargetAngle() when doing commands to move the wrist
         
-        return this.shoulderWristMessenger.getShoulderAngle() + this.getWristOffset();
+        return this.shoulderWristMessenger.getShoulderAngle() + this.getWristOffset() + this.getManualOffset();
     }
  
     public void setWristOffset(double offset) {
@@ -96,6 +98,14 @@ public class WristSubsystem extends SubsystemBase {
 
     public double getCacheOffset() {
         return this.cacheOffset;
+    }
+
+    public void setManualOffset(double offset) {
+        this.manualOffset = offset;
+    }
+
+    public double getManualOffset() {
+        return this.manualOffset;
     }
 
     /*
