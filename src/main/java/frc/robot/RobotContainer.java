@@ -92,7 +92,7 @@ public class RobotContainer {
     operatorController.povRight().onTrue(new WristGoToPositionCommand(wristSubsystem, 135));
 
     operatorController.leftBumper().whileTrue(new InstantCommand(
-      () -> wristSubsystem.setManualOffset(operatorController.getLeftY())));
+      () -> wristSubsystem.setManualOffset(operatorController.getLeftY()*Constants.WRIST_MANUAL_OVERRIDE_RANGE)));
     operatorController.leftBumper().whileFalse(new InstantCommand(
         () -> wristSubsystem.setManualOffset(0)));
   }
