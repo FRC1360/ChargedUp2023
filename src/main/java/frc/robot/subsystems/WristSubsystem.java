@@ -1,13 +1,18 @@
 package frc.robot.subsystems;
 
+import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.REVLibError;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.subsystems.ShoulderSubsystem.ShoulderWristMessenger;
 import frc.robot.util.OrbitPID;
 
@@ -15,7 +20,6 @@ public class WristSubsystem extends SubsystemBase {
 
     private CANSparkMax wristMotor;
     private double wristOffset;  // Angle offset for the shoulder
-    private double manualOffset; // Manual offset for override control
 
     public OrbitPID holdPIDController;
     public OrbitPID movePIDController;
@@ -25,10 +29,12 @@ public class WristSubsystem extends SubsystemBase {
 
     private double cacheOffset;
 
-    public WristSubsystem(ShoulderWristMessenger shoulderWristMessenger) {
+    private DoubleSupplier manualOffset;
+    private BooleanSupplier manualOffsetEnable;
+
+    public WristSubsystem(ShoulderWristMessenger shoulderWristMessenger, DoubleSupplier manualOffset, BooleanSupplier manualOffsetEnable) {
         this.wristMotor = new CANSparkMax(5, MotorType.kBrushless);
         this.wristOffset = 90.0;
-        this.manualOffset = 0.0;
         this.holdPIDController = new OrbitPID(0.004, 0.0000005, 0);
         this.movePIDController = new OrbitPID(0.004, 0.0, 0.0);  // TODO - Tune
         this.wristMotionProfileConstraints = new TrapezoidProfile.Constraints(2000.0, 1000.0);  // TODO - Tune
@@ -40,6 +46,9 @@ public class WristSubsystem extends SubsystemBase {
         this.wristMotor.setInverted(true);
 
         this.cacheOffset = 0.0;
+
+        this.manualOffset = manualOffset;
+        this.manualOffsetEnable = manualOffsetEnable;
     }
 
     public double getMotorRotations() {
@@ -73,7 +82,7 @@ public class WristSubsystem extends SubsystemBase {
     // This return a GLOBAL angle. The global angle is the angle relative to the shoulder
     public double getTargetAngle() {  // Use getTargetAngle() when doing commands to move the wrist
         
-        return this.shoulderWristMessenger.getShoulderAngle() + this.getWristOffset() + this.getManualOffset();
+        return this.shoulderWristMessenger.getShoulderAngle() + this.getWristOffset() + (manualOffsetEnable.getAsBoolean() ? manualOffset.getAsDouble() : 0);
     }
  
     public void setWristOffset(double offset) {
@@ -98,14 +107,6 @@ public class WristSubsystem extends SubsystemBase {
 
     public double getCacheOffset() {
         return this.cacheOffset;
-    }
-
-    public void setManualOffset(double offset) {
-        this.manualOffset = offset;
-    }
-
-    public double getManualOffset() {
-        return this.manualOffset;
     }
 
     /*
@@ -133,6 +134,7 @@ public class WristSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Wrist_Angle", this.getWristAngle());
         SmartDashboard.putNumber("Wrist_Motor_Rotations", this.getMotorRotations());
         SmartDashboard.putNumber("Wrist_Cache_Offset", this.getCacheOffset());
+        SmartDashboard.putNumber("Wrist_Manual_Offset", this.manualOffset.getAsDouble());
         SmartDashboard.putNumber("Wrist_Offset", this.getWristOffset());
     }
     

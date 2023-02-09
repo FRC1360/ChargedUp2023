@@ -8,6 +8,8 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ProxyCommand;
+import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.assembly.AssemblyGoToPositionCommand;
 import frc.robot.commands.shoulder.ShoulderGoToPositionCommand;
@@ -24,16 +26,17 @@ import frc.robot.subsystems.WristSubsystem;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
+  private final XboxController m_controller = new XboxController(0);
+  private final CommandXboxController operatorController = new CommandXboxController(1);
+
   // The robot's subsystems and commands are defined here...
   //private final DrivetrainSubsystem m_drivetrainSubsystem = new DrivetrainSubsystem();
   //private final ArmSubsystem armSubsystem = new ArmSubsystem();
   public final ShoulderSubsystem shoulderSubsystem = new ShoulderSubsystem();
   private final ShoulderSubsystem.ShoulderWristMessenger messenger = shoulderSubsystem.new ShoulderWristMessenger();
 
-  public final WristSubsystem wristSubsystem = new WristSubsystem(messenger);
+  public final WristSubsystem wristSubsystem = new WristSubsystem(messenger, () -> operatorController.getLeftY()*Constants.WRIST_MANUAL_OVERRIDE_RANGE, operatorController.leftBumper());
 
-  private final XboxController m_controller = new XboxController(0);
-  private final CommandXboxController operatorController = new CommandXboxController(1);
 
   /*private final AutoSequence auto = new AutoSequence(m_drivetrainSubsystem); 
 
@@ -90,11 +93,6 @@ public class RobotContainer {
     operatorController.povUp().onTrue(new WristGoToPositionCommand(wristSubsystem, 90));
     operatorController.povLeft().onTrue(new WristGoToPositionCommand(wristSubsystem, 45));
     operatorController.povRight().onTrue(new WristGoToPositionCommand(wristSubsystem, 135));
-
-    operatorController.leftBumper().whileTrue(new InstantCommand(
-      () -> wristSubsystem.setManualOffset(operatorController.getLeftY()*Constants.WRIST_MANUAL_OVERRIDE_RANGE)));
-    operatorController.leftBumper().whileFalse(new InstantCommand(
-        () -> wristSubsystem.setManualOffset(0)));
   }
 
   /**
