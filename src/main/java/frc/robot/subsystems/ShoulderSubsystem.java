@@ -30,7 +30,10 @@ public class ShoulderSubsystem extends SubsystemBase {
     private boolean transitioning;
     private double scheduledAngle;
 
-    public ShoulderSubsystem() {
+    private DoubleSupplier manualOffset;
+    private BooleanSupplier manualOffsetEnable;
+
+    public ShoulderSubsystem(DoubleSupplier manualOffset, BooleanSupplier manualOffsetEnable) {
         this.holdPIDController = new OrbitPID(0.015, 0.00001, 0);
         this.movePIDController = new OrbitPID(0.015, 0.0, 0.0);  // TODO - Tune
 
@@ -47,6 +50,8 @@ public class ShoulderSubsystem extends SubsystemBase {
         this.transitioning = false;
         this.scheduledAngle = Double.NaN;
 
+        this.manualOffset = manualOffset;
+        this.manualOffsetEnable = manualOffsetEnable;
     }
 
     public double getMotorRotations() {
@@ -89,7 +94,7 @@ public class ShoulderSubsystem extends SubsystemBase {
     }
 
     public double getTargetAngle() {
-        return this.targetAngle;
+        return this.targetAngle + (manualOffsetEnable.getAsBoolean() ? manualOffset.getAsDouble() : 0);
     }
 
     /*
@@ -156,7 +161,8 @@ public class ShoulderSubsystem extends SubsystemBase {
 
         SmartDashboard.putNumber("Shoulder_Target_Angle", this.getTargetAngle());
         SmartDashboard.putNumber("Shoulder_Angle", this.getShoulderAngle());
-        SmartDashboard.putNumber("shoulder_Scheduled_Angle", this.getScheduledAngle());
+        SmartDashboard.putNumber("Shoulder_Manual_Offset", this.manualOffset.getAsDouble());
+        SmartDashboard.putNumber("Shoulder_Scheduled_Angle", this.getScheduledAngle());
 
         SmartDashboard.putNumber("Shoulder_Angular_Velocity", this.getAngluarVelocity());
 

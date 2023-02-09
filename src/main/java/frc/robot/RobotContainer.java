@@ -32,7 +32,7 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   //private final DrivetrainSubsystem m_drivetrainSubsystem = new DrivetrainSubsystem();
   //private final ArmSubsystem armSubsystem = new ArmSubsystem();
-  public final ShoulderSubsystem shoulderSubsystem = new ShoulderSubsystem();
+  public final ShoulderSubsystem shoulderSubsystem = new ShoulderSubsystem(() -> operatorController.getRightY()*Constants.SHOULDER_MANUAL_OVERRIDE_RANGE, operatorController.leftBumper());
   private final ShoulderSubsystem.ShoulderWristMessenger messenger = shoulderSubsystem.new ShoulderWristMessenger();
 
   public final WristSubsystem wristSubsystem = new WristSubsystem(messenger, () -> operatorController.getLeftY()*Constants.WRIST_MANUAL_OVERRIDE_RANGE, operatorController.leftBumper());
@@ -83,7 +83,7 @@ public class RobotContainer {
     operatorController.b().onTrue(new ArmGoToPositionCommand(armSubsystem, ARM_POSITION.MID_GOAL));
     operatorController.x().onTrue(new ArmGoToPositionCommand(armSubsystem, ARM_POSITION.LOW_GOAL));*/
 
-    operatorController.a().onTrue(new InstantCommand(shoulderSubsystem::resetMotorRotations));
+    //operatorController.a().onTrue(new InstantCommand(shoulderSubsystem::resetMotorRotations));
     operatorController.x().onTrue(new ShoulderGoToPositionCommand(shoulderSubsystem, 0.0));
     operatorController.y().onTrue(new AssemblyGoToPositionCommand(shoulderSubsystem, wristSubsystem, 90.0));
     operatorController.b().onTrue(new AssemblyGoToPositionCommand(shoulderSubsystem, wristSubsystem, 150.0));
