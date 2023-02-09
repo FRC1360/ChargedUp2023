@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.util.OrbitPID;
 import frc.robot.util.SwerveDriveOdometry2022;
 
 import static frc.robot.Constants.*;
@@ -86,6 +87,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
   private SwerveDriveOdometry2022 odometry = new SwerveDriveOdometry2022(m_kinematics, getGyroscopeRotation(), new Pose2d(2.5, 4.7, Rotation2d.fromDegrees(0)));
 
+  private OrbitPID drivePID; 
+
   public DrivetrainSubsystem() {
     ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
 
@@ -129,6 +132,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
                 BACK_RIGHT_MODULE_STEER_MOTOR,
                 BACK_RIGHT_MODULE_STEER_ENCODER,
                 BACK_RIGHT_MODULE_STEER_OFFSET);
+
+        this.drivePID = new OrbitPID(0.05, 0.0, 0.05); 
   }
 
   /**
@@ -170,6 +175,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
   public void setPoseOdometry(Pose2d pose) { 
         odometry = new SwerveDriveOdometry2022(m_kinematics, getGyroscopeRotation(), pose);
+  }
+
+  public OrbitPID getDrivePID() { 
+        return this.drivePID; 
   }
   
   @Override

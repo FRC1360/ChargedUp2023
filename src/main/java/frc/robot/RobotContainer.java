@@ -6,6 +6,8 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
@@ -35,6 +37,9 @@ public class RobotContainer {
   private final Auto2 auto2 = new Auto2(m_drivetrainSubsystem);
 
   private final Simulator sim = new Simulator(m_drivetrainSubsystem); 
+
+  private final SendableChooser<Command> autoChooser = new SendableChooser<Command>(); 
+
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -51,10 +56,16 @@ public class RobotContainer {
             () -> -modifyAxis(m_controller.getRightX()) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
     ));
 
+    initializeRobot();
     // Configure the button bindings
     configureButtonBindings();
   }
 
+  public void initializeRobot() { 
+    autoChooser.setDefaultOption("Both sides auto", auto);
+    autoChooser.addOption("One side, two cargo, balance", auto2);
+    SmartDashboard.putData(autoChooser);
+  }
   /**
    * Use this method to define your button->command mappings. Buttons can be created by
    * instantiating a {@link GenericHID} or one of its subclasses ({@link
@@ -75,7 +86,7 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    return auto2;
+    return autoChooser.getSelected();
   }
 
   private static double deadband(double value, double deadband) {
