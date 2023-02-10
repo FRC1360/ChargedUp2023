@@ -37,8 +37,8 @@ public class RobotContainer {
 
   private final IntakeSubsystem intake = new IntakeSubsystem();
 
-  private final ManualIntakeCommand ManualIntakeCommand = new ManualIntakeCommand(intake, 5);
-  private final ManualPutdownCommand ManualPutdownCommand = new ManualPutdownCommand(intake, 5);
+  // private final ManualIntakeCommand ManualIntakeCommand = new ManualIntakeCommand(intake, 5);
+  // private final ManualPutdownCommand ManualPutdownCommand = new ManualPutdownCommand(intake, 5);
 
   private final Simulator sim = new Simulator(m_drivetrainSubsystem); 
   /**
@@ -57,6 +57,7 @@ public class RobotContainer {
             () -> -modifyAxis(m_controller.getRightX()) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
     ));
 
+
     // Configure the button bindings
     configureButtonBindings();
   }
@@ -71,10 +72,10 @@ public class RobotContainer {
     // Back button zeros the gyroscope
     new Trigger(m_controller::getBackButton)
             .onTrue(new InstantCommand(m_drivetrainSubsystem::zeroGyroscope));
-    new Trigger(m_controller::getAButton)
-            .onTrue(ManualIntakeCommand);
-    new Trigger(m_controller::getBButton)
-            .onTrue(ManualPutdownCommand);
+    new Trigger(() -> m_controller.getRightTriggerAxis() > 0)
+            .onTrue(new ManualIntakeCommand(intake, () -> m_controller.getRightTriggerAxis()));
+    new Trigger(() -> m_controller.getLeftTriggerAxis() > 0)
+            .onTrue(new ManualPutdownCommand(intake, () -> m_controller.getLeftTriggerAxis()));
   }
 
   
