@@ -19,6 +19,8 @@ import frc.robot.simulation.Simulator;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 
+import frc.robot.commands.ManualPutdownCommand;
+
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
@@ -36,6 +38,7 @@ public class RobotContainer {
   private final IntakeSubsystem intake = new IntakeSubsystem();
 
   private final ManualIntakeCommand ManualIntakeCommand = new ManualIntakeCommand(intake, 5);
+  private final ManualPutdownCommand ManualPutdownCommand = new ManualPutdownCommand(intake, 5);
 
   private final Simulator sim = new Simulator(m_drivetrainSubsystem); 
   /**
@@ -70,6 +73,8 @@ public class RobotContainer {
             .onTrue(new InstantCommand(m_drivetrainSubsystem::zeroGyroscope));
     new Trigger(m_controller::getAButton)
             .onTrue(ManualIntakeCommand);
+    new Trigger(m_controller::getBButton)
+            .onTrue(ManualPutdownCommand);
   }
 
   

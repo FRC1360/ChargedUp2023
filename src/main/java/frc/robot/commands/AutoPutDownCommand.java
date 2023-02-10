@@ -1,6 +1,7 @@
 package frc.robot.commands;
 
 import frc.robot.subsystems.IntakeSubsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class AutoPutDownCommand extends CommandBase{
@@ -15,7 +16,7 @@ public class AutoPutDownCommand extends CommandBase{
 
     @Override
     public void execute() {      
-        intake.putDown(speed);
+        intake.intake(-speed);
     }
 
     @Override
@@ -27,5 +28,7 @@ public class AutoPutDownCommand extends CommandBase{
         intake.stop();
         return true;
     }
+
+    
 
 }

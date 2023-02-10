@@ -1,6 +1,8 @@
 package frc.robot.subsystems; 
 
-import com.revrobotics.CANSparkMax; 
+import com.revrobotics.CANSparkMax;
+
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -29,26 +31,22 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     public void stop(){
-        leadMotor.stopMotor();
+        //leadMotor.stopMotor();
+        SmartDashboard.putNumber("Intake motor speed", 0.0); 
     }
 
     public void activate(double speed){
-        leadMotor.set(speed);
+        //leadMotor.set(speed);
     }
 
     public void intake(double speed){
-        leadMotor.set(speed); 
+        //leadMotor.set(speed); 
+        /* 
         if (shouldMotorStopMoving(whenItShouldClose)) { //the five is a placeholder
             stop();
         }
-    }
-
-    public void putDown(double speed){
-        leadMotor.set(-speed); //not sure if num should be - or + be it's opposite of close
-        if (shouldMotorStopMoving(whenItShouldClose)) { //the five is a placeholder
-            
-            stop();
-        }
+        */
+        SmartDashboard.putNumber("Intake motor speed", speed); 
     }
 
 }

@@ -13,7 +13,7 @@ public class ManualIntakeCommand extends CommandBase{
         this.intake = intake;
         this.userInputSpeed = userInputSpeed;
         addRequirements(intake);
-        withInterruptBehavior(InterruptionBehavior.kCancelIncoming);
+        //withInterruptBehavior(InterruptionBehavior.kCancelIncoming);
     }
     
     public boolean isTeleopOver(){
