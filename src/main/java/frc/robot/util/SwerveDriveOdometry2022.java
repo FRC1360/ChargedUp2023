@@ -25,6 +25,8 @@ import edu.wpi.first.util.WPIUtilJNI;
  *
  * <p>Teams can use odometry during the autonomous period for complex tasks like path following.
  * Furthermore, odometry can be used for latency compensation when using computer-vision systems.
+ * 
+ * We have modified this to allow use of a LimeLight or other vision system to rest odometry to compensate for drift
  */
 public class SwerveDriveOdometry2022 {
   private final SwerveDriveKinematics m_kinematics;
@@ -33,6 +35,10 @@ public class SwerveDriveOdometry2022 {
 
   private Rotation2d m_gyroOffset;
   private Rotation2d m_previousAngle;
+
+  // due to poor framerates, we need to make sure that the vision posed being used for updates is new
+  // we get about 10 FPS when tracking AprilTags, so we only want to update the odometry once for each frame
+  private Pose2d visionPoseCache;
 
   /**
    * Constructs a SwerveDriveOdometry object.
@@ -132,5 +138,21 @@ public class SwerveDriveOdometry2022 {
    */
   public Pose2d update(Rotation2d gyroAngle, SwerveModuleState... moduleStates) {
     return updateWithTime(WPIUtilJNI.now() * 1.0e-6, gyroAngle, moduleStates);
+  }
+
+
+  /**
+   * Updates the robot's position of the field using data from a vision processor. Automatically prevents 
+   * updating using old data to prevent low framerates from causing odometry error.
+   * 
+   * @param visionPose The field-relative pose reported by the vision system
+   * @param gyroAngle The current gyro angle
+   */
+  public void updateFromVision(Pose2d visionPose, Rotation2d gyroAngle) {
+    // we never update the odometry using old data
+    if(!visionPose.equals(visionPoseCache)) {
+      resetPosition(visionPose, gyroAngle);
+      visionPoseCache = visionPose;
+    }
   }
 }

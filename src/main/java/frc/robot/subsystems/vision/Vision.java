@@ -1,5 +1,7 @@
 package frc.robot.subsystems.vision;
 
+import java.util.function.Supplier;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.NetworkTable;
@@ -84,6 +86,12 @@ public class Vision extends SubsystemBase {
         return new Pose2d(pose[0], pose[1], new Rotation2d(pose[3], pose[4])); 
     }
 
-
-    
+    // this really isnt a good way to do this 
+    // but i need to get this data out of here and into the drivetrain
+    // and we already did this for shoulder/wrist coordination
+    public class VisionMessenger {
+        public Pose2d getBotPose() {
+            return Vision.this.getPoseFromTarget();
+        }
+    }
 }

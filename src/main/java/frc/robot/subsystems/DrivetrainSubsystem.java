@@ -22,6 +22,8 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.vision.Vision;
+import frc.robot.subsystems.vision.Vision.VisionMessenger;
 import frc.robot.util.SwerveDriveOdometry2022;
 
 import static frc.robot.Constants.*;
@@ -85,9 +87,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
   private ChassisSpeeds m_chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
 
   private SwerveDriveOdometry2022 odometry = new SwerveDriveOdometry2022(m_kinematics, getGyroscopeRotation());
+  private VisionMessenger visionMessenger;
 
-  public DrivetrainSubsystem() {
-    ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
+  public DrivetrainSubsystem(Vision.VisionMessenger visionMessenger) {
+        ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
 
         m_frontLeftModule = Mk4iSwerveModuleHelper.createNeo(
                 tab.getLayout("Front Left Module", BuiltInLayouts.kList)
@@ -129,6 +132,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
                 BACK_RIGHT_MODULE_STEER_MOTOR,
                 BACK_RIGHT_MODULE_STEER_ENCODER,
                 BACK_RIGHT_MODULE_STEER_OFFSET);
+
+        this.visionMessenger = visionMessenger;
   }
 
   /**
@@ -178,6 +183,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     m_frontRightModule.set(states[2].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, states[2].angle.getRadians());
     m_backRightModule.set(states[3].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, states[3].angle.getRadians());    
 
+    odometry.updateFromVision(visionMessenger.getBotPose(), getGyroscopeRotation());
     odometry.update(getGyroscopeRotation(), states); 
   } 
 }
