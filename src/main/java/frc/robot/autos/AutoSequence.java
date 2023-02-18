@@ -10,7 +10,7 @@ import frc.robot.subsystems.DrivetrainSubsystem;
 public class AutoSequence extends SequentialCommandGroup {
 
     public AutoSequence(ShoulderSubsystem subsystem) { 
-        addCommands(new RotateShoulderCommand(subsystem, 15));
+        addCommands(new RotateShoulderCommand(subsystem, 90));
         //addCommands(new Drive(dt, 2.0, 2.0), new Rotate(dt, Rotation2d.fromDegrees(45)));
     }   
 }

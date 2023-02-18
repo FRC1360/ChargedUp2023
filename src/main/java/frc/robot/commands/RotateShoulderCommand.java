@@ -17,7 +17,7 @@ public class RotateShoulderCommand extends CommandBase {
 
     @Override
     public void initialize() { 
-        //subsystem.setZero();
+        shoulder.setZero();
         shoulder.setEncoderTargetPosition(degrees);
     }
 
@@ -31,14 +31,14 @@ public class RotateShoulderCommand extends CommandBase {
         else if (pidoutput < -0.25) pidoutput = -0.25;
     
         SmartDashboard.putNumber("speed", pidoutput);
-        SmartDashboard.putNumber("input", shoulder.getPositionOfEncoder()); 
+        SmartDashboard.putNumber("position", shoulder.getPositionOfEncoder()); 
         SmartDashboard.putNumber("target", Constants.ROTATIONS_PER_ANGLE_PIVOT * degrees);
         SmartDashboard.putNumber("current angle", shoulder.getAngle());
 
         shoulder.setSpeed(pidoutput);
     }
 
-    @Override
+    /*@Override
     public boolean isFinished() {
         return Math.abs(shoulder.getAngle()-degrees) <= 0.5;
     }
@@ -47,5 +47,5 @@ public class RotateShoulderCommand extends CommandBase {
     public void end(boolean interrupted) {
         SmartDashboard.putBoolean("command running", false);
         shoulder.setSpeed(0);
-    }
+    }*/
 }

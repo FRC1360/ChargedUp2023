@@ -33,7 +33,7 @@ public class ShoulderSubsystem extends SubsystemBase {
         SmartDashboard.putBoolean("ShoulderSlaveFollowSuccess:", 
                                     slaveShoulder.follow(masterShoulder) == REVLibError.kOk);
 
-        pid = new OrbitPID(0.1, 0, 0);
+        pid = new OrbitPID(0.05, 0.00000001, 0.0);
     }
 
     public enum SHOULDER_POSITION {
