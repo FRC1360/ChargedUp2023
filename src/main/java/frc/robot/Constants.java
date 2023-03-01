@@ -58,14 +58,16 @@ public final class Constants {
     public static final int SHOULDER_MOTOR_MASTER = 50;
     public static final int SHOULDER_MOTOR_SLAVE = 51;
     public static final int SHOULDER_ENCODER = 0;
-    public static final double SHOULDER_ENCODER_OFFSET = 0.0;
+    public static final double SHOULDER_ENCODER_OFFSET = 0.58;
     public static final double SHOULDER_GEAR_RATIO = (11.0 / 52.0) * (30.0 / 68.0) * (12.0 / 48.0);
     public static final double SHOULDER_MANUAL_OVERRIDE_RANGE = 20.0;
 
     // WRIST
     public static final int WRIST_MOTOR = 54;
     public static final double WRIST_MANUAL_OVERRIDE_RANGE = 20.0;
-    public static final int WRIST_ENCODER = 0;
+    public static final int WRIST_ENCODER = 1;
+    public static final double WRIST_ENCODER_OFFSET = 0.508;
+    public static final double WRIST_GEAR_RATIO = (1.0 / 36.0) * (20.0 / 60.0);
 
     // ARM
     public static final int ARM_MOTOR_MASTER = 52;

@@ -52,6 +52,7 @@ public class WristGoToPositionCommand extends CommandBase {
         SmartDashboard.putNumber("Wrist_Move_Profile_Velocity", profileTarget.velocity);
 
         double speed = this.wrist.movePIDController.calculate(target, input);
+        SmartDashboard.putNumber("Wrist_Motion_Profile_Ouput", speed);
         this.wrist.setWristNormalizedVoltage(speed);
     }
 

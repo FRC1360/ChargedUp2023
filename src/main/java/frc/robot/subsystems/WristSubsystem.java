@@ -10,6 +10,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.networktables.DoubleSubscriber;
+import edu.wpi.first.wpilibj.AnalogEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -19,7 +20,7 @@ import frc.robot.util.OrbitPID;
 public class WristSubsystem extends SubsystemBase {
 
     private CANSparkMax wristMotor;
-    private double wristOffset;  // Angle offset for the shoulder
+    private double wristOffset;  // Angle offset for the shoulder, should really be called angle 
 
     public OrbitPID holdPIDController;
     public OrbitPID movePIDController;
@@ -32,12 +33,16 @@ public class WristSubsystem extends SubsystemBase {
     private DoubleSupplier manualOffset;
     private BooleanSupplier manualOffsetEnable;
 
+    private AnalogEncoder absoluteEncoder;
+
     public WristSubsystem(ShoulderWristMessenger shoulderWristMessenger, DoubleSupplier manualOffset, BooleanSupplier manualOffsetEnable) {
-        this.wristMotor = new CANSparkMax(5, MotorType.kBrushless);
+        this.wristMotor = new CANSparkMax(Constants.WRIST_MOTOR, MotorType.kBrushless);
+
         this.wristOffset = 90.0;
-        this.holdPIDController = new OrbitPID(0.004, 0.0000005, 0);
-        this.movePIDController = new OrbitPID(0.004, 0.0, 0.0);  // TODO - Tune
-        this.wristMotionProfileConstraints = new TrapezoidProfile.Constraints(2000.0, 1000.0);  // TODO - Tune
+        // kP = 0.00556
+        this.holdPIDController = new OrbitPID(0.007, 0.000005, 0);
+        this.movePIDController = new OrbitPID(0.007, 0.000005, 0);  // TODO - Tune
+        this.wristMotionProfileConstraints = new TrapezoidProfile.Constraints(200.0, 100.0);  // TODO - Tune
 
         this.shoulderWristMessenger = shoulderWristMessenger;
 
@@ -49,7 +54,23 @@ public class WristSubsystem extends SubsystemBase {
 
         this.manualOffset = manualOffset;
         this.manualOffsetEnable = manualOffsetEnable;
+
+        this.absoluteEncoder = new AnalogEncoder(Constants.WRIST_ENCODER);
+
+        resetMotorRotations();
     }
+
+    public void resetMotorRotations() {
+        double newPos = (this.absoluteEncoder.getAbsolutePosition() - Constants.WRIST_ENCODER_OFFSET) / Constants.WRIST_GEAR_RATIO;
+
+        if(this.wristMotor.getEncoder().setPosition(newPos) == REVLibError.kOk) {
+            System.out.println("Reset Shoulder Rotations to 0");
+        } else {
+            System.out.println("Failed to reset Shoulder Rotations");
+        }
+        
+    }
+
 
     public double getMotorRotations() {
         return this.wristMotor.getEncoder().getPosition();
@@ -82,7 +103,7 @@ public class WristSubsystem extends SubsystemBase {
     // This return a GLOBAL angle. The global angle is the angle relative to the shoulder
     public double getTargetAngle() {  // Use getTargetAngle() when doing commands to move the wrist
         
-        return this.shoulderWristMessenger.getShoulderAngle() + this.getWristOffset() + (manualOffsetEnable.getAsBoolean() ? manualOffset.getAsDouble() : 0);
+        return -this.shoulderWristMessenger.getShoulderAngle() + this.getWristOffset() + (manualOffsetEnable.getAsBoolean() ? manualOffset.getAsDouble() : 0);
     }
  
     public void setWristOffset(double offset) {
@@ -113,16 +134,7 @@ public class WristSubsystem extends SubsystemBase {
      * Converts motor rotations to angle (0 - 360)
      */
     public double encoderToAngleConversion(double encoderPosition) {
-        return (encoderPosition * 360.0 * (1.0/12.0)) % 360.0;
-    }
-
-    public void resetMotorRotations() {
-        if(this.wristMotor.getEncoder().setPosition(0) == REVLibError.kOk) {
-            System.out.println("Reset Shoulder Rotations to 0");
-        } else {
-            System.out.println("Failed to reset Shoulder Rotations");
-        }
-        
+        return (encoderPosition * 360.0 * Constants.WRIST_GEAR_RATIO);
     }
 
     public void updateSmartDashboard() {
@@ -136,6 +148,8 @@ public class WristSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Wrist_Cache_Offset", this.getCacheOffset());
         SmartDashboard.putNumber("Wrist_Manual_Offset", this.manualOffset.getAsDouble());
         SmartDashboard.putNumber("Wrist_Offset", this.getWristOffset());
+        SmartDashboard.putNumber("Wrist_Absolute_Encoder_Relative", this.absoluteEncoder.get());
+        SmartDashboard.putNumber("Wrist_Absolute_Encoder_Absolute", this.absoluteEncoder.getAbsolutePosition());
     }
     
 }

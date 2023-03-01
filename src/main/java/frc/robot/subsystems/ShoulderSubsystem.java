@@ -18,6 +18,7 @@ import frc.robot.util.OrbitPID;
 public class ShoulderSubsystem extends SubsystemBase {
     
     private CANSparkMax shoulderMotorMaster;
+    private CANSparkMax shoulderMotorSlave;
     private double targetAngle;
 
     public OrbitPID holdPIDController;  // PID Controller for HoldToTarget
@@ -45,10 +46,19 @@ public class ShoulderSubsystem extends SubsystemBase {
         this.targetAngle = 0.0;
 
         this.shoulderMotorMaster = new CANSparkMax(Constants.SHOULDER_MOTOR_MASTER, MotorType.kBrushless);
+        this.shoulderMotorSlave = new CANSparkMax(Constants.SHOULDER_MOTOR_SLAVE, MotorType.kBrushless);
+
 
         this.shoulderMotorMaster.restoreFactoryDefaults();
+        this.shoulderMotorSlave.restoreFactoryDefaults();
 
         this.shoulderMotorMaster.setIdleMode(IdleMode.kBrake);
+        this.shoulderMotorSlave.setIdleMode(IdleMode.kBrake);
+
+        this.shoulderMotorMaster.setSmartCurrentLimit(20);
+        this.shoulderMotorSlave.setSmartCurrentLimit(20);
+
+        this.shoulderMotorSlave.follow(this.shoulderMotorMaster);
 
         this.transitioning = false;
         this.scheduledAngle = Double.NaN;
@@ -76,13 +86,9 @@ public class ShoulderSubsystem extends SubsystemBase {
 
     public void resetMotorRotations() {
         // 
-        double newPos = -((absoluteEncoder.getAbsolutePosition() - 0.58) / Constants.SHOULDER_GEAR_RATIO);  
+        double newPos = -((absoluteEncoder.getAbsolutePosition() - Constants.SHOULDER_ENCODER_OFFSET) / Constants.SHOULDER_GEAR_RATIO);  
         
         SmartDashboard.putNumber("New_Pos", newPos);
-        
-        /*if(absoluteEncoder.getAbsolutePosition() > 0.58 ) { 
-            newPos = -newPos;
-        }*/
 
         if(this.shoulderMotorMaster.getEncoder().setPosition(newPos) == REVLibError.kOk) {
             System.out.println("Reset Shoulder Rotations");
