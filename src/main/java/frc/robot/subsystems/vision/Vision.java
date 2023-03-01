@@ -2,6 +2,9 @@ package frc.robot.subsystems.vision;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.networktables.DoubleArraySubscriber;
+import edu.wpi.first.networktables.DoubleSubscriber;
+import edu.wpi.first.networktables.IntegerSubscriber;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -14,52 +17,44 @@ public class Vision extends SubsystemBase {
 
     // TODO: Update to new NT API (pub/sub system)
 
+    private IntegerSubscriber tv, tid;
+    private DoubleSubscriber tx, ty;
+    private DoubleArraySubscriber botpose;
+
     public Vision() { 
+        tv = table.getIntegerTopic("tv").subscribe(0);
+        tid = table.getIntegerTopic("tid").subscribe(0);
+        
+        tx = table.getDoubleTopic("tx").subscribe(0);
+        ty = table.getDoubleTopic("ty").subscribe(0);
 
-    }
-
-    public enum Pipeline {
-        CENTER_TARGET(0),
-        RIGHT_TARGET(1),
-        LEFT_TARGET(2);
-
-        private final int id;
-        private
-         Pipeline(int id) {
-            this.id = id;
-        }
-        public int getId() {
-            return this.id;
-        }
-    }
-
-    public void setPipeline(Pipeline pipe) {
-        table.getEntry("pipeline").setDouble(pipe.getId());
+        botpose = table.getDoubleArrayTopic("botpose").subscribe(new double[] {});
     }
 
     public boolean hasTargets() { 
-        return table.getEntry("tv").getDouble(0.0) > 0.0 ? true : false; 
+        return tv.get() > 0.0; 
     }
 
     public double getX() { 
-        //Positive is too left        
-        return table.getEntry("tx").getDouble(0.0); 
+        // Positive is to the left        
+        return tx.get(); 
     }
 
     public double getY() { 
-        return table.getEntry("ty").getDouble(0.0); 
+        return ty.get();
     }
 
-    public double[] getCamTran() {
-        Number[] cam_tran = table.getEntry("camtran").getNumberArray(new Number[1]);
-        if(cam_tran.length != 6) {
-            return new double[1];
-        }
-        double[] out = new double[6];
-        for(int i = 0; i < 6; i++) {
-            out[i] = cam_tran[i].doubleValue();
-        }
-        return out;
+    public int getTagID() { 
+        // Get AprilTag ID, returns -1 if not found
+        //TODO: if incompatible type, i.e., it returns -1 always, try getInteger()
+        return (int) tid.get();
+    }
+
+    public Pose2d getPoseFromTarget() {
+        //Pose returns [tx, ty, tz, rx, ry, rz]
+        double[] pose = botpose.get();
+        
+        return new Pose2d(pose[0], pose[1], new Rotation2d(pose[3], pose[4])); 
     }
 
     public double getDistanceFromTarget() {
@@ -68,22 +63,4 @@ public class Vision extends SubsystemBase {
                             / Math.tan(Math.toRadians(angleOffset)); 
         return distance;   
     }
-
-    public int getTagID() { 
-        // Get AprilTag ID, returns -1 if not found
-        //TODO: if incompatible type, i.e., it returns -1 always, try getInteger()
-        return (int) table.getEntry("tid").getDouble(-1); 
-    }
-
-    public Pose2d getPoseFromTarget() { 
-        //TODO: Test
-
-        //Pose returns [tx, ty, tz, rx, ry, rz]
-        double[] pose = table.getEntry("botpose").getDoubleArray(new double[] {-1, -1, -1, -1, -1, -1}); 
-        
-        return new Pose2d(pose[0], pose[1], new Rotation2d(pose[3], pose[4])); 
-    }
-
-
-    
 }
