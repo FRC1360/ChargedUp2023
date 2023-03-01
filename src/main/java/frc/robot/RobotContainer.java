@@ -11,11 +11,14 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ProxyCommand;
 import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.assembly.AssemblyGoToPositionCommand;
 import frc.robot.commands.shoulder.ShoulderGoToPositionCommand;
 import frc.robot.commands.shoulder.ShoulderHoldCommand;
 import frc.robot.commands.wrist.WristGoToPositionCommand;
 import frc.robot.commands.wrist.WristHoldCommand;
+import frc.robot.subsystems.ArmSubsystem;
+import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.ShoulderSubsystem;
 import frc.robot.subsystems.WristSubsystem;
 
@@ -30,12 +33,13 @@ public class RobotContainer {
   private final CommandXboxController operatorController = new CommandXboxController(1);
 
   // The robot's subsystems and commands are defined here...
-  //private final DrivetrainSubsystem m_drivetrainSubsystem = new DrivetrainSubsystem();
-  //private final ArmSubsystem armSubsystem = new ArmSubsystem();
+  private final DrivetrainSubsystem m_drivetrainSubsystem = new DrivetrainSubsystem();
   public final ShoulderSubsystem shoulderSubsystem = new ShoulderSubsystem(() -> operatorController.getRightY()*Constants.SHOULDER_MANUAL_OVERRIDE_RANGE, operatorController.leftBumper());
-  private final ShoulderSubsystem.ShoulderWristMessenger messenger = shoulderSubsystem.new ShoulderWristMessenger();
+  //private final ShoulderSubsystem.ShoulderWristMessenger messenger = shoulderSubsystem.new ShoulderWristMessenger();
 
-  public final WristSubsystem wristSubsystem = new WristSubsystem(messenger, () -> operatorController.getLeftY()*Constants.WRIST_MANUAL_OVERRIDE_RANGE, operatorController.leftBumper());
+  //public final WristSubsystem wristSubsystem = new WristSubsystem(messenger, () -> operatorController.getLeftY()*Constants.WRIST_MANUAL_OVERRIDE_RANGE, operatorController.leftBumper());
+
+  //public final ArmSubsystem armSubsystem = new ArmSubsystem();
 
 
   /*private final AutoSequence auto = new AutoSequence(m_drivetrainSubsystem); 
@@ -51,15 +55,15 @@ public class RobotContainer {
     // Left stick Y axis -> forward and backwards movement
     // Left stick X axis -> left and right movement
     // Right stick X axis -> rotation
-    /*m_drivetrainSubsystem.setDefaultCommand(new DefaultDriveCommand(
+    m_drivetrainSubsystem.setDefaultCommand(new DefaultDriveCommand(
             m_drivetrainSubsystem,
             () -> -modifyAxis(m_controller.getLeftY()) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
             () -> -modifyAxis(m_controller.getLeftX()) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-            () -> -modifyAxis(m_controller.getRightX()) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
-    ));*/
+            () -> modifyAxis(m_controller.getRightX()) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
+    ));
 
     shoulderSubsystem.setDefaultCommand(new ShoulderHoldCommand(shoulderSubsystem));
-    wristSubsystem.setDefaultCommand(new WristHoldCommand(wristSubsystem));
+    //wristSubsystem.setDefaultCommand(new WristHoldCommand(wristSubsystem));
 
     //armSubsystem.setDefaultCommand(new ArmHoldCommand(this.armSubsystem));
 
@@ -84,15 +88,18 @@ public class RobotContainer {
     operatorController.x().onTrue(new ArmGoToPositionCommand(armSubsystem, ARM_POSITION.LOW_GOAL));*/
 
     //operatorController.a().onTrue(new InstantCommand(shoulderSubsystem::resetMotorRotations));
+
     operatorController.x().onTrue(new ShoulderGoToPositionCommand(shoulderSubsystem, 0.0));
-    operatorController.y().onTrue(new AssemblyGoToPositionCommand(shoulderSubsystem, wristSubsystem, 90.0));
+    operatorController.y().onTrue(new ShoulderGoToPositionCommand(shoulderSubsystem, 90.0));
+    operatorController.b().onTrue(new ShoulderGoToPositionCommand(shoulderSubsystem, 120.0));
+    /*operatorController.y().onTrue(new AssemblyGoToPositionCommand(shoulderSubsystem, wristSubsystem, 90.0));
     operatorController.b().onTrue(new AssemblyGoToPositionCommand(shoulderSubsystem, wristSubsystem, 150.0));
     operatorController.rightBumper().onTrue(new AssemblyGoToPositionCommand(shoulderSubsystem, wristSubsystem, -50.0));
 
     operatorController.povDown().onTrue(new InstantCommand(wristSubsystem::resetMotorRotations));
     operatorController.povUp().onTrue(new WristGoToPositionCommand(wristSubsystem, 90));
     operatorController.povLeft().onTrue(new WristGoToPositionCommand(wristSubsystem, 45));
-    operatorController.povRight().onTrue(new WristGoToPositionCommand(wristSubsystem, 135));
+    operatorController.povRight().onTrue(new WristGoToPositionCommand(wristSubsystem, 135));*/
   }
 
   /**

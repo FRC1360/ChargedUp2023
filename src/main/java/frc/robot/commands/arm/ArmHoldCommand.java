@@ -14,12 +14,17 @@ public class ArmHoldCommand extends CommandBase {
         // as we don't drive the pivot at all
         addRequirements(arm);
     }
+
+    @Override
+    public void initialize() {
+        this.arm.holdPIDController.reset();
+    }
     
     @Override
     public void execute() {
-        double target = (double)(this.arm.getEncoderTargetPosition());
-        double input = (double)(this.arm.getEncoderPosition());
-        double speed = this.arm.pidController.calculate(target, input);
+        double target = this.arm.getTargetDistance();
+        double input = this.arm.getArmDistance();
+        double speed = this.arm.holdPIDController.calculate(target, input);
 
         this.arm.setArmNormalizedVoltage(speed);  // Probably going to need an offset based off the angle of the arm
     }

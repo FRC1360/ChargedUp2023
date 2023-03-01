@@ -1,5 +1,7 @@
 package frc.robot.util;
 
+// Might be better to change this to FPGA timer
+
 public class OrbitTimer {
 
     private long startTime;

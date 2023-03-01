@@ -9,6 +9,7 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.AnalogEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -33,6 +34,8 @@ public class ShoulderSubsystem extends SubsystemBase {
     private DoubleSupplier manualOffset;
     private BooleanSupplier manualOffsetEnable;
 
+    private AnalogEncoder absoluteEncoder;
+
     public ShoulderSubsystem(DoubleSupplier manualOffset, BooleanSupplier manualOffsetEnable) {
         this.holdPIDController = new OrbitPID(0.015, 0.00001, 0);
         this.movePIDController = new OrbitPID(0.015, 0.0, 0.0);  // TODO - Tune
@@ -52,6 +55,11 @@ public class ShoulderSubsystem extends SubsystemBase {
 
         this.manualOffset = manualOffset;
         this.manualOffsetEnable = manualOffsetEnable;
+
+        this.absoluteEncoder = new AnalogEncoder(Constants.SHOULDER_ENCODER);
+
+        resetMotorRotations();
+        
     }
 
     public double getMotorRotations() {
@@ -67,8 +75,17 @@ public class ShoulderSubsystem extends SubsystemBase {
     }
 
     public void resetMotorRotations() {
-        if(this.shoulderMotorMaster.getEncoder().setPosition(0) == REVLibError.kOk) {
-            System.out.println("Reset Shoulder Rotations to 0");
+        // 
+        double newPos = -((absoluteEncoder.getAbsolutePosition() - 0.58) / Constants.SHOULDER_GEAR_RATIO);  
+        
+        SmartDashboard.putNumber("New_Pos", newPos);
+        
+        /*if(absoluteEncoder.getAbsolutePosition() > 0.58 ) { 
+            newPos = -newPos;
+        }*/
+
+        if(this.shoulderMotorMaster.getEncoder().setPosition(newPos) == REVLibError.kOk) {
+            System.out.println("Reset Shoulder Rotations");
         } else {
             System.out.println("Failed to reset Shoulder Rotations");
         }
@@ -104,7 +121,7 @@ public class ShoulderSubsystem extends SubsystemBase {
         // encoderPosition * 360.0 = angle of motor rotation
         // angle of motor rotation * GEAR_RATIO = shoulder angle
         // shoulder angle % 360 = keep range between 0-360
-        return (encoderPosition * 360.0 * Constants.SHOULDER_GEAR_RATIO) % 360.0;
+        return (encoderPosition * 360.0 * Constants.SHOULDER_GEAR_RATIO);
     }
 
     private void updateAngularVelocity() {
@@ -171,6 +188,10 @@ public class ShoulderSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Shoulder_Move_D_Gain", this.movePIDController.getDTerm());
 
         SmartDashboard.putBoolean("Shoulder_Transition_State", transitioning);
+
+        SmartDashboard.putNumber("Shoulder_Absolute_Encoder_Get", this.absoluteEncoder.get());
+        SmartDashboard.putNumber("Shoulder_Absolute_Encoder_Absolute", this.absoluteEncoder.getAbsolutePosition());
+        SmartDashboard.putNumber("Shoulder_Motor_Encoder", this.shoulderMotorMaster.getEncoder().getPosition());
     }
 
     public class ShoulderWristMessenger {
