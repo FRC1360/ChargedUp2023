@@ -23,10 +23,10 @@ public class ShoulderHoldCommand extends CommandBase {
 
         double target = this.shoulder.getTargetAngle();
         double input = this.shoulder.getShoulderAngle();
-        double speed = -this.shoulder.holdPIDController.calculate(target, input);
+        double speed = this.shoulder.holdPIDController.calculate(target, input);
 
         // Remember to increase this value and also add kI please
-        double kF = -0.18 * Math.sin(Math.toRadians(this.shoulder.getShoulderAngle()));
+        double kF = 0.18 * Math.sin(Math.toRadians(this.shoulder.getShoulderAngle()));
 
         this.shoulder.setShoulderNormalizedVoltage(speed + kF);
 
