@@ -107,6 +107,7 @@ public class ShoulderSubsystem extends SubsystemBase {
         && voltage > 0) voltage = 0;
         else if(absoluteEncoder.getAbsolutePosition() < Constants.SHOULDER_MINIMUM_ALLOWED_ANGLE
         && voltage < 0) voltage = 0;
+        
         this.shoulderMotorMaster.setVoltage(voltage);
     }
 
