@@ -80,10 +80,13 @@ public class WristSubsystem extends SubsystemBase {
      * Sets arm voltage based off 0.0 - 12.0
      */
     public void setWristVoltage(double voltage) {
+        // check if this will drive wrist out of bounds
+        if(absoluteEncoder.getAbsolutePosition() > Constants.WRIST_MAXIMUM_ALLOWED_ANGLE
+        && voltage > 0) voltage = 0;
+        else if(absoluteEncoder.getAbsolutePosition() < Constants.WRIST_MINIMUM_ALLOWED_ANGLE
+        && voltage < 0) voltage = 0;
+
         this.wristMotor.setVoltage(voltage);
-
-        // same check as setWristSpeed()
-
     }
 
     /*

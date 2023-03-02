@@ -102,6 +102,11 @@ public class ShoulderSubsystem extends SubsystemBase {
      * Sets arm voltage based off 0.0 - 12.0
      */
     public void setShoulderVoltage(double voltage) {
+        // check if this will drive shoulder out of bounds
+        if(absoluteEncoder.getAbsolutePosition() > Constants.SHOULDER_MAXIMUM_ALLOWED_ANGLE
+        && voltage > 0) voltage = 0;
+        else if(absoluteEncoder.getAbsolutePosition() < Constants.SHOULDER_MINIMUM_ALLOWED_ANGLE
+        && voltage < 0) voltage = 0;
         this.shoulderMotorMaster.setVoltage(voltage);
     }
 
