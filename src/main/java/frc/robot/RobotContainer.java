@@ -62,8 +62,8 @@ public class RobotContainer {
   }
 
   public void initializeRobot() { 
-    autoChooser.setDefaultOption("Both sides auto", auto);
-    autoChooser.addOption("One side, two cargo, balance", auto2);
+    autoChooser.addOption("Both sides auto", auto);
+    autoChooser.setDefaultOption("One side, two cargo, balance", auto2);
     SmartDashboard.putData(autoChooser);
   }
   /**

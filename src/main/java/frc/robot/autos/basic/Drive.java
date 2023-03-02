@@ -1,4 +1,4 @@
-package frc.robot.autos; 
+package frc.robot.autos.basic; 
 
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.util.OrbitPID;
@@ -23,7 +23,6 @@ public class Drive extends CommandBase {
 
     private Translation2d targetPose; 
 
-    private Translation2d curPose; 
 
     private TrapezoidProfile xMotionProfile; 
     private TrapezoidProfile yMotionProfile; 
@@ -34,11 +33,9 @@ public class Drive extends CommandBase {
 
     private OrbitPID driveYPID = new OrbitPID(1.0, 0.0, 0.0); 
 
-    public Drive(DrivetrainSubsystem dt, double xMeters, double yMeters, Translation2d curPose) { 
+    public Drive(DrivetrainSubsystem dt, double xMeters, double yMeters) { 
         // Note: positive xMeters means to upwards, positive yMeters is left 
         this.dt = dt;
-        
-        this.curPose = curPose; 
         /* 
         //TODO: Deal with scaling when one of x and y are less than 0.5
         if (Math.abs(xMeters) < 0.5 && xMeters != 0.0) this.speeds.vxMetersPerSecond = Math.copySign(xMeters*2.5, xMeters); 
@@ -50,6 +47,8 @@ public class Drive extends CommandBase {
         */
         this.speeds = new ChassisSpeeds(0.0, 0.0, 0.0); // 0 Rotation
         //TODO: Check if Translation2d measures in meters
+
+        Translation2d curPose = dt.getTranslation();  
         this.targetPose = curPose.plus(new Translation2d(xMeters, yMeters));
         
         TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(3.0, 12.0); 
@@ -74,8 +73,6 @@ public class Drive extends CommandBase {
         SmartDashboard.putBoolean("Driving", true);
 
         this.timer.start(); 
-
-        dt.setPoseOdometry(new Pose2d(curPose, Rotation2d.fromDegrees(0)));
     }
 
     @Override
@@ -107,7 +104,8 @@ public class Drive extends CommandBase {
     @Override
     public void end (boolean interrupted) { 
         dt.stop(); 
-        SmartDashboard.putBoolean("Driving", false); 
+        SmartDashboard.putBoolean("Driving", false);
+        //dt.setPoseOdometry(new Pose2d(targetPose, Rotation2d.fromDegrees(0))); 
     }
 
     @Override
