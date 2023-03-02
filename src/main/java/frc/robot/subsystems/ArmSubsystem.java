@@ -25,8 +25,8 @@ public class ArmSubsystem extends SubsystemBase {
         this.armMotorMaster = new CANSparkMax(Constants.ARM_MOTOR_MASTER, MotorType.kBrushless);
         this.armMotorSlave = new CANSparkMax(Constants.ARM_MOTOR_SLAVE, MotorType.kBrushless);
 
-        this.holdPIDController = new OrbitPID(0.01, 0.0, 0.0);
-        this.movePIDController = new OrbitPID(0.01, 0.0, 0.0);
+        this.holdPIDController = new OrbitPID(0.05, 0.0, 0.0);
+        this.movePIDController = new OrbitPID(0.05, 0.0, 0.0);
 
         /*\
          * Max velocity initial calculation:

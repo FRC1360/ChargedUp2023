@@ -76,4 +76,10 @@ public final class Constants {
     public static final double ARM_DRUM_DIAMETER = 2.5;  // Arm Drum Diameter in inches
     public static final double ARM_PULLEY_BLOCK_RATIO = 2;
 
+    public final class ARM_POSITION { 
+        public static final double HIGH_GOAL = -25.0; 
+        public static final double MID_GOAL = -15.0; 
+        public static final double LOW_GOAL = -5.0; 
+    }
+
 }

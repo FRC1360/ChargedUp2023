@@ -55,7 +55,7 @@ public class ArmGoToPositionCommand extends CommandBase {
 
         SmartDashboard.putNumber("Arm_Move_Speed", speed); 
 
-        //this.arm.setArmNormalizedVoltage(speed);
+        this.arm.setArmNormalizedVoltage(speed);
     }
 
     @Override
