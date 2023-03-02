@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. All constants should be declared
@@ -25,6 +27,9 @@ public final class Constants {
      * Should be measured from center to center.
      */
     public static final double DRIVETRAIN_WHEELBASE_METERS = 0.61; // FIXME Measure and set wheelbase
+
+    public static final int LEAD_INTAKE_MOTOR_ID = 60; 
+    public static final int FOLLOW_INTAKE_MOTOR_ID = 61;
 
     public static final int DRIVETRAIN_PIGEON_ID = 0; // FIXME Set Pigeon ID
 

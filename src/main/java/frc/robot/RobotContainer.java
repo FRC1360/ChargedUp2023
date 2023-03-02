@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.ProxyCommand;
 import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.arm.ArmGoToPositionCommand;
 import frc.robot.commands.arm.ArmHoldCommand;
@@ -25,6 +26,11 @@ import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.ShoulderSubsystem;
 import frc.robot.subsystems.WristSubsystem;
+import frc.robot.commands.ManualIntakeCommand;
+import frc.robot.subsystems.DrivetrainSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
+
+import frc.robot.commands.ManualPutdownCommand;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -45,6 +51,10 @@ public class RobotContainer {
 
   public final ArmSubsystem armSubsystem = new ArmSubsystem();
 
+  private final IntakeSubsystem intake = new IntakeSubsystem();
+
+  // private final ManualIntakeCommand ManualIntakeCommand = new ManualIntakeCommand(intake, 5);
+  // private final ManualPutdownCommand ManualPutdownCommand = new ManualPutdownCommand(intake, 5);
 
   /*private final AutoSequence auto = new AutoSequence(m_drivetrainSubsystem); 
 
@@ -72,6 +82,7 @@ public class RobotContainer {
     wristSubsystem.setDefaultCommand(new WristHoldCommand(wristSubsystem));
 
     armSubsystem.setDefaultCommand(new ArmHoldCommand(this.armSubsystem));
+
 
     // Configure the button bindings
     configureButtonBindings();
@@ -107,8 +118,15 @@ public class RobotContainer {
     operatorController.povUp().onTrue(new WristGoToPositionCommand(wristSubsystem, 90));
     operatorController.povLeft().onTrue(new WristGoToPositionCommand(wristSubsystem, 45));
     operatorController.povRight().onTrue(new WristGoToPositionCommand(wristSubsystem, 135));
+    new Trigger(m_controller::getBackButton)
+            .onTrue(new InstantCommand(m_drivetrainSubsystem::zeroGyroscope));
+    new Trigger(() -> m_controller.getRightTriggerAxis() > 0)
+            .onTrue(new ManualIntakeCommand(intake, () -> m_controller.getRightTriggerAxis()));
+    new Trigger(() -> m_controller.getLeftTriggerAxis() > 0)
+            .onTrue(new ManualPutdownCommand(intake, () -> m_controller.getLeftTriggerAxis()));
   }
 
+  
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
