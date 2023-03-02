@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.commands.intake;
 
 import frc.robot.subsystems.IntakeSubsystem;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -10,25 +10,20 @@ import edu.wpi.first.wpilibj.XboxController;
 public class ManualIntakeCommand extends CommandBase{
     private IntakeSubsystem intake; // that piston that open and closes the claw
     //make a command that will take in a value that will spin it in a certain speed
-    private DoubleSupplier userInputSpeed; // the speed given by the controller
+    private DoubleSupplier speed; // the speed given by the controller
 
-    public ManualIntakeCommand(IntakeSubsystem intake, DoubleSupplier userInputSpeed) {
+    public ManualIntakeCommand(IntakeSubsystem intake, DoubleSupplier speed) {
         this.intake = intake;
-        this.userInputSpeed = userInputSpeed;
+        this.speed = speed;
         addRequirements(intake);
-        //withInterruptBehavior(InterruptionBehavior.kCancelIncoming);
-    }
-    
-    public boolean isTeleopOver(){
-        return false; // placeholder for whether telop is over
     }
     @Override
     public void execute() {
-        intake.intake(userInputSpeed.getAsDouble());        
+        intake.intake(speed.getAsDouble());        
     }
 
     @Override
     public boolean isFinished() { 
-        return isTeleopOver();
+        return false;
     }
 }

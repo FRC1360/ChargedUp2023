@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.commands.intake;
 
 import frc.robot.subsystems.IntakeSubsystem;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -13,13 +13,6 @@ public class AutoIntakeCommand extends CommandBase{
         addRequirements(intake);
     }
 
-
-    @Override
-    public void initialize(){
-  
-        
-    }
-
     @Override
     public void execute() {      
         intake.intake(speed);
@@ -27,12 +20,12 @@ public class AutoIntakeCommand extends CommandBase{
 
     @Override
     public void end(boolean interruptible) { 
+        intake.stop();
     }
 
     @Override
     public boolean isFinished() { 
-        intake.stop();
-        return true;
+        return false; // needs to be changed a bit...
     }
 
 }

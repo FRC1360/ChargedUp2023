@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.commands.intake;
 
 import frc.robot.subsystems.IntakeSubsystem;
 
@@ -15,12 +15,8 @@ public class ManualPutdownCommand extends CommandBase {
         this.intake = intake;
         this.speed = speed;
         addRequirements(intake);
-        //withInterruptBehavior(InterruptionBehavior.kCancelIncoming);
     }
 
-    public boolean isTeleopOver(){
-        return false; // placeholder for whether telop is over
-    }
     @Override
     public void execute() {      
         intake.intake(-speed.getAsDouble());
@@ -28,6 +24,6 @@ public class ManualPutdownCommand extends CommandBase {
 
     @Override
     public boolean isFinished() { 
-        return isTeleopOver();
+        return false;
     }
 }

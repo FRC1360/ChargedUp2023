@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.commands.intake;
 
 import frc.robot.subsystems.IntakeSubsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -21,12 +21,12 @@ public class AutoPutDownCommand extends CommandBase{
 
     @Override
     public void end(boolean interruptible) { 
+        intake.stop();
     }
 
     @Override
     public boolean isFinished() { 
-        intake.stop();
-        return true;
+        return false; // needs to be changed a bit...
     }
 
     
