@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ProxyCommand;
 import edu.wpi.first.wpilibj2.command.ScheduleCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.arm.ArmGoToPositionCommand;
@@ -65,7 +66,7 @@ public class RobotContainer {
             () -> modifyAxis(m_controller.getRightX()) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
     ));*/
 
-    //shoulderSubsystem.setDefaultCommand(new ShoulderHoldCommand(shoulderSubsystem));
+    shoulderSubsystem.setDefaultCommand(new ShoulderHoldCommand(shoulderSubsystem));
     /*shoulderSubsystem.setDefaultCommand(new ShoulderMoveManual(shoulderSubsystem,
       () -> modifyAxis(operatorController.getLeftY()) ));*/
     wristSubsystem.setDefaultCommand(new WristHoldCommand(wristSubsystem));
@@ -88,24 +89,24 @@ public class RobotContainer {
             // No requirements because we don't need to interrupt anything
             .onTrue(new InstantCommand(m_drivetrainSubsystem::zeroGyroscope));*/
     
-    operatorController.back().onTrue(new InstantCommand(armSubsystem::resetEncoder));
+    operatorController.back().onTrue(getRetractArmCommand());
 
-    operatorController.a().onTrue(new ArmGoToPositionCommand(armSubsystem, Constants.ARM_POSITION.HIGH_GOAL));
-    operatorController.b().onTrue(new ArmGoToPositionCommand(armSubsystem, Constants.ARM_POSITION.MID_GOAL));
-    operatorController.x().onTrue(new ArmGoToPositionCommand(armSubsystem, Constants.ARM_POSITION.LOW_GOAL));
+    // operatorController.a().onTrue(new ArmGoToPositionCommand(armSubsystem, Constants.ARM_POSITION.HIGH_GOAL));
+    // operatorController.b().onTrue(new ArmGoToPositionCommand(armSubsystem, Constants.ARM_POSITION.MID_GOAL));
+    // operatorController.x().onTrue(new ArmGoToPositionCommand(armSubsystem, Constants.ARM_POSITION.LOW_GOAL));
 
     //operatorController.a().onTrue(new InstantCommand(shoulderSubsystem::resetMotorRotations));
 
-    //operatorController.x().onTrue(new ShoulderGoToPositionCommand(shoulderSubsystem, 45.0));
-    //operatorController.y().onTrue(new ShoulderGoToPositionCommand(shoulderSubsystem, 90.0));
-    //operatorController.b().onTrue(new ShoulderGoToPositionCommand(shoulderSubsystem, 120.0));
+    operatorController.x().onTrue(new ShoulderGoToPositionCommand(shoulderSubsystem, 45.0));
+    operatorController.y().onTrue(new ShoulderGoToPositionCommand(shoulderSubsystem, 90.0));
+    operatorController.b().onTrue(new ShoulderGoToPositionCommand(shoulderSubsystem, 120.0));
     /*operatorController.y().onTrue(new AssemblyGoToPositionCommand(shoulderSubsystem, wristSubsystem, 90.0));
     operatorController.b().onTrue(new AssemblyGoToPositionCommand(shoulderSubsystem, wristSubsystem, 150.0));
     operatorController.rightBumper().onTrue(new AssemblyGoToPositionCommand(shoulderSubsystem, wristSubsystem, -50.0));*/
 
-    /*operatorController.povUp().onTrue(new WristGoToPositionCommand(wristSubsystem, 90));
+    operatorController.povUp().onTrue(new WristGoToPositionCommand(wristSubsystem, 90));
     operatorController.povLeft().onTrue(new WristGoToPositionCommand(wristSubsystem, 45));
-    operatorController.povRight().onTrue(new WristGoToPositionCommand(wristSubsystem, 135));*/
+    operatorController.povRight().onTrue(new WristGoToPositionCommand(wristSubsystem, 135));
   }
 
   /**
