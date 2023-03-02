@@ -1,5 +1,6 @@
 package frc.robot.commands.shoulder;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ShoulderSubsystem;
 
@@ -22,13 +23,14 @@ public class ShoulderHoldCommand extends CommandBase {
 
         double target = this.shoulder.getTargetAngle();
         double input = this.shoulder.getShoulderAngle();
-        double speed = this.shoulder.holdPIDController.calculate(target, input);
+        double speed = -this.shoulder.holdPIDController.calculate(target, input);
 
-        if(Math.abs(speed) > 0.5) {
-            speed = Math.copySign(0.5, speed);
-        }
+        // Remember to increase this value and also add kI please
+        double kF = -0.18 * Math.sin(Math.toRadians(this.shoulder.getShoulderAngle()));
 
-        this.shoulder.setShoulderNormalizedVoltage(speed);
+        this.shoulder.setShoulderNormalizedVoltage(speed + kF);
+
+        SmartDashboard.putNumber("Shoulder_Hold_Output", speed + kF);
 
     }
 

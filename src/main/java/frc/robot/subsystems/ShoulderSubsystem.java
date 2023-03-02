@@ -38,12 +38,12 @@ public class ShoulderSubsystem extends SubsystemBase {
     private AnalogEncoder absoluteEncoder;
 
     public ShoulderSubsystem(DoubleSupplier manualOffset, BooleanSupplier manualOffsetEnable) {
-        this.holdPIDController = new OrbitPID(0.015, 0.00001, 0);
-        this.movePIDController = new OrbitPID(0.015, 0.0, 0.0);  // TODO - Tune
+        this.holdPIDController = new OrbitPID(0.01, 0.0, 0.0);
+        this.movePIDController = new OrbitPID(0.01, 0.0, 0.0);  // TODO - Tune
 
         // This units are deg / second for velocity and deg / sec^2 for acceleration
         this.shoulderMotionProfileConstraints = new TrapezoidProfile.Constraints(500, 250);  // TODO - Tune.
-        this.targetAngle = 0.0;
+        this.targetAngle = 0.0;  // Make sure this is 0.0 for copetition, only 90 for testing
 
         this.shoulderMotorMaster = new CANSparkMax(Constants.SHOULDER_MOTOR_MASTER, MotorType.kBrushless);
         this.shoulderMotorSlave = new CANSparkMax(Constants.SHOULDER_MOTOR_SLAVE, MotorType.kBrushless);
@@ -55,10 +55,10 @@ public class ShoulderSubsystem extends SubsystemBase {
         this.shoulderMotorMaster.setIdleMode(IdleMode.kBrake);
         this.shoulderMotorSlave.setIdleMode(IdleMode.kBrake);
 
-        this.shoulderMotorMaster.setSmartCurrentLimit(20);
-        this.shoulderMotorSlave.setSmartCurrentLimit(20);
+        this.shoulderMotorMaster.setSmartCurrentLimit(80);
+        this.shoulderMotorSlave.setSmartCurrentLimit(80);
 
-        this.shoulderMotorSlave.follow(this.shoulderMotorMaster);
+        //this.shoulderMotorSlave.follow(this.shoulderMotorMaster);
 
         this.transitioning = false;
         this.scheduledAngle = Double.NaN;
@@ -81,7 +81,8 @@ public class ShoulderSubsystem extends SubsystemBase {
     }
 
     public void setShoulderSpeed(double speed) {
-        this.shoulderMotorMaster.set(speed);
+        this.shoulderMotorMaster.set(-speed);
+        this.shoulderMotorSlave.set(-speed);
     }
 
     public void resetMotorRotations() {
@@ -102,7 +103,8 @@ public class ShoulderSubsystem extends SubsystemBase {
      * Sets arm voltage based off 0.0 - 12.0
      */
     public void setShoulderVoltage(double voltage) {
-        this.shoulderMotorMaster.setVoltage(voltage);
+        this.shoulderMotorMaster.setVoltage(-voltage);
+        this.shoulderMotorSlave.setVoltage(-voltage);
     }
 
     /*
@@ -198,6 +200,8 @@ public class ShoulderSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Shoulder_Absolute_Encoder_Get", this.absoluteEncoder.get());
         SmartDashboard.putNumber("Shoulder_Absolute_Encoder_Absolute", this.absoluteEncoder.getAbsolutePosition());
         SmartDashboard.putNumber("Shoulder_Motor_Encoder", this.shoulderMotorMaster.getEncoder().getPosition());
+
+        SmartDashboard.putNumber("Shoulder_Master_Current", this.shoulderMotorMaster.getOutputCurrent());
     }
 
     public class ShoulderWristMessenger {

@@ -43,7 +43,7 @@ public class ArmSubsystem extends SubsystemBase {
         this.armMotorMaster.setIdleMode(IdleMode.kBrake);
         this.armMotorSlave.setIdleMode(IdleMode.kBrake);
         
-        this.armMotorSlave.follow(this.armMotorMaster);
+        //this.armMotorSlave.follow(this.armMotorMaster);
 
         
     }
@@ -63,10 +63,12 @@ public class ArmSubsystem extends SubsystemBase {
 
     public void setArmSpeed(double speed) {
         this.armMotorMaster.set(speed);
+        this.armMotorSlave.set(speed);
     }
 
     public void setArmVoltage(double voltage) {
         this.armMotorMaster.setVoltage(voltage);
+        this.armMotorSlave.setVoltage(voltage);
     }
 
     public void setArmNormalizedVoltage(double voltage) {
