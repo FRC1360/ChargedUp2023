@@ -86,17 +86,18 @@ public class RobotContainer {
     /*new Trigger(m_controller::getBackButton)
             // No requirements because we don't need to interrupt anything
             .onTrue(new InstantCommand(m_drivetrainSubsystem::zeroGyroscope));*/
+    
+    operatorController.back().onTrue(new InstantCommand(armSubsystem::resetEncoder));
 
     /*operatorController.a().onTrue(new ArmGoToPositionCommand(armSubsystem, ARM_POSITION.HIGH_GOAL));
     operatorController.b().onTrue(new ArmGoToPositionCommand(armSubsystem, ARM_POSITION.MID_GOAL));
     operatorController.x().onTrue(new ArmGoToPositionCommand(armSubsystem, ARM_POSITION.LOW_GOAL));*/
 
     //operatorController.a().onTrue(new InstantCommand(shoulderSubsystem::resetMotorRotations));
-    /* 
+
     operatorController.x().onTrue(new ShoulderGoToPositionCommand(shoulderSubsystem, 45.0));
     operatorController.y().onTrue(new ShoulderGoToPositionCommand(shoulderSubsystem, 90.0));
     operatorController.b().onTrue(new ShoulderGoToPositionCommand(shoulderSubsystem, 120.0));
-    */
     /*operatorController.y().onTrue(new AssemblyGoToPositionCommand(shoulderSubsystem, wristSubsystem, 90.0));
     operatorController.b().onTrue(new AssemblyGoToPositionCommand(shoulderSubsystem, wristSubsystem, 150.0));
     operatorController.rightBumper().onTrue(new AssemblyGoToPositionCommand(shoulderSubsystem, wristSubsystem, -50.0));*/

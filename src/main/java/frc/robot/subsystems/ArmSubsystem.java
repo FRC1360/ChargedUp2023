@@ -44,8 +44,6 @@ public class ArmSubsystem extends SubsystemBase {
         this.armMotorSlave.setIdleMode(IdleMode.kCoast);
         
         //this.armMotorSlave.follow(this.armMotorMaster);
-
-        
     }
 
     public double getMotorRotations() {
@@ -58,7 +56,7 @@ public class ArmSubsystem extends SubsystemBase {
 
     // Returns distance arm has traveled in inches
     public double encoderToDistanceConversion(double encoderPosition) {
-        return encoderPosition * Constants.ARM_GEAR_RATIO * Math.PI * Constants.ARM_DRUM_DIAMETER;
+        return encoderPosition * Constants.ARM_GEAR_RATIO * Math.PI * Constants.ARM_DRUM_DIAMETER * Constants.ARM_PULLEY_BLOCK_RATIO;
     }
 
     public void setArmSpeed(double speed) {
@@ -82,6 +80,10 @@ public class ArmSubsystem extends SubsystemBase {
     // Distance in inches
     public void setTargetDistance(double distance) {
         this.targetDistance = distance;
+    }
+
+    public void resetEncoder() {
+        this.armMotorMaster.getEncoder().setPosition(0.0);
     }
 
     public void updateSmartDashboard() {
