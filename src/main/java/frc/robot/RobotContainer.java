@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.arm.ArmGoToPositionCommand;
+import frc.robot.commands.arm.ArmHoldCommand;
 import frc.robot.commands.assembly.AssemblyGoToPositionCommand;
 import frc.robot.commands.shoulder.ShoulderGoToPositionCommand;
 import frc.robot.commands.shoulder.ShoulderHoldCommand;
@@ -67,9 +68,9 @@ public class RobotContainer {
     //shoulderSubsystem.setDefaultCommand(new ShoulderHoldCommand(shoulderSubsystem));
     /*shoulderSubsystem.setDefaultCommand(new ShoulderMoveManual(shoulderSubsystem,
       () -> modifyAxis(operatorController.getLeftY()) ));*/
-    //wristSubsystem.setDefaultCommand(new WristHoldCommand(wristSubsystem));
+    wristSubsystem.setDefaultCommand(new WristHoldCommand(wristSubsystem));
 
-    //armSubsystem.setDefaultCommand(new ArmHoldCommand(this.armSubsystem));
+    armSubsystem.setDefaultCommand(new ArmHoldCommand(this.armSubsystem));
 
     // Configure the button bindings
     configureButtonBindings();

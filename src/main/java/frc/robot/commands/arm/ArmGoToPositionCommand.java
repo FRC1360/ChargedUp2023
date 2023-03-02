@@ -61,8 +61,8 @@ public class ArmGoToPositionCommand extends CommandBase {
     @Override
     public boolean isFinished() {
         // TODO Auto-generated method stub
-        //return this.motionProfile.isFinished(this.timer.getTimeDeltaSec());
-        return false; 
+        return this.motionProfile.isFinished(this.timer.getTimeDeltaSec());
+        //return false; 
     }
 
 
