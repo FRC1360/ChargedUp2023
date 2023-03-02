@@ -4,7 +4,7 @@ import frc.robot.subsystems.IntakeSubsystem;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class AutoIntakeCommand extends CommandBase{
-    private IntakeSubsystem intake; // that piston that open and closes the claw
+    private IntakeSubsystem intake;
     private double speed; 
 
     public AutoIntakeCommand(IntakeSubsystem intake, double speed) {
