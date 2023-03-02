@@ -31,21 +31,21 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     public void stop(){
-        //leadMotor.stopMotor();
+        leadMotor.stopMotor();
         SmartDashboard.putNumber("Intake motor speed", 0.0); 
     }
 
     public void activate(double speed){
-        //leadMotor.set(speed);
+        leadMotor.set(speed);
     }
 
     public void intake(double speed){
-        //leadMotor.set(speed); 
-        /* 
-        if (shouldMotorStopMoving(whenItShouldClose)) { //the five is a placeholder
-            stop();
-        }
-        */
+        leadMotor.set(speed); 
+         
+        // if (shouldMotorStopMoving(whenItShouldClose)) { //the five is a placeholder
+        //     stop();
+        // }
+        
         SmartDashboard.putNumber("Intake motor speed", speed); 
     }
 

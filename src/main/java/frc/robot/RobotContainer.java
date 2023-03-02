@@ -29,18 +29,18 @@ import frc.robot.commands.ManualPutdownCommand;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final DrivetrainSubsystem m_drivetrainSubsystem = new DrivetrainSubsystem();
+  //private final DrivetrainSubsystem m_drivetrainSubsystem = new DrivetrainSubsystem();
 
   private final XboxController m_controller = new XboxController(0);
 
-  private final AutoSequence auto = new AutoSequence(m_drivetrainSubsystem); 
+  //private final AutoSequence auto = new AutoSequence(m_drivetrainSubsystem); 
 
   private final IntakeSubsystem intake = new IntakeSubsystem();
 
   // private final ManualIntakeCommand ManualIntakeCommand = new ManualIntakeCommand(intake, 5);
   // private final ManualPutdownCommand ManualPutdownCommand = new ManualPutdownCommand(intake, 5);
 
-  private final Simulator sim = new Simulator(m_drivetrainSubsystem); 
+  //private final Simulator sim = new Simulator(m_drivetrainSubsystem); 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -50,12 +50,15 @@ public class RobotContainer {
     // Left stick Y axis -> forward and backwards movement
     // Left stick X axis -> left and right movement
     // Right stick X axis -> rotation
+    /* 
     m_drivetrainSubsystem.setDefaultCommand(new DefaultDriveCommand(
             m_drivetrainSubsystem,
             () -> -modifyAxis(m_controller.getLeftY()) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
             () -> -modifyAxis(m_controller.getLeftX()) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
             () -> -modifyAxis(m_controller.getRightX()) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
     ));
+
+    */
 
 
     // Configure the button bindings
@@ -70,8 +73,8 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     // Back button zeros the gyroscope
-    new Trigger(m_controller::getBackButton)
-            .onTrue(new InstantCommand(m_drivetrainSubsystem::zeroGyroscope));
+    // new Trigger(m_controller::getBackButton)
+    //         .onTrue(new InstantCommand(m_drivetrainSubsystem::zeroGyroscope));
     new Trigger(() -> m_controller.getRightTriggerAxis() > 0)
             .onTrue(new ManualIntakeCommand(intake, () -> m_controller.getRightTriggerAxis()));
     new Trigger(() -> m_controller.getLeftTriggerAxis() > 0)
@@ -86,7 +89,7 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    return auto;
+    return null;
   }
 
   private static double deadband(double value, double deadband) {
