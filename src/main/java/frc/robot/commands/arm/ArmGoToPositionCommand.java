@@ -53,13 +53,16 @@ public class ArmGoToPositionCommand extends CommandBase {
 
         double speed = this.arm.movePIDController.calculate(target, input);
 
-        this.arm.setArmNormalizedVoltage(speed);
+        SmartDashboard.putNumber("Arm_Move_Speed", speed); 
+
+        //this.arm.setArmNormalizedVoltage(speed);
     }
 
     @Override
     public boolean isFinished() {
         // TODO Auto-generated method stub
-        return this.motionProfile.isFinished(this.timer.getTimeDeltaSec());
+        //return this.motionProfile.isFinished(this.timer.getTimeDeltaSec());
+        return false; 
     }
 
 

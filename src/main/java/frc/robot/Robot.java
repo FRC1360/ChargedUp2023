@@ -60,7 +60,7 @@ public class Robot extends TimedRobot {
   public void disabledPeriodic() {
     m_robotContainer.shoulderSubsystem.updateSmartDashboard();
     m_robotContainer.wristSubsystem.updateSmartDashboard();
-    //m_robotContainer.armSubsystem.updateSmartDashboard();*/
+    m_robotContainer.armSubsystem.updateSmartDashboard();
   }
 
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
@@ -87,6 +87,8 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+
+    m_robotContainer.getRetractArmCommand().schedule(); 
   }
 
   /** This function is called periodically during operator control. */
@@ -94,7 +96,7 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
     m_robotContainer.shoulderSubsystem.updateSmartDashboard();
     m_robotContainer.wristSubsystem.updateSmartDashboard();
-    //m_robotContainer.armSubsystem.updateSmartDashboard();
+    m_robotContainer.armSubsystem.updateSmartDashboard();
   }
 
   @Override
