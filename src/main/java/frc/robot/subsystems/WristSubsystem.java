@@ -10,6 +10,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.networktables.DoubleSubscriber;
+import edu.wpi.first.wpilibj.AnalogEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -31,6 +32,8 @@ public class WristSubsystem extends SubsystemBase {
 
     private DoubleSupplier manualOffset;
     private BooleanSupplier manualOffsetEnable;
+    
+    private AnalogEncoder absoluteEncoder;
 
     public WristSubsystem(ShoulderWristMessenger shoulderWristMessenger, DoubleSupplier manualOffset, BooleanSupplier manualOffsetEnable) {
         this.wristMotor = new CANSparkMax(5, MotorType.kBrushless);
@@ -49,6 +52,8 @@ public class WristSubsystem extends SubsystemBase {
 
         this.manualOffset = manualOffset;
         this.manualOffsetEnable = manualOffsetEnable;
+
+        this.absoluteEncoder = new AnalogEncoder(Constants.WRIST_ENCODER);
     }
 
     public double getMotorRotations() {
@@ -62,6 +67,12 @@ public class WristSubsystem extends SubsystemBase {
     }
 
     public void setWristSpeed(double speed) {
+        // check if this will drive wrist out of bounds
+        if(absoluteEncoder.getAbsolutePosition() > Constants.WRIST_MAXIMUM_ALLOWED_ANGLE
+        && speed > 0) speed = 0;
+        else if(absoluteEncoder.getAbsolutePosition() < Constants.WRIST_MINIMUM_ALLOWED_ANGLE
+        && speed < 0) speed = 0;
+
         this.wristMotor.set(speed);
     }
 
@@ -70,6 +81,9 @@ public class WristSubsystem extends SubsystemBase {
      */
     public void setWristVoltage(double voltage) {
         this.wristMotor.setVoltage(voltage);
+
+        // same check as setWristSpeed()
+
     }
 
     /*
@@ -81,7 +95,6 @@ public class WristSubsystem extends SubsystemBase {
 
     // This return a GLOBAL angle. The global angle is the angle relative to the shoulder
     public double getTargetAngle() {  // Use getTargetAngle() when doing commands to move the wrist
-        
         return this.shoulderWristMessenger.getShoulderAngle() + this.getWristOffset() + (manualOffsetEnable.getAsBoolean() ? manualOffset.getAsDouble() : 0);
     }
  
@@ -137,5 +150,4 @@ public class WristSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Wrist_Manual_Offset", this.manualOffset.getAsDouble());
         SmartDashboard.putNumber("Wrist_Offset", this.getWristOffset());
     }
-    
 }

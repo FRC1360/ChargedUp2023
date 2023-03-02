@@ -71,6 +71,12 @@ public class ShoulderSubsystem extends SubsystemBase {
     }
 
     public void setShoulderSpeed(double speed) {
+        // check if this will drive shoulder out of bounds
+        if(absoluteEncoder.getAbsolutePosition() > Constants.SHOULDER_MAXIMUM_ALLOWED_ANGLE
+        && speed > 0) speed = 0;
+        else if(absoluteEncoder.getAbsolutePosition() < Constants.SHOULDER_MINIMUM_ALLOWED_ANGLE
+        && speed < 0) speed = 0;
+
         this.shoulderMotorMaster.set(speed);
     }
 

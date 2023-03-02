@@ -61,11 +61,15 @@ public final class Constants {
     public static final double SHOULDER_ENCODER_OFFSET = 0.0;
     public static final double SHOULDER_GEAR_RATIO = (11.0 / 52.0) * (30.0 / 68.0) * (12.0 / 48.0);
     public static final double SHOULDER_MANUAL_OVERRIDE_RANGE = 20.0;
+    public static final double SHOULDER_MAXIMUM_ALLOWED_ANGLE = 0.0; // TBD
+    public static final double SHOULDER_MINIMUM_ALLOWED_ANGLE = 0.0; // TBD
 
     // WRIST
     public static final int WRIST_MOTOR = 54;
     public static final double WRIST_MANUAL_OVERRIDE_RANGE = 20.0;
     public static final int WRIST_ENCODER = 0;
+    public static final double WRIST_MAXIMUM_ALLOWED_ANGLE = 0.0; // TBD
+    public static final double WRIST_MINIMUM_ALLOWED_ANGLE = 0.0; // TBD
 
     // ARM
     public static final int ARM_MOTOR_MASTER = 52;
