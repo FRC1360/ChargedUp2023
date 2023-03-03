@@ -122,14 +122,14 @@ public class RobotContainer {
     operatorController.povLeft().onTrue(new WristGoToPositionCommand(wristSubsystem, 45));
     operatorController.povRight().onTrue(new WristGoToPositionCommand(wristSubsystem, 135));
     /* 
-    new Trigger(m_controller::getBackButton)
+    new Trigger(operatorController::getBackButton)
             .onTrue(new InstantCommand(m_drivetrainSubsystem::zeroGyroscope));
-    new Trigger(() -> m_controller.getRightTriggerAxis() > 0)
-            .onTrue(new ManualIntakeCommand(intake, () -> m_controller.getRightTriggerAxis()));
-    new Trigger(() -> m_controller.getLeftTriggerAxis() > 0)
-            .onTrue(new ManualPutdownCommand(intake, () -> m_controller.getLeftTriggerAxis()));
-
             */
+    new Trigger(() -> operatorController.getRightTriggerAxis() > 0)
+            .onTrue(new ManualIntakeCommand(intake, () -> operatorController.getRightTriggerAxis()));
+    new Trigger(() -> operatorController.getLeftTriggerAxis() > 0)
+            .onTrue(new ManualPutdownCommand(intake, () -> operatorController.getLeftTriggerAxis()));
+            
   }
 
   
