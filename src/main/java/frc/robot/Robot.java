@@ -88,6 +88,11 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.cancel();
     }
 
+    m_robotContainer.shoulderSubsystem.resetMotorRotations();
+    m_robotContainer.wristSubsystem.resetMotorRotations();
+    m_robotContainer.wristSubsystem.holdPIDController.reset();
+    m_robotContainer.shoulderSubsystem.holdPIDController.reset();
+
     //m_robotContainer.getRetractArmCommand().schedule(); 
   }
 

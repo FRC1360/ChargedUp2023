@@ -75,12 +75,12 @@ public class RobotContainer {
             () -> modifyAxis(m_controller.getRightX()) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
     ));*/
 
-    shoulderSubsystem.setDefaultCommand(new ShoulderHoldCommand(shoulderSubsystem));
+    //shoulderSubsystem.setDefaultCommand(new ShoulderHoldCommand(shoulderSubsystem));
     /*shoulderSubsystem.setDefaultCommand(new ShoulderMoveManual(shoulderSubsystem,
       () -> modifyAxis(operatorController.getLeftY()) ));*/
-    //wristSubsystem.setDefaultCommand(new WristHoldCommand(wristSubsystem));
+    wristSubsystem.setDefaultCommand(new WristHoldCommand(wristSubsystem));
 
-    armSubsystem.setDefaultCommand(new ArmHoldCommand(this.armSubsystem));
+    //armSubsystem.setDefaultCommand(new ArmHoldCommand(this.armSubsystem));
 
 
     // Configure the button bindings
@@ -109,7 +109,7 @@ public class RobotContainer {
 
     operatorController.x().onTrue(new ShoulderGoToPositionCommand(shoulderSubsystem, 45.0));
     operatorController.y().onTrue(new ShoulderGoToPositionCommand(shoulderSubsystem, 90.0));
-    operatorController.b().onTrue(new ShoulderGoToPositionCommand(shoulderSubsystem, 120.0));
+    operatorController.b().onTrue(new ShoulderGoToPositionCommand(shoulderSubsystem, 0.0));
     /*operatorController.y().onTrue(new AssemblyGoToPositionCommand(shoulderSubsystem, wristSubsystem, 90.0));
     operatorController.b().onTrue(new AssemblyGoToPositionCommand(shoulderSubsystem, wristSubsystem, 150.0));
     operatorController.rightBumper().onTrue(new AssemblyGoToPositionCommand(shoulderSubsystem, wristSubsystem, -50.0));*/
@@ -117,6 +117,7 @@ public class RobotContainer {
     // operatorController.povUp().onTrue(new WristGoToPositionCommand(wristSubsystem, 90));
     // operatorController.povLeft().onTrue(new WristGoToPositionCommand(wristSubsystem, 45));
     // operatorController.povRight().onTrue(new WristGoToPositionCommand(wristSubsystem, 135));
+
     new Trigger(m_controller::getBackButton)
             .onTrue(new InstantCommand(m_drivetrainSubsystem::zeroGyroscope));
     new Trigger(() -> m_controller.getRightTriggerAxis() > 0)

@@ -42,7 +42,7 @@ public class ShoulderSubsystem extends SubsystemBase {
         this.movePIDController = new OrbitPID(0.01, 0.0, 0.0);  // TODO - Tune
 
         // This units are deg / second for velocity and deg / sec^2 for acceleration
-        this.shoulderMotionProfileConstraints = new TrapezoidProfile.Constraints(500, 250);  // TODO - Tune.
+        this.shoulderMotionProfileConstraints = new TrapezoidProfile.Constraints(500, 250/2.0);  // TODO - Tune.
         this.targetAngle = 0.0;  // Make sure this is 0.0 for copetition, only 90 for testing
 
         this.shoulderMotorMaster = new CANSparkMax(Constants.SHOULDER_MOTOR_MASTER, MotorType.kBrushless);

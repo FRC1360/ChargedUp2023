@@ -21,7 +21,7 @@ public class ShoulderMoveManual extends CommandBase {
     @Override
     public void execute() {
         // TODO Auto-generated method stub
-        this.shoulder.setShoulderNormalizedVoltage(joystick.getAsDouble());
+        //this.shoulder.setShoulderNormalizedVoltage(joystick.getAsDouble());
         SmartDashboard.putNumber("Shoulder_Raw_Output", joystick.getAsDouble());
     }
 

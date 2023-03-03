@@ -14,14 +14,15 @@ public class WristHoldCommand  extends CommandBase{
         addRequirements(wrist);
     }
 
+    
     @Override
     public void execute() {
         double target = this.wrist.getTargetAngle();
         double input = this.wrist.getWristAngle();
         double speed = this.wrist.holdPIDController.calculate(target, input);
         
-        if (Math.abs(speed) > 0.10) speed = 0.0; 
-        this.wrist.setWristNormalizedVoltage(speed + 0.10);         
+        if (Math.abs(speed) > 0.50) speed =  Math.copySign(0.5, speed); 
+        this.wrist.setWristNormalizedVoltage(speed);         
     }
 
     @Override
