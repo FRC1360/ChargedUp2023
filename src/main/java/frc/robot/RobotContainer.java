@@ -17,7 +17,9 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.arm.ArmGoToPositionCommand;
 import frc.robot.commands.arm.ArmHoldCommand;
+import frc.robot.commands.assembly.AssemblyGoToConeIntakeCommand;
 import frc.robot.commands.assembly.AssemblyGoToPositionCommand;
+import frc.robot.commands.assembly.AssemblyHomePositionCommand;
 import frc.robot.commands.intake.ManualIntakeCommand;
 import frc.robot.commands.intake.ManualPutdownCommand;
 import frc.robot.commands.shoulder.ShoulderGoToPositionCommand;
@@ -103,7 +105,10 @@ public class RobotContainer {
     
     operatorController.back().onTrue(new InstantCommand(armSubsystem::resetEncoder));
 
-    operatorController.a().onTrue(new ArmGoToPositionCommand(armSubsystem, Constants.ARM_POSITION.HIGH_GOAL));
+    operatorController.start().onTrue(new AssemblyHomePositionCommand(shoulderSubsystem, wristSubsystem, armSubsystem)); 
+
+    //operatorController.a().onTrue(new ArmGoToPositionCommand(armSubsystem, Constants.ARM_POSITION.HIGH_GOAL));
+    operatorController.a().onTrue(new AssemblyGoToConeIntakeCommand(shoulderSubsystem, wristSubsystem, armSubsystem)); 
     operatorController.b().onTrue(new ArmGoToPositionCommand(armSubsystem, Constants.ARM_POSITION.MID_GOAL));
     operatorController.x().onTrue(new ArmGoToPositionCommand(armSubsystem, Constants.ARM_POSITION.LOW_GOAL));
 
@@ -115,7 +120,8 @@ public class RobotContainer {
     // operatorController.y().onTrue(new ShoulderGoToPositionCommand(shoulderSubsystem, 90.0));
     operatorController.leftBumper().onTrue(new ShoulderGoToPositionCommand(shoulderSubsystem, 0.0));
     /*operatorController.y().onTrue(new AssemblyGoToPositionCommand(shoulderSubsystem, wristSubsystem, 90.0));
-    operatorController.b().onTrue(new AssemblyGoToPositionCommand(shoulderSubsystem, wristSubsystem, 150.0));
+    operatorController.b().onTrue(new\
+     AssemblyGoToPositionCommand(shoulderSubsystem, wristSubsystem, 150.0));
     operatorController.rightBumper().onTrue(new AssemblyGoToPositionCommand(shoulderSubsystem, wristSubsystem, -50.0));*/
 
     operatorController.povUp().onTrue(new WristGoToPositionCommand(wristSubsystem, 90));

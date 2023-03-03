@@ -40,8 +40,8 @@ public class ArmSubsystem extends SubsystemBase {
         this.armMotorMaster.restoreFactoryDefaults();
         this.armMotorSlave.restoreFactoryDefaults();
 
-        this.armMotorMaster.setIdleMode(IdleMode.kBrake);
-        this.armMotorSlave.setIdleMode(IdleMode.kBrake);
+        this.armMotorMaster.setIdleMode(IdleMode.kCoast);
+        this.armMotorSlave.setIdleMode(IdleMode.kCoast);
         
         //this.armMotorSlave.follow(this.armMotorMaster);
     }

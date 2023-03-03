@@ -37,7 +37,7 @@ public class WristSubsystem extends SubsystemBase {
     public WristSubsystem(ShoulderWristMessenger shoulderWristMessenger, DoubleSupplier manualOffset, BooleanSupplier manualOffsetEnable) {
         this.wristMotor = new CANSparkMax(Constants.WRIST_MOTOR, MotorType.kBrushless);
 
-        this.wristOffset = 90.0;
+        this.wristOffset = Constants.WRIST_HOME_ANGLE;
         // kP = 0.00556
         this.holdPIDController = new OrbitPID(0.007, 0.000005, 0);
         this.movePIDController = new OrbitPID(0.007, 0.000005, 0);  // TODO - Tune
@@ -46,7 +46,7 @@ public class WristSubsystem extends SubsystemBase {
         this.shoulderWristMessenger = shoulderWristMessenger;
 
         this.wristMotor.restoreFactoryDefaults();
-        this.wristMotor.setIdleMode(IdleMode.kBrake);
+        this.wristMotor.setIdleMode(IdleMode.kCoast);
         this.wristMotor.setInverted(true);
 
         this.cacheOffset = 0.0;
@@ -143,6 +143,7 @@ public class WristSubsystem extends SubsystemBase {
 
         SmartDashboard.putNumber("Wrist_Target_Angle", this.getTargetAngle());
         SmartDashboard.putNumber("Wrist_Angle", this.getWristAngle());
+        SmartDashboard.putNumber("Wrist_NEO_Encoder", this.getMotorRotations()); 
         SmartDashboard.putNumber("Wrist_Motor_Rotations", this.getMotorRotations());
         SmartDashboard.putNumber("Wrist_Cache_Offset", this.getCacheOffset());
         SmartDashboard.putNumber("Wrist_Manual_Offset", this.manualOffset.getAsDouble());

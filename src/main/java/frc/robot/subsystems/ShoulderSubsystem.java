@@ -52,8 +52,8 @@ public class ShoulderSubsystem extends SubsystemBase {
         this.shoulderMotorMaster.restoreFactoryDefaults();
         this.shoulderMotorSlave.restoreFactoryDefaults();
 
-        this.shoulderMotorMaster.setIdleMode(IdleMode.kBrake);
-        this.shoulderMotorSlave.setIdleMode(IdleMode.kBrake);
+        this.shoulderMotorMaster.setIdleMode(IdleMode.kCoast);
+        this.shoulderMotorSlave.setIdleMode(IdleMode.kCoast);
 
         this.shoulderMotorMaster.setSmartCurrentLimit(80);
         this.shoulderMotorSlave.setSmartCurrentLimit(80);

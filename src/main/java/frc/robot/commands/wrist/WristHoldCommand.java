@@ -21,7 +21,9 @@ public class WristHoldCommand  extends CommandBase{
         double input = this.wrist.getWristAngle();
         double speed = this.wrist.holdPIDController.calculate(target, input);
         
-        if (Math.abs(speed) > 0.50) speed =  Math.copySign(0.5, speed); 
+        speed = speed + 0.2;
+
+        //if (Math.abs(speed) > 0.50) speed =  Math.copySign(0.5, speed); 
         this.wrist.setWristNormalizedVoltage(speed);         
     }
 
