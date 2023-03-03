@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ProxyCommand;
 import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.DefaultDriveCommand;
@@ -38,7 +39,8 @@ import frc.robot.subsystems.IntakeSubsystem;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-  private final XboxController m_controller = new XboxController(0);
+  private final CommandJoystick left_controller = new CommandJoystick(0);
+  private final CommandJoystick right_controller = new CommandJoystick(1);
   private final CommandXboxController operatorController = new CommandXboxController(1);
 
   // The robot's subsystems and commands are defined here...
@@ -70,9 +72,9 @@ public class RobotContainer {
     // Right stick X axis -> rotation
     /*m_drivetrainSubsystem.setDefaultCommand(new DefaultDriveCommand(
             m_drivetrainSubsystem,
-            () -> -modifyAxis(m_controller.getLeftY()) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-            () -> -modifyAxis(m_controller.getLeftX()) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-            () -> modifyAxis(m_controller.getRightX()) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
+            () -> -modifyAxis(left_controller.getY()) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+            () -> -modifyAxis(left_controller.getX()) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+            () -> modifyAxis(right_controller.getX()) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
     ));*/
 
     //shoulderSubsystem.setDefaultCommand(new ShoulderHoldCommand(shoulderSubsystem));
@@ -117,13 +119,15 @@ public class RobotContainer {
     // operatorController.povUp().onTrue(new WristGoToPositionCommand(wristSubsystem, 90));
     // operatorController.povLeft().onTrue(new WristGoToPositionCommand(wristSubsystem, 45));
     // operatorController.povRight().onTrue(new WristGoToPositionCommand(wristSubsystem, 135));
-
+    /* 
     new Trigger(m_controller::getBackButton)
             .onTrue(new InstantCommand(m_drivetrainSubsystem::zeroGyroscope));
     new Trigger(() -> m_controller.getRightTriggerAxis() > 0)
             .onTrue(new ManualIntakeCommand(intake, () -> m_controller.getRightTriggerAxis()));
     new Trigger(() -> m_controller.getLeftTriggerAxis() > 0)
             .onTrue(new ManualPutdownCommand(intake, () -> m_controller.getLeftTriggerAxis()));
+
+            */
   }
 
   
