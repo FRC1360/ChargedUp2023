@@ -82,7 +82,7 @@ public class RobotContainer {
       () -> modifyAxis(operatorController.getLeftY()) ));*/
     wristSubsystem.setDefaultCommand(new WristHoldCommand(wristSubsystem));
 
-    //armSubsystem.setDefaultCommand(new ArmHoldCommand(this.armSubsystem));
+    armSubsystem.setDefaultCommand(new ArmHoldCommand(this.armSubsystem));
 
 
     // Configure the button bindings
@@ -101,24 +101,26 @@ public class RobotContainer {
             // No requirements because we don't need to interrupt anything
             .onTrue(new InstantCommand(m_drivetrainSubsystem::zeroGyroscope));*/
     
-    operatorController.back().onTrue(getRetractArmCommand());
+    operatorController.back().onTrue(new InstantCommand(armSubsystem::resetEncoder));
 
-    // operatorController.a().onTrue(new ArmGoToPositionCommand(armSubsystem, Constants.ARM_POSITION.HIGH_GOAL));
-    // operatorController.b().onTrue(new ArmGoToPositionCommand(armSubsystem, Constants.ARM_POSITION.MID_GOAL));
-    // operatorController.x().onTrue(new ArmGoToPositionCommand(armSubsystem, Constants.ARM_POSITION.LOW_GOAL));
+    operatorController.a().onTrue(new ArmGoToPositionCommand(armSubsystem, Constants.ARM_POSITION.HIGH_GOAL));
+    operatorController.b().onTrue(new ArmGoToPositionCommand(armSubsystem, Constants.ARM_POSITION.MID_GOAL));
+    operatorController.x().onTrue(new ArmGoToPositionCommand(armSubsystem, Constants.ARM_POSITION.LOW_GOAL));
+
+    operatorController.y().onTrue(getRetractArmCommand()); 
 
     //operatorController.a().onTrue(new InstantCommand(shoulderSubsystem::resetMotorRotations));
 
-    operatorController.x().onTrue(new ShoulderGoToPositionCommand(shoulderSubsystem, 45.0));
-    operatorController.y().onTrue(new ShoulderGoToPositionCommand(shoulderSubsystem, 90.0));
-    operatorController.b().onTrue(new ShoulderGoToPositionCommand(shoulderSubsystem, 0.0));
+    operatorController.rightBumper().onTrue(new ShoulderGoToPositionCommand(shoulderSubsystem, 45.0));
+    // operatorController.y().onTrue(new ShoulderGoToPositionCommand(shoulderSubsystem, 90.0));
+    operatorController.leftBumper().onTrue(new ShoulderGoToPositionCommand(shoulderSubsystem, 0.0));
     /*operatorController.y().onTrue(new AssemblyGoToPositionCommand(shoulderSubsystem, wristSubsystem, 90.0));
     operatorController.b().onTrue(new AssemblyGoToPositionCommand(shoulderSubsystem, wristSubsystem, 150.0));
     operatorController.rightBumper().onTrue(new AssemblyGoToPositionCommand(shoulderSubsystem, wristSubsystem, -50.0));*/
 
-    // operatorController.povUp().onTrue(new WristGoToPositionCommand(wristSubsystem, 90));
-    // operatorController.povLeft().onTrue(new WristGoToPositionCommand(wristSubsystem, 45));
-    // operatorController.povRight().onTrue(new WristGoToPositionCommand(wristSubsystem, 135));
+    operatorController.povUp().onTrue(new WristGoToPositionCommand(wristSubsystem, 90));
+    operatorController.povLeft().onTrue(new WristGoToPositionCommand(wristSubsystem, 45));
+    operatorController.povRight().onTrue(new WristGoToPositionCommand(wristSubsystem, 135));
     /* 
     new Trigger(m_controller::getBackButton)
             .onTrue(new InstantCommand(m_drivetrainSubsystem::zeroGyroscope));

@@ -93,7 +93,7 @@ public class Robot extends TimedRobot {
     m_robotContainer.wristSubsystem.holdPIDController.reset();
     m_robotContainer.shoulderSubsystem.holdPIDController.reset();
 
-    //m_robotContainer.getRetractArmCommand().schedule(); 
+    m_robotContainer.getRetractArmCommand().schedule(); 
   }
 
   /** This function is called periodically during operator control. */
