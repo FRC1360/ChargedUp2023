@@ -78,7 +78,7 @@ public class RobotContainer {
     shoulderSubsystem.setDefaultCommand(new ShoulderHoldCommand(shoulderSubsystem));
     /*shoulderSubsystem.setDefaultCommand(new ShoulderMoveManual(shoulderSubsystem,
       () -> modifyAxis(operatorController.getLeftY()) ));*/
-    wristSubsystem.setDefaultCommand(new WristHoldCommand(wristSubsystem));
+    //wristSubsystem.setDefaultCommand(new WristHoldCommand(wristSubsystem));
 
     armSubsystem.setDefaultCommand(new ArmHoldCommand(this.armSubsystem));
 
@@ -114,9 +114,9 @@ public class RobotContainer {
     operatorController.b().onTrue(new AssemblyGoToPositionCommand(shoulderSubsystem, wristSubsystem, 150.0));
     operatorController.rightBumper().onTrue(new AssemblyGoToPositionCommand(shoulderSubsystem, wristSubsystem, -50.0));*/
 
-    operatorController.povUp().onTrue(new WristGoToPositionCommand(wristSubsystem, 90));
-    operatorController.povLeft().onTrue(new WristGoToPositionCommand(wristSubsystem, 45));
-    operatorController.povRight().onTrue(new WristGoToPositionCommand(wristSubsystem, 135));
+    // operatorController.povUp().onTrue(new WristGoToPositionCommand(wristSubsystem, 90));
+    // operatorController.povLeft().onTrue(new WristGoToPositionCommand(wristSubsystem, 45));
+    // operatorController.povRight().onTrue(new WristGoToPositionCommand(wristSubsystem, 135));
     new Trigger(m_controller::getBackButton)
             .onTrue(new InstantCommand(m_drivetrainSubsystem::zeroGyroscope));
     new Trigger(() -> m_controller.getRightTriggerAxis() > 0)

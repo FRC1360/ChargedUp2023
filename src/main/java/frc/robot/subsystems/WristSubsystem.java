@@ -29,7 +29,6 @@ public class WristSubsystem extends SubsystemBase {
     private ShoulderWristMessenger shoulderWristMessenger;
 
     private double cacheOffset;
-
     private DoubleSupplier manualOffset;
     private BooleanSupplier manualOffsetEnable;
 
