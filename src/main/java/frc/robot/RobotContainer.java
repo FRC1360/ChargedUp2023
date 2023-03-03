@@ -77,7 +77,7 @@ public class RobotContainer {
             () -> modifyAxis(right_controller.getX()) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
     ));*/
 
-    //shoulderSubsystem.setDefaultCommand(new ShoulderHoldCommand(shoulderSubsystem));
+    shoulderSubsystem.setDefaultCommand(new ShoulderHoldCommand(shoulderSubsystem));
     /*shoulderSubsystem.setDefaultCommand(new ShoulderMoveManual(shoulderSubsystem,
       () -> modifyAxis(operatorController.getLeftY()) ));*/
     wristSubsystem.setDefaultCommand(new WristHoldCommand(wristSubsystem));
