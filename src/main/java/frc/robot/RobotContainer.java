@@ -109,8 +109,8 @@ public class RobotContainer {
 
     //operatorController.a().onTrue(new ArmGoToPositionCommand(armSubsystem, Constants.ARM_POSITION.HIGH_GOAL));
     operatorController.a().onTrue(new AssemblyGoToConeIntakeCommand(shoulderSubsystem, wristSubsystem, armSubsystem)); 
-    operatorController.b().onTrue(new ArmGoToPositionCommand(armSubsystem, Constants.ARM_POSITION.MID_GOAL));
-    operatorController.x().onTrue(new ArmGoToPositionCommand(armSubsystem, Constants.ARM_POSITION.LOW_GOAL));
+    operatorController.b().onTrue(new ArmGoToPositionCommand(armSubsystem, shoulderSubsystem, Constants.ARM_POSITION.MID_GOAL));
+    operatorController.x().onTrue(new ArmGoToPositionCommand(armSubsystem, shoulderSubsystem, Constants.ARM_POSITION.LOW_GOAL));
 
     operatorController.y().onTrue(getRetractArmCommand()); 
 
@@ -150,7 +150,7 @@ public class RobotContainer {
   }
 
   public Command getRetractArmCommand() { 
-    return new ArmGoToPositionCommand(armSubsystem, 0.0); 
+    return new ArmGoToPositionCommand(armSubsystem, shoulderSubsystem, 0.0); 
   }
 
   private static double deadband(double value, double deadband) {

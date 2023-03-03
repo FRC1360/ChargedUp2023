@@ -23,7 +23,7 @@ public class AssemblyGoToConeIntakeCommand extends SequentialCommandGroup {
             .raceWith(new ShoulderHoldCommand(shoulder))
             .raceWith(new ArmHoldCommand(arm)), 
 
-                    new ArmGoToPositionCommand(arm, -18.3)
+                    new ArmGoToPositionCommand(arm, shoulder, -18.3)
             .raceWith(new ShoulderHoldCommand(shoulder))
             .raceWith(new WristHoldCommand(wrist))
             ); 

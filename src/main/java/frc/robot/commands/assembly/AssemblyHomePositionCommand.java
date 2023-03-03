@@ -18,7 +18,7 @@ public class AssemblyHomePositionCommand extends SequentialCommandGroup {
         addCommands(new WristGoToPositionCommand(wrist, Constants.WRIST_HOME_ANGLE)
                 .raceWith(new ShoulderHoldCommand(shoulder))
                 .raceWith(new ArmHoldCommand(arm)), 
-            new ArmGoToPositionCommand(arm, 0)
+            new ArmGoToPositionCommand(arm, shoulder, 0)
                 .raceWith(new ShoulderHoldCommand(shoulder))
                 .raceWith(new WristHoldCommand(wrist)), 
             new ShoulderGoToPositionCommand(shoulder, 0)
