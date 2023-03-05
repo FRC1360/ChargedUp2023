@@ -39,14 +39,13 @@ public class WristSubsystem extends SubsystemBase {
 
         this.wristOffset = Constants.WRIST_HOME_ANGLE;
         // kP = 0.00556
-        this.holdPIDController = new OrbitPID(0.007, 0.000005, 0);
+        this.holdPIDController = new OrbitPID(0.02, 0.000005, 0);
         this.movePIDController = new OrbitPID(0.007, 0.000005, 0);  // TODO - Tune
         this.wristMotionProfileConstraints = new TrapezoidProfile.Constraints(200.0, 100.0);  // TODO - Tune
-
         this.shoulderWristMessenger = shoulderWristMessenger;
 
         this.wristMotor.restoreFactoryDefaults();
-        this.wristMotor.setIdleMode(IdleMode.kCoast);
+        this.wristMotor.setIdleMode(IdleMode.kBrake);
         this.wristMotor.setInverted(true);
 
         this.cacheOffset = 0.0;
@@ -150,6 +149,7 @@ public class WristSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Wrist_Offset", this.getWristOffset());
         SmartDashboard.putNumber("Wrist_Absolute_Encoder_Relative", this.absoluteEncoder.get());
         SmartDashboard.putNumber("Wrist_Absolute_Encoder_Absolute", this.absoluteEncoder.getAbsolutePosition());
+
     }
     
 }

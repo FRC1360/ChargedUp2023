@@ -28,6 +28,8 @@ public class ShoulderGoToPositionCommand extends CommandBase {
     public void initialize() {
         this.shoulder.movePIDController.reset();
         this.shoulder.setTargetAngle(angle);
+
+        System.out.println("Shoulder angle set to: " + this.shoulder.getTargetAngle()); 
         
         this.startState = new TrapezoidProfile.State(this.shoulder.getShoulderAngle(), 0.0);
         this.endState = new TrapezoidProfile.State(this.shoulder.getTargetAngle(), 0.0);

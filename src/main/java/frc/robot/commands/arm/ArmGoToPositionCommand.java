@@ -58,7 +58,7 @@ public class ArmGoToPositionCommand extends CommandBase {
 
         double speed = this.arm.movePIDController.calculate(target, input);
 
-        double kF = 0.18 * Math.cos(Math.toRadians(this.shoulder.getShoulderAngle())); 
+        double kF = -0.18 * Math.cos(Math.toRadians(this.shoulder.getShoulderAngle())); 
        
         SmartDashboard.putNumber("Arm_Move_Speed", speed); 
 

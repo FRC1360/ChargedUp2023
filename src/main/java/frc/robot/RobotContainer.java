@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.autos.DriveStraightAuto;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.arm.ArmGoToPositionCommand;
 import frc.robot.commands.arm.ArmHoldCommand;
@@ -43,10 +44,10 @@ import frc.robot.subsystems.IntakeSubsystem;
 public class RobotContainer {
   private final CommandJoystick left_controller = new CommandJoystick(0);
   private final CommandJoystick right_controller = new CommandJoystick(1);
-  private final CommandXboxController operatorController = new CommandXboxController(1);
+  private final CommandXboxController operatorController = new CommandXboxController(2);
 
   // The robot's subsystems and commands are defined here...
-  private final DrivetrainSubsystem m_drivetrainSubsystem = new DrivetrainSubsystem();
+  public final DrivetrainSubsystem m_drivetrainSubsystem = new DrivetrainSubsystem();
   public final ShoulderSubsystem shoulderSubsystem = new ShoulderSubsystem(() -> operatorController.getRightY()*Constants.SHOULDER_MANUAL_OVERRIDE_RANGE, operatorController.leftBumper());
   private final ShoulderSubsystem.ShoulderWristMessenger messenger = shoulderSubsystem.new ShoulderWristMessenger();
 
@@ -59,9 +60,9 @@ public class RobotContainer {
   // private final ManualIntakeCommand ManualIntakeCommand = new ManualIntakeCommand(intake, 5);
   // private final ManualPutdownCommand ManualPutdownCommand = new ManualPutdownCommand(intake, 5);
 
-  /*private final AutoSequence auto = new AutoSequence(m_drivetrainSubsystem); 
+  private final DriveStraightAuto driveStraightAuto = new DriveStraightAuto(m_drivetrainSubsystem, wristSubsystem); 
 
-
+  /* 
   private final Simulator sim = new Simulator(m_drivetrainSubsystem); */
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -72,14 +73,14 @@ public class RobotContainer {
     // Left stick Y axis -> forward and backwards movement
     // Left stick X axis -> left and right movement
     // Right stick X axis -> rotation
-    /*m_drivetrainSubsystem.setDefaultCommand(new DefaultDriveCommand(
+    m_drivetrainSubsystem.setDefaultCommand(new DefaultDriveCommand(
             m_drivetrainSubsystem,
             () -> -modifyAxis(left_controller.getY()) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
             () -> -modifyAxis(left_controller.getX()) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
             () -> modifyAxis(right_controller.getX()) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
-    ));*/
+    ));
 
-    shoulderSubsystem.setDefaultCommand(new ShoulderHoldCommand(shoulderSubsystem));
+    shoulderSubsystem.setDefaultCommand(new ShoulderHoldCommand(shoulderSubsystem, () -> this.operatorController.getRightTriggerAxis()));
     /*shoulderSubsystem.setDefaultCommand(new ShoulderMoveManual(shoulderSubsystem,
       () -> modifyAxis(operatorController.getLeftY()) ));*/
     wristSubsystem.setDefaultCommand(new WristHoldCommand(wristSubsystem));
@@ -103,6 +104,7 @@ public class RobotContainer {
             // No requirements because we don't need to interrupt anything
             .onTrue(new InstantCommand(m_drivetrainSubsystem::zeroGyroscope));*/
     
+    left_controller.button(1).onTrue(new InstantCommand(m_drivetrainSubsystem::zeroGyroscope)); 
     operatorController.back().onTrue(new InstantCommand(armSubsystem::resetEncoder));
 
     operatorController.start().onTrue(new AssemblyHomePositionCommand(shoulderSubsystem, wristSubsystem, armSubsystem)); 
@@ -127,6 +129,8 @@ public class RobotContainer {
     operatorController.povUp().onTrue(new WristGoToPositionCommand(wristSubsystem, 90));
     operatorController.povLeft().onTrue(new WristGoToPositionCommand(wristSubsystem, 45));
     operatorController.povRight().onTrue(new WristGoToPositionCommand(wristSubsystem, 135));
+    
+    
     /* 
     new Trigger(operatorController::getBackButton)
             .onTrue(new InstantCommand(m_drivetrainSubsystem::zeroGyroscope));
@@ -146,8 +150,11 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    return null;
+    //return null;
+    return driveStraightAuto;  
   }
+
+  
 
   public Command getRetractArmCommand() { 
     return new ArmGoToPositionCommand(armSubsystem, shoulderSubsystem, 0.0); 

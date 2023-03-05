@@ -14,6 +14,10 @@ public class WristHoldCommand  extends CommandBase{
         addRequirements(wrist);
     }
 
+    @Override
+    public void initialize() { 
+        this.wrist.holdPIDController.reset(); 
+    }
     
     @Override
     public void execute() {

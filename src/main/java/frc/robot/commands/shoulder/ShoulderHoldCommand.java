@@ -1,5 +1,7 @@
 package frc.robot.commands.shoulder;
 
+import java.util.function.DoubleSupplier;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ShoulderSubsystem;
@@ -7,9 +9,11 @@ import frc.robot.subsystems.ShoulderSubsystem;
 public class ShoulderHoldCommand extends CommandBase {
     
     private ShoulderSubsystem shoulder;
+    private DoubleSupplier intakeSpeed;
 
-    public ShoulderHoldCommand(ShoulderSubsystem shoulder) {
+    public ShoulderHoldCommand(ShoulderSubsystem shoulder, DoubleSupplier intakeSpeed) {
         this.shoulder = shoulder;
+        this.intakeSpeed = intakeSpeed;
         addRequirements(shoulder);
     }
 
@@ -28,7 +32,14 @@ public class ShoulderHoldCommand extends CommandBase {
         if (Math.abs(speed) > 0.25) speed = Math.copySign(0.25, speed); 
 
         // Remember to increase this value and also add kI please
-        double kF = 0.18 * Math.sin(Math.toRadians(this.shoulder.getShoulderAngle()));
+        double kF;
+
+        if(intakeSpeed.getAsDouble() > 0.05) {
+           // kF = -0.2;
+           kF = 0.18 * Math.sin(Math.toRadians(this.shoulder.getShoulderAngle()));
+        } else {
+            kF = 0.18 * Math.sin(Math.toRadians(this.shoulder.getShoulderAngle()));
+        }
 
         this.shoulder.setShoulderNormalizedVoltage(speed + kF);
         //this.shoulder.setShoulderNormalizedVoltage(0.1); 

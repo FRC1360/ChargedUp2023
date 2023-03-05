@@ -38,7 +38,7 @@ public class ShoulderSubsystem extends SubsystemBase {
     private AnalogEncoder absoluteEncoder;
 
     public ShoulderSubsystem(DoubleSupplier manualOffset, BooleanSupplier manualOffsetEnable) {
-        this.holdPIDController = new OrbitPID(0.01, 0.0, 0.0);
+        this.holdPIDController = new OrbitPID(0.045, 0.0, 0.0);
         this.movePIDController = new OrbitPID(0.01, 0.0, 0.0);  // TODO - Tune
 
         // This units are deg / second for velocity and deg / sec^2 for acceleration
@@ -52,8 +52,8 @@ public class ShoulderSubsystem extends SubsystemBase {
         this.shoulderMotorMaster.restoreFactoryDefaults();
         this.shoulderMotorSlave.restoreFactoryDefaults();
 
-        this.shoulderMotorMaster.setIdleMode(IdleMode.kCoast);
-        this.shoulderMotorSlave.setIdleMode(IdleMode.kCoast);
+        this.shoulderMotorMaster.setIdleMode(IdleMode.kBrake);
+        this.shoulderMotorSlave.setIdleMode(IdleMode.kBrake);
 
         this.shoulderMotorMaster.setSmartCurrentLimit(80);
         this.shoulderMotorSlave.setSmartCurrentLimit(80);

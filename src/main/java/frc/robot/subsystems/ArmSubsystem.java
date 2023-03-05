@@ -25,7 +25,7 @@ public class ArmSubsystem extends SubsystemBase {
         this.armMotorMaster = new CANSparkMax(Constants.ARM_MOTOR_MASTER, MotorType.kBrushless);
         this.armMotorSlave = new CANSparkMax(Constants.ARM_MOTOR_SLAVE, MotorType.kBrushless);
 
-        this.holdPIDController = new OrbitPID(0.05, 0.0, 0.0);
+        this.holdPIDController = new OrbitPID(0.065, 0.0, 0.0);
         this.movePIDController = new OrbitPID(0.05, 0.0, 0.0);
 
         /*\
@@ -40,8 +40,8 @@ public class ArmSubsystem extends SubsystemBase {
         this.armMotorMaster.restoreFactoryDefaults();
         this.armMotorSlave.restoreFactoryDefaults();
 
-        this.armMotorMaster.setIdleMode(IdleMode.kCoast);
-        this.armMotorSlave.setIdleMode(IdleMode.kCoast);
+        this.armMotorMaster.setIdleMode(IdleMode.kBrake);
+        this.armMotorSlave.setIdleMode(IdleMode.kBrake);
         
         //this.armMotorSlave.follow(this.armMotorMaster);
     }
@@ -56,7 +56,7 @@ public class ArmSubsystem extends SubsystemBase {
 
     // Returns distance arm has traveled in inches
     public double encoderToDistanceConversion(double encoderPosition) {
-        return encoderPosition * Constants.ARM_GEAR_RATIO * Math.PI * Constants.ARM_DRUM_DIAMETER * Constants.ARM_PULLEY_BLOCK_RATIO;
+        return encoderPosition * Constants.ARM_GEAR_RATIO * Math.PI * Constants.ARM_DRUM_DIAMETER * Constants.ARM_PULLEY_BLOCK_RATIO * (14.0 / 10.0);
     }
 
     public void setArmSpeed(double speed) {

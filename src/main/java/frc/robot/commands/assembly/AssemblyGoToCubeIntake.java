@@ -13,9 +13,9 @@ import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ShoulderSubsystem;
 import frc.robot.subsystems.WristSubsystem;
 
-public class AssemblyGoToConeIntakeCommand extends SequentialCommandGroup {
+public class AssemblyGoToCubeIntake extends SequentialCommandGroup {
     
-    public AssemblyGoToConeIntakeCommand(ShoulderSubsystem shoulder, WristSubsystem wrist, ArmSubsystem arm) { 
+    public AssemblyGoToCubeIntake(ShoulderSubsystem shoulder, WristSubsystem wrist, ArmSubsystem arm) { 
         addCommands(new ShoulderGoToPositionCommand(shoulder, 40)
             .raceWith(new WristHoldCommand(wrist))
             .raceWith(new ArmHoldCommand(arm)), 

@@ -16,10 +16,10 @@ public class AssemblyHomePositionCommand extends SequentialCommandGroup {
     
     public AssemblyHomePositionCommand(ShoulderSubsystem shoulder, WristSubsystem wrist, ArmSubsystem arm) { 
         addCommands(new WristGoToPositionCommand(wrist, Constants.WRIST_HOME_ANGLE)
-                .raceWith(new ShoulderHoldCommand(shoulder))
+                .raceWith(new ShoulderHoldCommand(shoulder, () -> 0.0))
                 .raceWith(new ArmHoldCommand(arm)), 
             new ArmGoToPositionCommand(arm, shoulder, 0)
-                .raceWith(new ShoulderHoldCommand(shoulder))
+                .raceWith(new ShoulderHoldCommand(shoulder, () -> 0.0))
                 .raceWith(new WristHoldCommand(wrist)), 
             new ShoulderGoToPositionCommand(shoulder, 0)
                 .raceWith(new WristHoldCommand(wrist))
