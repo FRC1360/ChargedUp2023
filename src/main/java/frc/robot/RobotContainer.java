@@ -6,11 +6,14 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ProxyCommand;
 import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -28,6 +31,7 @@ import frc.robot.commands.shoulder.ShoulderHoldCommand;
 import frc.robot.commands.shoulder.ShoulderMoveManual;
 import frc.robot.commands.wrist.WristGoToPositionCommand;
 import frc.robot.commands.wrist.WristHoldCommand;
+import frc.robot.simulation.Simulator;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.ShoulderSubsystem;
@@ -60,10 +64,12 @@ public class RobotContainer {
   // private final ManualIntakeCommand ManualIntakeCommand = new ManualIntakeCommand(intake, 5);
   // private final ManualPutdownCommand ManualPutdownCommand = new ManualPutdownCommand(intake, 5);
 
-  private final DriveStraightAuto driveStraightAuto = new DriveStraightAuto(m_drivetrainSubsystem, wristSubsystem); 
+  private final SendableChooser<Command> autoChooser = new SendableChooser<Command>(); 
 
-  /* 
-  private final Simulator sim = new Simulator(m_drivetrainSubsystem); */
+  private final DriveStraightAuto driveStraightAuto = new DriveStraightAuto(m_drivetrainSubsystem, wristSubsystem); 
+  
+   
+  //private final Simulator sim = new Simulator(m_drivetrainSubsystem); 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -87,9 +93,15 @@ public class RobotContainer {
 
     armSubsystem.setDefaultCommand(new ArmHoldCommand(this.armSubsystem));
 
-
+    initializeRobot();
     // Configure the button bindings
     configureButtonBindings();
+  }
+
+  public void initializeRobot() { 
+    autoChooser.addOption("Tip cone & drive straight auto", driveStraightAuto);
+    autoChooser.setDefaultOption("No auto", new WaitCommand(15));
+    SmartDashboard.putData(autoChooser);
   }
 
   /**
@@ -151,7 +163,7 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
     //return null;
-    return driveStraightAuto;  
+    return autoChooser.getSelected();  
   }
 
   
