@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.autos.DriveStraightAuto;
+import frc.robot.autos.EngageStationAuto;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.arm.ArmGoToPositionCommand;
 import frc.robot.commands.arm.ArmHoldCommand;
@@ -67,8 +68,7 @@ public class RobotContainer {
   private final SendableChooser<Command> autoChooser = new SendableChooser<Command>(); 
 
   private final DriveStraightAuto driveStraightAuto = new DriveStraightAuto(m_drivetrainSubsystem, wristSubsystem); 
-  
-   
+  private final EngageStationAuto engageStationAuto = new EngageStationAuto(m_drivetrainSubsystem); 
   //private final Simulator sim = new Simulator(m_drivetrainSubsystem); 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -100,6 +100,7 @@ public class RobotContainer {
 
   public void initializeRobot() { 
     autoChooser.addOption("Tip cone & drive straight auto", driveStraightAuto);
+    autoChooser.addOption("Engage charge station auto", engageStationAuto);
     autoChooser.setDefaultOption("No auto", new WaitCommand(15));
     SmartDashboard.putData(autoChooser);
   }
