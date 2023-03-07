@@ -29,9 +29,13 @@ public class Drive extends CommandBase {
 
     private OrbitTimer timer;  
 
+    // Two PIDs used as values for x and y need to be independently calculated (one might be at target, other not)
     private OrbitPID driveXPID = new OrbitPID(1.0, 0.0, 0.0); 
 
     private OrbitPID driveYPID = new OrbitPID(1.0, 0.0, 0.0); 
+
+    private double kF_X = 0.0; 
+    private double kF_Y = 0.0;
 
     public Drive(DrivetrainSubsystem dt, double xMeters, double yMeters) { 
         // Note: positive xMeters means to upwards, positive yMeters is left 
@@ -46,12 +50,11 @@ public class Drive extends CommandBase {
 
         */
         this.speeds = new ChassisSpeeds(0.0, 0.0, 0.0); // 0 Rotation
-        //TODO: Check if Translation2d measures in meters
 
         Translation2d curPose = dt.getTranslation();  
         this.targetPose = curPose.plus(new Translation2d(xMeters, yMeters));
         
-        TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(3.0, 12.0); 
+        TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(4.5, 4.0); 
 
         TrapezoidProfile.State xStart = new TrapezoidProfile.State(curPose.getX(), 0.0); 
         TrapezoidProfile.State xEnd = new TrapezoidProfile.State(targetPose.getX(), 0.0);
@@ -60,7 +63,13 @@ public class Drive extends CommandBase {
         TrapezoidProfile.State yEnd = new TrapezoidProfile.State(targetPose.getY(), 0.0);
 
         this.xMotionProfile = new TrapezoidProfile(constraints, xEnd, xStart); 
-        this.yMotionProfile = new TrapezoidProfile(constraints, yEnd, yStart);
+        this.yMotionProfile = new TrapezoidProfile(constraints, yEnd, yStart); 
+
+        // double xDifference = targetPose.getX() - curPose.getX(); 
+        // double yDifference = targetPose.getY() - curPose.getY(); 
+
+        // if (xDifference != 0.0) kF_X = Math.copySign(0.3, xDifference); 
+        // if (yDifference != 0.0) kF_Y = Math.copySign(0.3, yDifference); 
 
         this.timer = new OrbitTimer(); 
 
@@ -73,11 +82,18 @@ public class Drive extends CommandBase {
         SmartDashboard.putBoolean("Driving", true);
 
         this.timer.start(); 
+        this.driveXPID.reset();
+        this.driveYPID.reset();
     }
 
     @Override
     public void execute() { 
         SmartDashboard.putNumber("time", this.timer.getTimeDeltaSec());
+
+        SmartDashboard.putNumber("P XDrive Term", this.driveXPID.getPTerm()); 
+        SmartDashboard.putNumber("I XDrive Term", this.driveXPID.getITerm()); 
+        SmartDashboard.putNumber("D XDrive Term", this.driveXPID.getDTerm());
+
 
         TrapezoidProfile.State xPosition = this.xMotionProfile.calculate(this.timer.getTimeDeltaSec()); 
         TrapezoidProfile.State yPosition = this.yMotionProfile.calculate(this.timer.getTimeDeltaSec()); 
@@ -85,18 +101,17 @@ public class Drive extends CommandBase {
         SmartDashboard.putNumber("x pos calc", xPosition.velocity); 
         SmartDashboard.putNumber("y pos calc", yPosition.velocity); 
 
-        SmartDashboard.putNumber("pid", driveXPID.getPTerm());
         SmartDashboard.putNumber("curXSpeed", speeds.vxMetersPerSecond); 
         SmartDashboard.putNumber("curYSpeed", speeds.vyMetersPerSecond); 
 
         double xSpeed = driveXPID.calculate(xPosition.velocity, speeds.vxMetersPerSecond); 
         double ySpeed = driveYPID.calculate(yPosition.velocity, speeds.vyMetersPerSecond); 
 
-        SmartDashboard.putNumber("x speed", xSpeed); 
-        SmartDashboard.putNumber("y speed", ySpeed); 
+        SmartDashboard.putNumber("x speed", xSpeed + kF_X); 
+        SmartDashboard.putNumber("y speed", ySpeed + kF_Y); 
 
-        speeds.vxMetersPerSecond = xSpeed; 
-        speeds.vyMetersPerSecond = ySpeed;
+        speeds.vxMetersPerSecond = xSpeed + kF_X; 
+        speeds.vyMetersPerSecond = ySpeed + kF_Y;
 
         dt.drive(speeds);
     }

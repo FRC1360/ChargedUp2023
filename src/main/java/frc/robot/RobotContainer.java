@@ -64,7 +64,7 @@ public class RobotContainer {
   public void initializeRobot() { 
     autoChooser.addOption("Both sides auto", auto);
     autoChooser.setDefaultOption("One side, two cargo, balance", auto2);
-    SmartDashboard.putData(autoChooser);
+    SmartDashboard.putData("Auto Chooser", autoChooser);
   }
   /**
    * Use this method to define your button->command mappings. Buttons can be created by

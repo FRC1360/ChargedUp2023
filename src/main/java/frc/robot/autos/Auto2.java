@@ -12,7 +12,11 @@ public class Auto2 extends SequentialCommandGroup {
     public Auto2(DrivetrainSubsystem dt) { 
         // Note: Rotation doesn't work in the simulator! But something to think out in real world
         // Relative to starting position
-        addCommands(new CenterToScore(dt, Direction.RIGHT),
+        addCommands(new Drive(dt, 8.0, 0.0), 
+                    new Drive(dt, -8.0, 0.0), 
+                    new CenterToScore(dt, Direction.RIGHT)
+            
+        /*new CenterToScore(dt, Direction.RIGHT),
 
                     new Drive(dt, 4.3, 0.0), 
                     new Drive(dt, -4.3, 0.0), 
@@ -25,6 +29,8 @@ public class Auto2 extends SequentialCommandGroup {
                     new Drive(dt, -1.3, 1.3), 
                     new Drive(dt, -2.7, 0.0), 
                     new Drive(dt, 0.0, -0.7)
+
+                    */
 
                     // new Drive(dt, -0.5, 0.0), 
                     // new Drive(dt, 0.5, 0.0),
