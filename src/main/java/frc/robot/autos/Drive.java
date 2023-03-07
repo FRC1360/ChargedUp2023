@@ -14,7 +14,7 @@ public class Drive extends CommandBase {
 
     // To scale down the meters for speed (m/sec)
     // Aka how much secs it takes to complete 
-    private double scaleFactor = 3; 
+    private double scaleFactor = 6; 
 
     private Translation2d targetPose; 
 
