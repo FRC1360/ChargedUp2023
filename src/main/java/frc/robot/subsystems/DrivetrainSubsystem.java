@@ -192,7 +192,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
     m_backRightModule.set(states[3].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, states[3].angle.getRadians());    
 
     odometry.update(getGyroscopeRotation(), states);
-    
-    SmartDashboard.putNumber("Drivetrain_gyro", getGyroscopeRotation().getDegrees()); 
+
+    SmartDashboard.putNumber("Drivetrain_gyro", getGyroscopeRotation().getDegrees());  
+    SmartDashboard.putNumber("Drivetrain_Speed_X", m_chassisSpeeds.vxMetersPerSecond); 
+    SmartDashboard.putNumber("Drivetrain_Speed_Y", m_chassisSpeeds.vyMetersPerSecond); 
   } 
 }
