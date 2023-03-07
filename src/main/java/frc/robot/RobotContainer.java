@@ -102,7 +102,7 @@ public class RobotContainer {
     autoChooser.addOption("Tip cone & drive straight auto", driveStraightAuto);
     autoChooser.addOption("Engage charge station auto", engageStationAuto);
     autoChooser.setDefaultOption("No auto", new WaitCommand(15));
-    SmartDashboard.putData(autoChooser);
+    SmartDashboard.putData("Auto Chooser", autoChooser);
   }
 
   /**
