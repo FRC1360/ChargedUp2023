@@ -14,8 +14,8 @@ import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.autos.Auto2;
-import frc.robot.autos.AutoSequence;
+import frc.robot.autos.LeftSide2ConeAuto;
+import frc.robot.autos.RightSide2ConeAuto;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.simulation.Simulator;
 import frc.robot.subsystems.DrivetrainSubsystem;
@@ -32,9 +32,9 @@ public class RobotContainer {
 
   private final XboxController m_controller = new XboxController(0);
 
-  private final AutoSequence auto = new AutoSequence(m_drivetrainSubsystem); 
+  private final RightSide2ConeAuto rightConeAuto = new RightSide2ConeAuto(m_drivetrainSubsystem); 
 
-  private final Auto2 auto2 = new Auto2(m_drivetrainSubsystem);
+  private final LeftSide2ConeAuto leftConeAuto = new LeftSide2ConeAuto(m_drivetrainSubsystem);
 
   private final Simulator sim = new Simulator(m_drivetrainSubsystem); 
 
@@ -62,8 +62,8 @@ public class RobotContainer {
   }
 
   public void initializeRobot() { 
-    autoChooser.addOption("Both sides auto", auto);
-    autoChooser.setDefaultOption("One side, two cargo, balance", auto2);
+    autoChooser.addOption("Both sides auto", rightConeAuto);
+    autoChooser.setDefaultOption("One side, two cargo, balance", leftConeAuto);
     SmartDashboard.putData("Auto Chooser", autoChooser);
   }
   /**
@@ -86,7 +86,9 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    return autoChooser.getSelected();
+    //return autoChooser.getSelected();
+    return rightConeAuto; 
+    //return leftConeAuto; 
   }
 
   private static double deadband(double value, double deadband) {

@@ -85,7 +85,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
   private ChassisSpeeds m_chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
 
-  private SwerveDriveOdometry2022 odometry = new SwerveDriveOdometry2022(m_kinematics, getGyroscopeRotation(), new Pose2d(2.3, 4.5, Rotation2d.fromDegrees(0)));
+  //private SwerveDriveOdometry2022 odometry = new SwerveDriveOdometry2022(m_kinematics, getGyroscopeRotation(), new Pose2d(2.3, 4.5, Rotation2d.fromDegrees(0)));
+  private SwerveDriveOdometry2022 odometry = new SwerveDriveOdometry2022(m_kinematics, getGyroscopeRotation(), new Pose2d(2.3, 1.5, Rotation2d.fromDegrees(0)));
 
   private OrbitPID drivePID; 
 
@@ -166,15 +167,15 @@ public class DrivetrainSubsystem extends SubsystemBase {
   }
 
   public Pose2d getPose() {
-    return odometry.getPoseMeters();
+    return this.odometry.getPoseMeters();
   }
 
   public Translation2d getTranslation() { 
-    return getPose().getTranslation(); 
+    return this.getPose().getTranslation(); 
   }
 
   public void setPoseOdometry(Pose2d pose) { 
-        odometry = new SwerveDriveOdometry2022(m_kinematics, getGyroscopeRotation(), pose);
+        this.odometry = new SwerveDriveOdometry2022(m_kinematics, getGyroscopeRotation(), pose);
   }
 
   public OrbitPID getDrivePID() { 

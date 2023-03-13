@@ -1,6 +1,5 @@
 package frc.robot.autos.basic; 
 
-import frc.robot.Constants;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.util.OrbitPID;
 import frc.robot.util.OrbitTimer;
@@ -12,7 +11,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
  
-public class Drive extends CommandBase {
+public class DriveToPosition extends CommandBase {
 
     private final DrivetrainSubsystem dt; 
 
@@ -40,24 +39,17 @@ public class Drive extends CommandBase {
 
     private double endSpeed = 0.0; 
 
-    // private final Rotation2d targetAngle;
-
-    // private Rotation2d angToTravel;
-
-    // private double curAngle;
-
-    // private double angle; 
-
-    public Drive(DrivetrainSubsystem dt, double xMeters, double yMeters) { 
+    public DriveToPosition(DrivetrainSubsystem dt, Translation2d targetPose) { 
         this.dt = dt;
-
+        
         this.speeds = new ChassisSpeeds(0.0, 0.0, 0.0); // 0 Rotation
 
         Translation2d curPose = dt.getTranslation();  
-        this.targetPose = curPose.plus(new Translation2d(xMeters, yMeters));
+
+        this.targetPose = targetPose; 
         
-        TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(Constants.Drivetrain.MOTION_PROFILE_MAX_VELOCITY, 
-                                                                                    Constants.Drivetrain.MOTION_PROFILE_MAX_ACCELERATION); 
+        SmartDashboard.putNumber("X Drive", dt.getTranslation().getX()); 
+        TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(6.0, 5.0); 
 
         TrapezoidProfile.State xStart = new TrapezoidProfile.State(curPose.getX(), 0.0); 
         TrapezoidProfile.State xEnd = new TrapezoidProfile.State(targetPose.getX(), 0.0);
@@ -79,21 +71,26 @@ public class Drive extends CommandBase {
         addRequirements(dt); 
     }
 
-    public Drive(DrivetrainSubsystem dt, double xMeters, double yMeters, double startSpeed, double endSpeed) { 
+    public DriveToPosition(DrivetrainSubsystem dt, Translation2d targetPose, double startSpeed, double endSpeed) { 
+        // Note: positive xMeters means to upwards, positive yMeters is left 
         this.dt = dt;
 
         this.speeds = new ChassisSpeeds(0.0, 0.0, 0.0); // 0 Rotation
 
+        System.out.println(dt.getTranslation().getX()); 
         Translation2d curPose = dt.getTranslation();  
-        this.targetPose = curPose.plus(new Translation2d(xMeters, yMeters));
+
+        this.targetPose = targetPose; 
         
-        TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(Constants.Drivetrain.MOTION_PROFILE_MAX_VELOCITY, 
-                                                                                    Constants.Drivetrain.MOTION_PROFILE_MAX_ACCELERATION); 
+        TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(6.0, 4.5); 
 
         TrapezoidProfile.State xStart; 
         TrapezoidProfile.State xEnd; 
 
         this.endSpeed = endSpeed; 
+
+        double xMeters = targetPose.getX() - curPose.getX(); 
+        double yMeters = targetPose.getY() - curPose.getY(); 
 
         if (xMeters != 0.0) xStart = new TrapezoidProfile.State(curPose.getX(), Math.copySign(startSpeed, xMeters)); 
         else xStart = new TrapezoidProfile.State(curPose.getX(), 0.0); 
@@ -121,10 +118,6 @@ public class Drive extends CommandBase {
         this.timer = new OrbitTimer(); 
 
         addRequirements(dt); 
-
-        // this.targetAngle = targetAngle; 
-
-        // this.angToTravel = targetAngle.minus(dt.getPose().getRotation());
     }
 
 
@@ -139,6 +132,7 @@ public class Drive extends CommandBase {
 
     @Override
     public void execute() { 
+        SmartDashboard.putNumber("Odometry X", dt.getTranslation().getX()); 
         SmartDashboard.putNumber("time", this.timer.getTimeDeltaSec());
 
         SmartDashboard.putNumber("P XDrive Term", this.driveXPID.getPTerm()); 
@@ -170,17 +164,13 @@ public class Drive extends CommandBase {
         speeds.vyMetersPerSecond = ySpeed + kF_Y;
 
         dt.drive(speeds);
-
-        // this.angle = this.angToTravel.getRadians()/scaleFactor; 
-        // this.curAngle += this.angle; 
-        // dt.setPoseOdometry(new Pose2d(dt.getTranslation().getX(), dt.getTranslation().getY(), Rotation2d.fromRadians(this.curAngle)));
     }
     
     @Override
     public void end (boolean interrupted) { 
         if (this.endSpeed == 0.0) dt.stop(); 
         SmartDashboard.putBoolean("Driving", false);
-        //dt.setPoseOdometry(new Pose2d(targetPose.getX(), targetPose.getY(), dt.getPose().getRotation())); 
+        dt.setPoseOdometry(new Pose2d(targetPose, Rotation2d.fromDegrees(0))); 
     }
 
     @Override
@@ -190,7 +180,6 @@ public class Drive extends CommandBase {
         //return Math.abs(dt.getTranslation().getDistance(targetPose)) < 0.05;
         return this.xMotionProfile.isFinished(this.timer.getTimeDeltaSec()) 
                && this.yMotionProfile.isFinished(this.timer.getTimeDeltaSec()); 
-            //    && Math.abs(dt.getPose().getRotation().minus(targetAngle).getDegrees()) < 2; 
     }
 
 }

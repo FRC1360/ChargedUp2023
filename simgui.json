@@ -2,6 +2,7 @@
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
+      "/SmartDashboard/Auto Chooser": "String Chooser",
       "/SmartDashboard/Field": "Field2d",
       "/SmartDashboard/SendableChooser[0]": "String Chooser"
     },
@@ -33,7 +34,8 @@
         {
           "axis": [
             {
-              "max": 3.0
+              "max": 4.0,
+              "min": -4.0
             }
           ],
           "height": 332,
