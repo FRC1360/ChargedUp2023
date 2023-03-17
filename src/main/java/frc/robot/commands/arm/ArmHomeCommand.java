@@ -2,7 +2,6 @@ package frc.robot.commands.arm;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants;
 import frc.robot.subsystems.ArmSubsystem;
 
 
@@ -22,23 +21,24 @@ public class ArmHomeCommand extends CommandBase {
 
     @Override
     public void initialize() {
-        this.limitSwitch = new DigitalInput(Constants.LIMIT_SWITCHES.ARM);
+        this.limitSwitch = arm.limitSwitch;
     }
 
     @Override
     public void execute() {
         arm.setArmSpeed(-0.25);
-        if (this.limitSwitch.get()) {
+
+        while (this.limitSwitch.get()) {
             if (!this.limitSwitch.get()) {
                 arm.setArmSpeed(0);
-                return;
+                return;       
             }
         }
-        
+
         arm.resetEncoder();
         arm.setArmSpeed(0.1);
 
-        if (!this.limitSwitch.get()) {
+        while (!this.limitSwitch.get()) {
             if (this.limitSwitch.get()) {
                 arm.setArmSpeed(0);
                 return;
