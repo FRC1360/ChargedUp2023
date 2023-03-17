@@ -7,6 +7,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.util.OrbitPID;
@@ -48,6 +49,7 @@ public class ArmSubsystem extends SubsystemBase {
         this.limitSwitch = new DigitalInput(Constants.LIMIT_SWITCHES.ARM);
 
         //this.armMotorSlave.follow(this.armMotorMaster);
+    
     }
 
     public double getMotorRotations() {
@@ -103,6 +105,13 @@ public class ArmSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Arm_Move_D_Gain", this.movePIDController.getDTerm());
     }
 
-
-
+    public CommandBase armHomeCommand() {
+        return run(() -> setArmSpeed(-0.25)) // Change this speed if homing isnt accurate
+            .until(limitSwitch::get)
+            .andThen(() -> {
+                setArmSpeed(0);
+                resetEncoder();
+            });
+      }
+      
 }
