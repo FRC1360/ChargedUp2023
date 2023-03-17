@@ -91,4 +91,11 @@ public final class Constants {
         public static final double LOW_GOAL = -5.0; 
     }
 
+    public final class LIMIT_SWITCHES {
+        public static final int ARM = 1; // TODO SET THE CORRECT INPUT
+        public static final int SHOULDER = 1; // TODO SET THE CORRECT INPUT
+        public static final int WRIST = 1; // TODO SET THE CORRECT INPUT
+
+    }
+
 }
