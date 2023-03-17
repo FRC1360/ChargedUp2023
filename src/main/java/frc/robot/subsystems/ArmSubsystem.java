@@ -106,10 +106,10 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
     public CommandBase armHomeCommand() {
-        return run(() -> setArmSpeed(-0.25)) // Change this speed if homing isnt accurate
+        return run(() -> setArmSpeed(0.25)) // Change this speed if homing isnt accurate
             .until(limitSwitch::get)
             .andThen(() -> {
-                setArmSpeed(0);
+                setArmSpeed(0.0);
                 resetEncoder();
             });
       }
