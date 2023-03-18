@@ -26,25 +26,9 @@ public class ArmHomeCommand extends CommandBase {
 
     @Override
     public void execute() {
-        arm.setArmSpeed(-0.25);
-
-        while (this.limitSwitch.get()) {
-            if (!this.limitSwitch.get()) {
-                arm.setArmSpeed(0);
-                return;       
-            }
-        }
-
-        arm.resetEncoder();
-        arm.setArmSpeed(0.1);
-
-        while (!this.limitSwitch.get()) {
-            if (this.limitSwitch.get()) {
-                arm.setArmSpeed(0);
-                return;
-            }
-        }
-
+        if (this.limitSwitch.get()) arm.setArmSpeed(0.25);
+        if (!this.limitSwitch.get()) arm.setArmSpeed(0);
+        
         arm.resetEncoder();
         homed = true;
     }
@@ -53,7 +37,4 @@ public class ArmHomeCommand extends CommandBase {
     public boolean isFinished() {
         return homed;
     }
-
-
-    
 }
