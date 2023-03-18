@@ -46,7 +46,7 @@ public class ArmSubsystem extends SubsystemBase {
         this.armMotorMaster.setIdleMode(IdleMode.kBrake);
         this.armMotorSlave.setIdleMode(IdleMode.kBrake);
         
-        this.limitSwitch = new DigitalInput(Constants.LIMIT_SWITCHES.ARM);
+        this.limitSwitch = new DigitalInput(Constants.LIMIT_SWITCH_ARM);
 
         //this.armMotorSlave.follow(this.armMotorMaster);
     
@@ -104,14 +104,5 @@ public class ArmSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Arm_Move_I_Gain", this.movePIDController.getITerm());
         SmartDashboard.putNumber("Arm_Move_D_Gain", this.movePIDController.getDTerm());
     }
-
-    public CommandBase armHomeCommand() {
-        return run(() -> setArmSpeed(0.25)) // Change this speed if homing isnt accurate
-            .until(limitSwitch::get)
-            .andThen(() -> {
-                setArmSpeed(0.0);
-                resetEncoder();
-            });
-      }
       
 }
