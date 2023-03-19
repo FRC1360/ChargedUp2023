@@ -28,7 +28,7 @@ public class ArmHomeCommand extends CommandBase {
     public void execute() {
         if (this.limitSwitch.get()) arm.setArmSpeed(0.25);
         if (!this.limitSwitch.get()) {
-            arm.setArmSpeed(0);
+            arm.setArmSpeed(0.0);
             arm.resetEncoder();
             homed = true;
         }
