@@ -83,7 +83,7 @@ public final class Constants {
     public static final int ARM_MOTOR_SLAVE = 53;
     public static final double ARM_GEAR_RATIO = (11.0 / 52.0) * (30.0 / 68.0) * (18.0 / 36.0);
     public static final double ARM_DRUM_DIAMETER = 2.5;  // Arm Drum Diameter in inches
-    public static final double ARM_PULLEY_BLOCK_RATIO = 2;
+    public static final double ARM_PULLEY_BLOCK_RATIO = 1.0;
     
 
     public final class ARM_POSITION { 
