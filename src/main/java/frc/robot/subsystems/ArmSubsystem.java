@@ -5,7 +5,9 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.util.OrbitPID;
@@ -18,6 +20,7 @@ public class ArmSubsystem extends SubsystemBase {
     public OrbitPID holdPIDController;
     public OrbitPID movePIDController;
     public TrapezoidProfile.Constraints armMotionProfileConstraints;
+    public DigitalInput limitSwitch;
 
     private double targetDistance;
 
@@ -47,7 +50,10 @@ public class ArmSubsystem extends SubsystemBase {
         this.armMotorSlave.setInverted(true);
         
         
+        this.limitSwitch = new DigitalInput(Constants.LIMIT_SWITCH_ARM);
+
         //this.armMotorSlave.follow(this.armMotorMaster);
+    
     }
 
     public double getMotorRotations() {
@@ -102,7 +108,5 @@ public class ArmSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Arm_Move_I_Gain", this.movePIDController.getITerm());
         SmartDashboard.putNumber("Arm_Move_D_Gain", this.movePIDController.getDTerm());
     }
-
-
-
+      
 }

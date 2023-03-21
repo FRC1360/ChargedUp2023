@@ -92,4 +92,6 @@ public final class Constants {
         public static final double LOW_GOAL = -5.0; 
     }
 
+    public static final int LIMIT_SWITCH_ARM = 1; // TODO SET THE CORRECT INPUT
+
 }
