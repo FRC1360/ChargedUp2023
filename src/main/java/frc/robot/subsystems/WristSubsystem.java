@@ -8,7 +8,9 @@ import com.revrobotics.REVLibError;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.wpilibj.AnalogEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -24,6 +26,7 @@ public class WristSubsystem extends SubsystemBase {
 
     public OrbitPID holdPIDController;
     public OrbitPID movePIDController;
+    public ArmFeedforward wristFeedForward;
     public TrapezoidProfile.Constraints wristMotionProfileConstraints;
 
     private ShoulderWristMessenger shoulderWristMessenger;
@@ -34,19 +37,26 @@ public class WristSubsystem extends SubsystemBase {
 
     private AnalogEncoder absoluteEncoder;
 
+    private long lastTime; 
+
+    private Double lastAngle; 
+    private Double angularVelocity; 
+
     public WristSubsystem(ShoulderWristMessenger shoulderWristMessenger, DoubleSupplier manualOffset, BooleanSupplier manualOffsetEnable) {
         this.wristMotor = new CANSparkMax(Constants.WRIST_MOTOR, MotorType.kBrushless);
-
+        
         this.wristOffset = Constants.WRIST_HOME_ANGLE;
         // kP = 0.00556
         this.holdPIDController = new OrbitPID(0.02, 0.000005, 0);
         this.movePIDController = new OrbitPID(0.007, 0.000005, 0);  // TODO - Tune
+
+        this.wristFeedForward = new ArmFeedforward(0.0, 1.0, 0.0); // ks, kg, kv
         this.wristMotionProfileConstraints = new TrapezoidProfile.Constraints(200.0, 100.0);  // TODO - Tune
         this.shoulderWristMessenger = shoulderWristMessenger;
 
         this.wristMotor.restoreFactoryDefaults();
         this.wristMotor.setIdleMode(IdleMode.kBrake);
-        this.wristMotor.setInverted(true);
+        this.wristMotor.setInverted(false);
 
         this.cacheOffset = 0.0;
 
@@ -54,6 +64,10 @@ public class WristSubsystem extends SubsystemBase {
         this.manualOffsetEnable = manualOffsetEnable;
 
         this.absoluteEncoder = new AnalogEncoder(Constants.WRIST_ENCODER);
+
+        this.lastTime = -1; 
+        this.lastAngle = Double.NaN; 
+        this.angularVelocity = Double.NaN; 
 
         resetMotorRotations();
     }
@@ -132,7 +146,7 @@ public class WristSubsystem extends SubsystemBase {
      * Converts motor rotations to angle (0 - 360)
      */
     public double encoderToAngleConversion(double encoderPosition) {
-        return (encoderPosition * 360.0 * Constants.WRIST_GEAR_RATIO);
+        return (encoderPosition * 360.0 * 2.0 * Constants.WRIST_GEAR_RATIO);
     }
 
     public void updateSmartDashboard() {
@@ -150,6 +164,31 @@ public class WristSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Wrist_Absolute_Encoder_Relative", this.absoluteEncoder.get());
         SmartDashboard.putNumber("Wrist_Absolute_Encoder_Absolute", this.absoluteEncoder.getAbsolutePosition());
 
+        SmartDashboard.putNumber("Wrist_Angular_Velocity", this.getAngularVelocity()); 
+    }
+
+    public void updateAngularVelocity() { 
+        long currentTime = System.currentTimeMillis(); 
+        double currentAngle = this.getWristAngle(); 
+
+        if (this.lastTime != -1 && !this.lastAngle.isNaN()) {
+            long deltaTime = currentTime - this.lastTime; 
+
+            double deltaAngle = currentAngle - this.lastAngle; 
+
+            this.angularVelocity = deltaAngle / deltaTime; 
+        }
+        this.lastAngle = currentAngle; 
+        this.lastTime = currentTime; 
+    }
+
+    public Double getAngularVelocity() {
+        return this.angularVelocity;  
+    }
+
+    @Override
+    public void periodic() { 
+        updateAngularVelocity();
     }
     
 }
