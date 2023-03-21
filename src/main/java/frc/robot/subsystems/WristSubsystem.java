@@ -40,7 +40,7 @@ public class WristSubsystem extends SubsystemBase {
     private long lastTime; 
 
     private Double lastAngle; 
-    private Double angularVelocity; 
+    private Double angularVelocity; // degrees per second
 
     public WristSubsystem(ShoulderWristMessenger shoulderWristMessenger, DoubleSupplier manualOffset, BooleanSupplier manualOffsetEnable) {
         this.wristMotor = new CANSparkMax(Constants.WRIST_MOTOR, MotorType.kBrushless);
@@ -168,7 +168,7 @@ public class WristSubsystem extends SubsystemBase {
     }
 
     public void updateAngularVelocity() { 
-        long currentTime = System.currentTimeMillis(); 
+        long currentTime = System.currentTimeMillis() * 1000; 
         double currentAngle = this.getWristAngle(); 
 
         if (this.lastTime != -1 && !this.lastAngle.isNaN()) {
@@ -176,7 +176,7 @@ public class WristSubsystem extends SubsystemBase {
 
             double deltaAngle = currentAngle - this.lastAngle; 
 
-            this.angularVelocity = deltaAngle / deltaTime; 
+            this.angularVelocity = deltaAngle / ((double) deltaTime); 
         }
         this.lastAngle = currentAngle; 
         this.lastTime = currentTime; 
