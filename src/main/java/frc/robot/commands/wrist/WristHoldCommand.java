@@ -8,8 +8,6 @@ public class WristHoldCommand  extends CommandBase{
 
     private WristSubsystem wrist;
 
-    private double ff = 0.0; 
-
     public WristHoldCommand(WristSubsystem wrist) {
         this.wrist = wrist;
 
@@ -26,17 +24,19 @@ public class WristHoldCommand  extends CommandBase{
         double target = this.wrist.getTargetAngle();
         double input = this.wrist.getWristAngle();
         double pidOutput = this.wrist.holdPIDController.calculate(target, input);
+
+        double feedforwardOutput = 0.0;
         
         if (!this.wrist.getAngularVelocity().isNaN()) { 
-            ff = this.wrist.wristFeedForward.calculate(Math.toRadians(this.wrist.getWristOffset()), 
+            feedforwardOutput = this.wrist.wristFeedForward.calculate(Math.toRadians(this.wrist.getWristOffset()), 
                                                             this.wrist.getAngularVelocity()); 
         } 
 
-        SmartDashboard.putNumber("Wrist_Hold_FF", ff); 
+        SmartDashboard.putNumber("Wrist_Hold_FF", feedforwardOutput); 
         //double speed = pidOutput + ff; 
 
         //if (Math.abs(speed) > 0.50) speed =  Math.copySign(0.5, speed); 
-        this.wrist.setWristNormalizedVoltage(ff);         
+        this.wrist.setWristNormalizedVoltage(feedforwardOutput);         
     }
 
     @Override
