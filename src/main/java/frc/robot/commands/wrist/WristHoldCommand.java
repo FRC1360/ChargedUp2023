@@ -32,8 +32,11 @@ public class WristHoldCommand  extends CommandBase{
                                                                         Math.toRadians(this.wrist.getAngularVelocity())); 
         } 
 
+       
         SmartDashboard.putNumber("Wrist_Hold_FF", feedforwardOutput); 
         double speed = pidOutput + feedforwardOutput; 
+
+        SmartDashboard.putNumber("Wrist_Hold_PID_Output", speed); 
 
         //if (Math.abs(speed) > 0.50) speed =  Math.copySign(0.5, speed); 
         this.wrist.setWristNormalizedVoltage(speed);         

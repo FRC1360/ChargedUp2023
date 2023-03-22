@@ -11,14 +11,16 @@ import frc.robot.commands.wrist.WristHoldCommand;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ShoulderSubsystem;
 import frc.robot.subsystems.WristSubsystem;
+import frc.robot.subsystems.ShoulderSubsystem.ShoulderWristMessenger;
 
 public class AssemblyHomePositionCommand extends SequentialCommandGroup {
     
-    public AssemblyHomePositionCommand(ShoulderSubsystem shoulder, WristSubsystem wrist, ArmSubsystem arm) { 
+    public AssemblyHomePositionCommand(ShoulderSubsystem shoulder, ShoulderWristMessenger shoulderWristMessenger, 
+                                        WristSubsystem wrist, ArmSubsystem arm) { 
         addCommands(new WristGoToPositionCommand(wrist, Constants.WRIST_HOME_ANGLE)
                 .raceWith(new ShoulderHoldCommand(shoulder, () -> 0.0))
                 .raceWith(new ArmHoldCommand(arm)), 
-            new ArmGoToPositionCommand(arm, shoulder, 0)
+            new ArmGoToPositionCommand(arm, shoulderWristMessenger, 0.0)
                 .raceWith(new ShoulderHoldCommand(shoulder, () -> 0.0))
                 .raceWith(new WristHoldCommand(wrist)), 
             new ShoulderGoToPositionCommand(shoulder, 0)

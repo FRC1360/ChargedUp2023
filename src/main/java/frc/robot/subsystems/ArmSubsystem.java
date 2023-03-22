@@ -4,6 +4,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -24,12 +25,16 @@ public class ArmSubsystem extends SubsystemBase {
 
     private double targetDistance;
 
+    public ArmFeedforward armFeedforward; 
+
     public ArmSubsystem() {
         this.armMotorMaster = new CANSparkMax(Constants.ARM_MOTOR_MASTER, MotorType.kBrushless);
         this.armMotorSlave = new CANSparkMax(Constants.ARM_MOTOR_SLAVE, MotorType.kBrushless);
 
         this.holdPIDController = new OrbitPID(0.00, 0.0, 0.0);
         this.movePIDController = new OrbitPID(0.005, 0.0, 0.0);
+
+        this.armFeedforward = new ArmFeedforward(0.0, 0.05, 0.0); //ks, kg, kv
 
         /*\
          * Max velocity initial calculation:

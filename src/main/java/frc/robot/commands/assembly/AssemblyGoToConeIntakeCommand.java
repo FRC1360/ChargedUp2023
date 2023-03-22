@@ -12,10 +12,12 @@ import frc.robot.commands.wrist.WristHoldCommand;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ShoulderSubsystem;
 import frc.robot.subsystems.WristSubsystem;
+import frc.robot.subsystems.ShoulderSubsystem.ShoulderWristMessenger;
 
 public class AssemblyGoToConeIntakeCommand extends SequentialCommandGroup {
     
-    public AssemblyGoToConeIntakeCommand(ShoulderSubsystem shoulder, WristSubsystem wrist, ArmSubsystem arm) { 
+    public AssemblyGoToConeIntakeCommand(ShoulderSubsystem shoulder, ShoulderWristMessenger shoulderWristMessenger, 
+                                                WristSubsystem wrist, ArmSubsystem arm) { 
         addCommands(new ShoulderGoToPositionCommand(shoulder, 40)
             .raceWith(new WristHoldCommand(wrist))
             .raceWith(new ArmHoldCommand(arm)), 
@@ -24,7 +26,7 @@ public class AssemblyGoToConeIntakeCommand extends SequentialCommandGroup {
             .raceWith(new ShoulderHoldCommand(shoulder, () -> 0.0))
             .raceWith(new ArmHoldCommand(arm)), 
 
-                    new ArmGoToPositionCommand(arm, shoulder, -21.25)
+                    new ArmGoToPositionCommand(arm, shoulderWristMessenger, 21.25)
             .raceWith(new ShoulderHoldCommand(shoulder, () -> 0.0))
             .raceWith(new WristHoldCommand(wrist))
             );

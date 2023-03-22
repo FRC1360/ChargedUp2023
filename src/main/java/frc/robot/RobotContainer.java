@@ -121,11 +121,11 @@ public class RobotContainer {
     // left_controller.button(1).onTrue(new InstantCommand(m_drivetrainSubsystem::zeroGyroscope)); 
     // operatorController.back().onTrue(new InstantCommand(armSubsystem::resetEncoder));
 
-    // operatorController.start().onTrue(new AssemblyHomePositionCommand(shoulderSubsystem, wristSubsystem, armSubsystem)); 
-    // operatorController.b().onTrue(new ArmGoToPositionCommand(armSubsystem, shoulderSubsystem, 10.0));
-    // operatorController.a().onTrue(new ArmGoToPositionCommand(armSubsystem, shoulderSubsystem, 0.0));
+    //  operatorController.start().onTrue(new AssemblyHomePositionCommand(shoulderSubsystem, messenger, wristSubsystem, armSubsystem)); 
+     operatorController.b().onTrue(new ArmGoToPositionCommand(armSubsystem, messenger, 10.0));
+     operatorController.a().onTrue(new ArmGoToPositionCommand(armSubsystem, messenger, 0.0));
     //operatorController.a().onTrue(new ArmGoToPositionCommand(armSubsystem, Constants.ARM_POSITION.HIGH_GOAL));
-    // operatorController.a().onTrue(new AssemblyGoToConeIntakeCommand(shoulderSubsystem, wristSubsystem, armSubsystem)); 
+    // operatorController.a().onTrue(new AssemblyGoToConeIntakeCommand(shoulderSubsystem, messenger, wristSubsystem, armSubsystem)); 
     //operatorController.b().onTrue(new ArmGoToPositionCommand(armSubsystem, shoulderSubsystem, Constants.ARM_POSITION.MID_GOAL));
     // operatorController.x().onTrue(new ArmGoToPositionCommand(armSubsystem, shoulderSubsystem, Constants.ARM_POSITION.LOW_GOAL));
 
@@ -137,7 +137,7 @@ public class RobotContainer {
     // // operatorController.y().onTrue(new ShoulderGoToPositionCommand(shoulderSubsystem, 90.0));
     // operatorController.leftBumper().onTrue(new ShoulderGoToPositionCommand(shoulderSubsystem, 0.0));
     /*operatorController.y().onTrue(new AssemblyGoToPositionCommand(shoulderSubsystem, wristSubsystem, 90.0));
-    operatorController.b().onTrue(new\
+    operatorController.b().onTrue(new
      AssemblyGoToPositionCommand(shoulderSubsystem, wristSubsystem, 150.0));
     operatorController.rightBumper().onTrue(new AssemblyGoToPositionCommand(shoulderSubsystem, wristSubsystem, -50.0));*/
 
@@ -146,7 +146,7 @@ public class RobotContainer {
      operatorController.povRight().onTrue(new WristGoToPositionCommand(wristSubsystem, 45.0));
     // operatorController.povRight().onTrue(new WristGoToPositionCommand(wristSubsystem, 135));
     operatorController.povDown().onTrue(new WristGoToPositionCommand(wristSubsystem, 0.0));
-    
+    operatorController.povUp().onTrue(new WristGoToPositionCommand(wristSubsystem, 90.0)); 
     
     /* 
     new Trigger(operatorController::getBackButton)
