@@ -22,6 +22,7 @@ import frc.robot.autos.EngageStationAuto;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.arm.ArmGoToPositionCommand;
 import frc.robot.commands.arm.ArmHoldCommand;
+import frc.robot.commands.arm.ArmHomeCommand;
 import frc.robot.commands.assembly.AssemblyGoToConeIntakeCommand;
 import frc.robot.commands.assembly.AssemblyGoToPositionCommand;
 import frc.robot.commands.assembly.AssemblyHomePositionCommand;
@@ -89,8 +90,8 @@ public class RobotContainer {
     //shoulderSubsystem.setDefaultCommand(new ShoulderHoldCommand(shoulderSubsystem, () -> this.operatorController.getRightTriggerAxis()));
     /*shoulderSubsystem.setDefaultCommand(new ShoulderMoveManual(shoulderSubsystem,
       () -> modifyAxis(operatorController.getLeftY()) ));*/
-    //wristSubsystem.setDefaultCommand(new WristHoldCommand(wristSubsystem));
-    wristSubsystem.setDefaultCommand(new InstantCommand(() -> wristSubsystem.setWristSpeed(/*operatorController.getLeftX()*/0.8), wristSubsystem));
+    wristSubsystem.setDefaultCommand(new WristHoldCommand(wristSubsystem));
+    //wristSubsystem.setDefaultCommand(new InstantCommand(() -> wristSubsystem.setWristSpeed(/*operatorController.getLeftX()*/0.1), wristSubsystem));
     //armSubsystem.setDefaultCommand(new ArmHoldCommand(this.armSubsystem));
 
     initializeRobot();
@@ -121,10 +122,11 @@ public class RobotContainer {
     // operatorController.back().onTrue(new InstantCommand(armSubsystem::resetEncoder));
 
     // operatorController.start().onTrue(new AssemblyHomePositionCommand(shoulderSubsystem, wristSubsystem, armSubsystem)); 
-
+    // operatorController.b().onTrue(new ArmGoToPositionCommand(armSubsystem, shoulderSubsystem, 10.0));
+    // operatorController.a().onTrue(new ArmGoToPositionCommand(armSubsystem, shoulderSubsystem, 0.0));
     //operatorController.a().onTrue(new ArmGoToPositionCommand(armSubsystem, Constants.ARM_POSITION.HIGH_GOAL));
     // operatorController.a().onTrue(new AssemblyGoToConeIntakeCommand(shoulderSubsystem, wristSubsystem, armSubsystem)); 
-    // operatorController.b().onTrue(new ArmGoToPositionCommand(armSubsystem, shoulderSubsystem, Constants.ARM_POSITION.MID_GOAL));
+    //operatorController.b().onTrue(new ArmGoToPositionCommand(armSubsystem, shoulderSubsystem, Constants.ARM_POSITION.MID_GOAL));
     // operatorController.x().onTrue(new ArmGoToPositionCommand(armSubsystem, shoulderSubsystem, Constants.ARM_POSITION.LOW_GOAL));
 
     // operatorController.y().onTrue(getRetractArmCommand()); 
@@ -140,8 +142,10 @@ public class RobotContainer {
     operatorController.rightBumper().onTrue(new AssemblyGoToPositionCommand(shoulderSubsystem, wristSubsystem, -50.0));*/
 
     // operatorController.povUp().onTrue(new WristGoToPositionCommand(wristSubsystem, 90));
-    // operatorController.povLeft().onTrue(new WristGoToPositionCommand(wristSubsystem, 45));
+     operatorController.povLeft().onTrue(new WristGoToPositionCommand(wristSubsystem, -45.0));
+     operatorController.povRight().onTrue(new WristGoToPositionCommand(wristSubsystem, 45.0));
     // operatorController.povRight().onTrue(new WristGoToPositionCommand(wristSubsystem, 135));
+    operatorController.povDown().onTrue(new WristGoToPositionCommand(wristSubsystem, 0.0));
     
     
     /* 
@@ -169,8 +173,12 @@ public class RobotContainer {
 
   
 
-  public Command getRetractArmCommand() { 
-    return new ArmGoToPositionCommand(armSubsystem, shoulderSubsystem, 0.0); 
+  public Command getArmHomeCommand() { 
+    return new ArmHomeCommand(armSubsystem); 
+  }
+
+  public Command getGoToZeroWristCommand() { 
+    return new WristGoToPositionCommand(wristSubsystem, 0.0); 
   }
 
   private static double deadband(double value, double deadband) {

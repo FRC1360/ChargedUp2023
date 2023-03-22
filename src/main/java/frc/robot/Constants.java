@@ -72,10 +72,10 @@ public final class Constants {
     public static final int WRIST_MOTOR = 54;
     public static final double WRIST_MANUAL_OVERRIDE_RANGE = 20.0;
     public static final int WRIST_ENCODER = 1;
-    public static final double WRIST_ENCODER_OFFSET = 0.527;
+    public static final double WRIST_ENCODER_OFFSET = 0.455;
     public static final double WRIST_GEAR_RATIO = (1.0 / 36.0) * (35.0 / 60.0);
     //public static final double WRIST_HOME_ANGLE = 140.0; 
-    public static final double WRIST_HOME_ANGLE = 45.0; 
+    public static final double WRIST_HOME_ANGLE = 0.0; 
     
 
     // ARM
@@ -92,6 +92,6 @@ public final class Constants {
         public static final double LOW_GOAL = -5.0; 
     }
 
-    public static final int LIMIT_SWITCH_ARM = 1; // TODO SET THE CORRECT INPUT
+    public static final int LIMIT_SWITCH_ARM = 4; // TODO SET THE CORRECT INPUT
 
 }

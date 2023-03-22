@@ -28,8 +28,8 @@ public class ArmSubsystem extends SubsystemBase {
         this.armMotorMaster = new CANSparkMax(Constants.ARM_MOTOR_MASTER, MotorType.kBrushless);
         this.armMotorSlave = new CANSparkMax(Constants.ARM_MOTOR_SLAVE, MotorType.kBrushless);
 
-        this.holdPIDController = new OrbitPID(0.065, 0.0, 0.0);
-        this.movePIDController = new OrbitPID(0.05, 0.0, 0.0);
+        this.holdPIDController = new OrbitPID(0.00, 0.0, 0.0);
+        this.movePIDController = new OrbitPID(0.005, 0.0, 0.0);
 
         /*\
          * Max velocity initial calculation:
@@ -38,7 +38,7 @@ public class ArmSubsystem extends SubsystemBase {
          * Max acceleration inital calculation:
          * max velocity / 2 ~= 17.33 in/s^2
          */
-        this.armMotionProfileConstraints = new TrapezoidProfile.Constraints(34.66, 17.33);
+        this.armMotionProfileConstraints = new TrapezoidProfile.Constraints(5.00, 17.33);
 
         this.armMotorMaster.restoreFactoryDefaults();
         this.armMotorSlave.restoreFactoryDefaults();
@@ -48,7 +48,6 @@ public class ArmSubsystem extends SubsystemBase {
 
         this.armMotorMaster.setInverted(true);
         this.armMotorSlave.setInverted(true);
-        
         
         this.limitSwitch = new DigitalInput(Constants.LIMIT_SWITCH_ARM);
 
@@ -62,6 +61,12 @@ public class ArmSubsystem extends SubsystemBase {
 
     public double getArmDistance() {
         return this.encoderToDistanceConversion(this.getMotorRotations());
+    }
+
+    public double getArmVelocity() { 
+        return this.encoderToDistanceConversion(
+                        this.armMotorMaster.getEncoder().getVelocity()
+                                                ); 
     }
 
     // Returns distance arm has traveled in inches
@@ -103,10 +108,16 @@ public class ArmSubsystem extends SubsystemBase {
 
         SmartDashboard.putNumber("Arm_Target_Distance", this.getTargetDistance());
         SmartDashboard.putNumber("Arm_Distance", this.getArmDistance());
+        SmartDashboard.putNumber("Arm_Encoder_Value", this.armMotorMaster.getEncoder().getPosition()); 
 
         SmartDashboard.putNumber("Arm_Move_P_Gain", this.movePIDController.getPTerm());
         SmartDashboard.putNumber("Arm_Move_I_Gain", this.movePIDController.getITerm());
         SmartDashboard.putNumber("Arm_Move_D_Gain", this.movePIDController.getDTerm());
+
+        SmartDashboard.putBoolean("Arm_Limit_Switch_Status", this.limitSwitch.get()); 
+
+        SmartDashboard.putNumber("Arm_Velocity", 
+                                this.encoderToDistanceConversion(this.armMotorMaster.getEncoder().getVelocity()));
     }
       
 }

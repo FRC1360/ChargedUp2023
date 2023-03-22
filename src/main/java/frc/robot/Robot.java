@@ -73,11 +73,17 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
+
+   // m_robotContainer.getArmHomeCommand().schedule(); 
   }
 
   /** This function is called periodically during autonomous. */
   @Override
-  public void autonomousPeriodic() {}
+  public void autonomousPeriodic() {
+    m_robotContainer.shoulderSubsystem.updateSmartDashboard();
+    m_robotContainer.wristSubsystem.updateSmartDashboard();
+    m_robotContainer.armSubsystem.updateSmartDashboard();
+  }
 
   @Override
   public void teleopInit() {
@@ -93,8 +99,8 @@ public class Robot extends TimedRobot {
     m_robotContainer.wristSubsystem.resetMotorRotations();
     // m_robotContainer.wristSubsystem.holdPIDController.reset();
     // m_robotContainer.shoulderSubsystem.holdPIDController.reset();
-
-    //m_robotContainer.getRetractArmCommand().schedule(); 
+    m_robotContainer.getGoToZeroWristCommand().schedule(); 
+    //m_robotContainer.getArmHomeCommand().schedule(); 
   }
 
   /** This function is called periodically during operator control. */

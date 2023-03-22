@@ -29,7 +29,13 @@ public class WristGoToPositionCommand extends CommandBase {
         this.wrist.movePIDController.reset();
         this.wrist.setWristOffset(angle);
 
-        this.startState = new TrapezoidProfile.State(this.wrist.getWristAngle(), 0.0);
+        double startVelocity = 0.0;
+
+        if (!this.wrist.getAngularVelocity().isNaN()) { 
+            startVelocity = this.wrist.getAngularVelocity().doubleValue(); 
+        } 
+
+        this.startState = new TrapezoidProfile.State(this.wrist.getWristAngle(), startVelocity);
         this.endState = new TrapezoidProfile.State(this.wrist.getTargetAngle(), 0.0);
 
         this.motionProfile = new TrapezoidProfile(this.wrist.wristMotionProfileConstraints, 
@@ -54,8 +60,15 @@ public class WristGoToPositionCommand extends CommandBase {
         double speed = this.wrist.movePIDController.calculate(target, input);
         SmartDashboard.putNumber("Wrist_Motion_Profile_Ouput", speed);
 
-        if (Math.abs(speed) > 0.50) speed =  Math.copySign(0.5, speed); 
-        this.wrist.setWristNormalizedVoltage(speed);
+        //if (Math.abs(speed) > 0.50) speed =  Math.copySign(0.5, speed); 
+        double feedforwardOutput = 0.0;
+        
+        if (!this.wrist.getAngularVelocity().isNaN()) { 
+            feedforwardOutput = this.wrist.wristFeedForward.calculate(Math.toRadians(profileTarget.position), 
+                                                                        Math.toRadians(this.wrist.getAngularVelocity())); 
+        } 
+
+        this.wrist.setWristNormalizedVoltage(speed + feedforwardOutput);
     }
 
     @Override

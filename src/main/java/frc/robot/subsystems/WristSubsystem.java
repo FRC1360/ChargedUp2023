@@ -37,7 +37,7 @@ public class WristSubsystem extends SubsystemBase {
 
     private AnalogEncoder absoluteEncoder;
 
-    private long lastTime; 
+    private double lastTime; 
 
     private Double lastAngle; 
     private Double angularVelocity; // degrees per second
@@ -47,16 +47,16 @@ public class WristSubsystem extends SubsystemBase {
         
         this.wristOffset = Constants.WRIST_HOME_ANGLE;
         // kP = 0.00556
-        this.holdPIDController = new OrbitPID(0.02, 0.000005, 0);
-        this.movePIDController = new OrbitPID(0.007, 0.000005, 0);  // TODO - Tune
+        this.holdPIDController = new OrbitPID(0.0125, 0.000005, 0.25);
+        this.movePIDController = new OrbitPID(0.025, 0.000000, 0.4);  // TODO - Tune
 
-        this.wristFeedForward = new ArmFeedforward(0.0, 1.0, 0.0); // ks, kg, kv
-        this.wristMotionProfileConstraints = new TrapezoidProfile.Constraints(200.0, 100.0);  // TODO - Tune
+        this.wristFeedForward = new ArmFeedforward(0.0, 0.125, 0.0); // ks, kg, kv
+        this.wristMotionProfileConstraints = new TrapezoidProfile.Constraints(200.0, 600.0);  // TODO - Tune
         this.shoulderWristMessenger = shoulderWristMessenger;
 
         this.wristMotor.restoreFactoryDefaults();
         this.wristMotor.setIdleMode(IdleMode.kBrake);
-        this.wristMotor.setInverted(false);
+        this.wristMotor.setInverted(true);
 
         this.cacheOffset = 0.0;
 
@@ -164,17 +164,17 @@ public class WristSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Wrist_Absolute_Encoder_Relative", this.absoluteEncoder.get());
         SmartDashboard.putNumber("Wrist_Absolute_Encoder_Absolute", this.absoluteEncoder.getAbsolutePosition());
 
-        SmartDashboard.putNumber("Wrist_Angular_Velocity", this.getAngularVelocity()); 
+        SmartDashboard.putNumber("Wrist_Angular_Velocity", this.getAngularVelocity().doubleValue()); 
     }
 
     public void updateAngularVelocity() { 
-        long currentTime = System.currentTimeMillis() * 1000; 
+        double currentTime = (System.currentTimeMillis() / 1000.0); 
         double currentAngle = this.getWristAngle(); 
 
         if (this.lastTime != -1 && !this.lastAngle.isNaN()) {
-            long deltaTime = currentTime - this.lastTime; 
+            double deltaTime = currentTime - this.lastTime; 
 
-            double deltaAngle = currentAngle - this.lastAngle; 
+            double deltaAngle = currentAngle - this.lastAngle.doubleValue(); 
 
             this.angularVelocity = deltaAngle / ((double) deltaTime); 
         }
