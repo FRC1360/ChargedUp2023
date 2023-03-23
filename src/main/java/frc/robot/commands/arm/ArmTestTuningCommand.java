@@ -21,8 +21,16 @@ public class ArmTestTuningCommand extends CommandBase {
     public void execute() { 
         this.arm.holdPIDTuner.getAndUpdate(this.arm.holdPIDController);
         SmartDashboard.putNumber("Arm_kP", this.arm.holdPIDController.kP); 
+        
+        this.arm.armFeedforward 
+            = this.arm.armFeedForwardTuner.getAndUpdate(this.arm.armFeedforward);
 
-        double val = this.arm.holdPIDController.calculate(10.0, this.arm.getArmDistance()); 
+        double pidOutput = this.arm.holdPIDController.calculate(10.0, this.arm.getArmDistance());
+        
+        SmartDashboard.putNumber("Arm_kG", this.arm.armFeedforward.kg); 
+        double ff = this.arm.armFeedforward.calculate(-45, 1.0); 
+        
+        SmartDashboard.putNumber("Arm_Feedforward_Output", ff); 
     }
 
     @Override

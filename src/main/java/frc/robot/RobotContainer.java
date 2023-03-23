@@ -180,8 +180,7 @@ public class RobotContainer {
   }
 
   public Command getGoToZeroWristCommand() { 
-    //return new WristGoToPositionCommand(wristSubsystem, 90.0); 
-    return new ArmGoToPositionCommand(armSubsystem, messenger, 10.0); 
+    return new WristGoToPositionCommand(wristSubsystem, 90.0); 
   }
 
   private static double deadband(double value, double deadband) {

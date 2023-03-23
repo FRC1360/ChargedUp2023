@@ -86,7 +86,7 @@ public class DashboardTuning {
         }
     } 
 
-    public void getAndUpdate(ArmFeedforward feedforward) { 
+    public ArmFeedforward getAndUpdate(ArmFeedforward feedforward) { 
         if (this.hasChanged(this.value1, this.constantsArray[0]) 
             || this.hasChanged(this.value2, this.constantsArray[1])
             || this.hasChanged(this.value3, this.constantsArray[2])
@@ -98,6 +98,8 @@ public class DashboardTuning {
                 get(this.value2, this.constantsArray[2])
                                             );  
         }
+
+        return feedforward;
     }
 
 
