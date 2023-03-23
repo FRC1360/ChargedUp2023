@@ -47,7 +47,7 @@ public class WristSubsystem extends SubsystemBase {
         
         this.wristOffset = Constants.WRIST_HOME_ANGLE;
         // kP = 0.00556
-        this.holdPIDController = new OrbitPID(0.0125, 0.000005, 0.25);
+        this.holdPIDController = new OrbitPID(0.0125, 0.000000, 0.25); // kI - 0.000005
         this.movePIDController = new OrbitPID(0.025, 0.000000, 0.4);  // TODO - Tune
 
         this.wristFeedForward = new ArmFeedforward(0.0, 0.125, 0.0); // ks, kg, kv

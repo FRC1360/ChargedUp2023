@@ -25,8 +25,9 @@ public class ArmHoldCommand extends CommandBase {
         double target = this.arm.getTargetDistance();
         double input = this.arm.getArmDistance();
         double speed = this.arm.holdPIDController.calculate(target, input);
+       
 
-        //this.arm.setArmNormalizedVoltage(speed);  // Probably going to need an offset based off the angle of the arm
+        this.arm.setArmNormalizedVoltage(speed);  // Probably going to need an offset based off the angle of the arm
     }
 
     @Override

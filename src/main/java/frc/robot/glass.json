@@ -95,8 +95,7 @@
         }
       ],
       "window": {
-        "name": "Arm Velocity",
-        "visible": false
+        "name": "Arm Velocity"
       }
     },
     "Plot <3>": {
@@ -126,8 +125,7 @@
         }
       ],
       "window": {
-        "name": "Arm Position",
-        "visible": false
+        "name": "Arm Position"
       }
     },
     "Plot <4>": {
@@ -251,7 +249,10 @@
             }
           ]
         }
-      ]
+      ],
+      "window": {
+        "visible": false
+      }
     },
     "Plot <7>": {
       "plots": [
@@ -275,6 +276,49 @@
                 1.0
               ],
               "id": "NT:/SmartDashboard/Wrist_Angle"
+            }
+          ]
+        }
+      ],
+      "window": {
+        "visible": false
+      }
+    },
+    "Plot <8>": {
+      "plots": [
+        {
+          "height": 332,
+          "series": [
+            {
+              "color": [
+                0.2980392277240753,
+                0.44705885648727417,
+                0.6901960968971252,
+                1.0
+              ],
+              "id": "NT:/SmartDashboard/Wrist_Move_PID_And_FF_Output"
+            }
+          ]
+        }
+      ],
+      "window": {
+        "name": "Wrist PID ",
+        "visible": false
+      }
+    },
+    "Plot <9>": {
+      "plots": [
+        {
+          "height": 332,
+          "series": [
+            {
+              "color": [
+                0.2980392277240753,
+                0.44705885648727417,
+                0.6901960968971252,
+                1.0
+              ],
+              "id": "NT:/SmartDashboard/Arm_PID_Output"
             }
           ]
         }

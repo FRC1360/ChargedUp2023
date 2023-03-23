@@ -92,7 +92,7 @@ public class RobotContainer {
       () -> modifyAxis(operatorController.getLeftY()) ));*/
     wristSubsystem.setDefaultCommand(new WristHoldCommand(wristSubsystem));
     //wristSubsystem.setDefaultCommand(new InstantCommand(() -> wristSubsystem.setWristSpeed(/*operatorController.getLeftX()*/0.1), wristSubsystem));
-    //armSubsystem.setDefaultCommand(new ArmHoldCommand(this.armSubsystem));
+    armSubsystem.setDefaultCommand(new ArmHoldCommand(this.armSubsystem));
 
     initializeRobot();
     // Configure the button bindings
@@ -178,7 +178,7 @@ public class RobotContainer {
   }
 
   public Command getGoToZeroWristCommand() { 
-    return new WristGoToPositionCommand(wristSubsystem, 0.0); 
+    return new WristGoToPositionCommand(wristSubsystem, 90.0); 
   }
 
   private static double deadband(double value, double deadband) {

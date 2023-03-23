@@ -27,14 +27,18 @@ public class ArmSubsystem extends SubsystemBase {
 
     public ArmFeedforward armFeedforward; 
 
+    private double armVelocity; 
+    private double lastTime; 
+    private Double lastDistance; 
+
     public ArmSubsystem() {
         this.armMotorMaster = new CANSparkMax(Constants.ARM_MOTOR_MASTER, MotorType.kBrushless);
         this.armMotorSlave = new CANSparkMax(Constants.ARM_MOTOR_SLAVE, MotorType.kBrushless);
 
-        this.holdPIDController = new OrbitPID(0.00, 0.0, 0.0);
-        this.movePIDController = new OrbitPID(0.005, 0.0, 0.0);
+        this.holdPIDController = new OrbitPID(0.2, 0.0, 0.0);
+        this.movePIDController = new OrbitPID(0.2, 0.0, 0.0);
 
-        this.armFeedforward = new ArmFeedforward(0.0, 0.05, 0.0); //ks, kg, kv
+        this.armFeedforward = new ArmFeedforward(0.0, 0.00, 0.0); //ks, kg, kv
 
         /*\
          * Max velocity initial calculation:
@@ -48,16 +52,19 @@ public class ArmSubsystem extends SubsystemBase {
         this.armMotorMaster.restoreFactoryDefaults();
         this.armMotorSlave.restoreFactoryDefaults();
 
-        this.armMotorMaster.setIdleMode(IdleMode.kCoast);
-        this.armMotorSlave.setIdleMode(IdleMode.kCoast);
+        this.armMotorMaster.setIdleMode(IdleMode.kBrake);
+        this.armMotorSlave.setIdleMode(IdleMode.kBrake);
 
         this.armMotorMaster.setInverted(true);
         this.armMotorSlave.setInverted(true);
         
         this.limitSwitch = new DigitalInput(Constants.LIMIT_SWITCH_ARM);
 
+        this.armVelocity = 0.0; 
         //this.armMotorSlave.follow(this.armMotorMaster);
-    
+        
+        this.lastTime = -1.0; 
+        this.lastDistance = Double.NaN; 
     }
 
     public double getMotorRotations() {
@@ -66,12 +73,6 @@ public class ArmSubsystem extends SubsystemBase {
 
     public double getArmDistance() {
         return this.encoderToDistanceConversion(this.getMotorRotations());
-    }
-
-    public double getArmVelocity() { 
-        return this.encoderToDistanceConversion(
-                        this.armMotorMaster.getEncoder().getVelocity()
-                                                ); 
     }
 
     // Returns distance arm has traveled in inches
@@ -106,6 +107,26 @@ public class ArmSubsystem extends SubsystemBase {
         this.armMotorMaster.getEncoder().setPosition(0.0);
     }
 
+    public void updateArmVelocity() { 
+        double currentTime = ((double) System.currentTimeMillis() / 1000.0); 
+        double currentDistance = this.getArmDistance(); 
+
+        if (this.lastTime != -1.0 && !this.lastDistance.isNaN()) {
+            double deltaTime = currentTime - this.lastTime; 
+
+            double deltaDistance = currentDistance - this.lastDistance.doubleValue(); 
+
+            this.armVelocity = deltaDistance / deltaTime; 
+        }
+        
+        this.lastDistance = currentDistance; 
+        this.lastTime = currentTime; 
+    }
+
+    public double getArmVelocity() { 
+        return this.armVelocity; 
+    }
+
     public void updateSmartDashboard() {
         SmartDashboard.putNumber("Arm_Hold_P_Gain", this.holdPIDController.getPTerm());
         SmartDashboard.putNumber("Arm_Hold_I_Gain", this.holdPIDController.getITerm());
@@ -122,7 +143,13 @@ public class ArmSubsystem extends SubsystemBase {
         SmartDashboard.putBoolean("Arm_Limit_Switch_Status", this.limitSwitch.get()); 
 
         SmartDashboard.putNumber("Arm_Velocity", 
-                                this.encoderToDistanceConversion(this.armMotorMaster.getEncoder().getVelocity()));
+                                this.getArmVelocity());
     }
+
+    @Override
+    public void periodic() { 
+        updateArmVelocity(); 
+    }
+
       
 }
