@@ -23,6 +23,7 @@ import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.arm.ArmGoToPositionCommand;
 import frc.robot.commands.arm.ArmHoldCommand;
 import frc.robot.commands.arm.ArmHomeCommand;
+import frc.robot.commands.arm.ArmTestTuningCommand;
 import frc.robot.commands.assembly.AssemblyGoToConeIntakeCommand;
 import frc.robot.commands.assembly.AssemblyGoToPositionCommand;
 import frc.robot.commands.assembly.AssemblyHomePositionCommand;
@@ -167,7 +168,8 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    return null;
+    //return null;
+    return new ArmTestTuningCommand(armSubsystem);
     //return autoChooser.getSelected();  
   }
 
@@ -178,7 +180,8 @@ public class RobotContainer {
   }
 
   public Command getGoToZeroWristCommand() { 
-    return new WristGoToPositionCommand(wristSubsystem, 90.0); 
+    //return new WristGoToPositionCommand(wristSubsystem, 90.0); 
+    return new ArmGoToPositionCommand(armSubsystem, messenger, 10.0); 
   }
 
   private static double deadband(double value, double deadband) {
