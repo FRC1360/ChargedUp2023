@@ -54,12 +54,16 @@ public class ShoulderGoToPositionCommand extends CommandBase {
 
         double input = this.shoulder.getShoulderAngle();
 
-        double speed = this.shoulder.movePIDController.calculate(target, input);
+        double pidOutput = this.shoulder.movePIDController.calculate(target, input);
 
-        if (Math.abs(speed) > 0.25) speed = Math.copySign(0.25, speed); 
+        double feedforwardOutput = this.shoulder.shoulderFeedForward
+                                    .calculate(target, this.shoulder.getAngluarVelocity()); 
+
+        double speed = pidOutput + feedforwardOutput;
+        
+        SmartDashboard.putNumber("Shoulder_Move_Output", speed); 
 
         this.shoulder.setShoulderNormalizedVoltage(speed);
-
     }
 
     @Override

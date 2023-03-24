@@ -29,17 +29,18 @@ public class ShoulderHoldCommand extends CommandBase {
         double input = this.shoulder.getShoulderAngle();
         double speed = this.shoulder.holdPIDController.calculate(target, input);
 
-        if (Math.abs(speed) > 0.25) speed = Math.copySign(0.25, speed); 
+        double kF = this.shoulder.shoulderFeedForward.calculate(target, 
+                                                                this.shoulder.getAngluarVelocity()); 
 
         // Remember to increase this value and also add kI please
-        double kF;
+        //double kF;
 
-        if(intakeSpeed.getAsDouble() > 0.05) {
-           // kF = -0.2;
-           kF = 0.18 * Math.sin(Math.toRadians(this.shoulder.getShoulderAngle()));
-        } else {
-            kF = 0.18 * Math.sin(Math.toRadians(this.shoulder.getShoulderAngle()));
-        }
+        // if(intakeSpeed.getAsDouble() > 0.05) {
+        //    // kF = -0.2;
+        //    kF = 0.18 * Math.sin(Math.toRadians(this.shoulder.getShoulderAngle()));
+        // } else {
+        //     kF = 0.18 * Math.sin(Math.toRadians(this.shoulder.getShoulderAngle()));
+        // }
 
         this.shoulder.setShoulderNormalizedVoltage(speed + kF);
         //this.shoulder.setShoulderNormalizedVoltage(0.1); 

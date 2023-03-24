@@ -8,6 +8,7 @@ import com.revrobotics.REVLibError;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.AnalogEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -37,17 +38,20 @@ public class ShoulderSubsystem extends SubsystemBase {
 
     private AnalogEncoder absoluteEncoder;
 
+    public ArmFeedforward shoulderFeedForward; 
+
     public ShoulderSubsystem(DoubleSupplier manualOffset, BooleanSupplier manualOffsetEnable) {
-        this.holdPIDController = new OrbitPID(0.045, 0.0, 0.0);
-        this.movePIDController = new OrbitPID(0.01, 0.0, 0.0);  // TODO - Tune
+        this.holdPIDController = new OrbitPID(0.01, 0.0, 0.0); //kP - 0.045
+        this.movePIDController = new OrbitPID(0.02, 0.0, 0.0);  // TODO - Tune kP - 0.01
 
         // This units are deg / second for velocity and deg / sec^2 for acceleration
         this.shoulderMotionProfileConstraints = new TrapezoidProfile.Constraints(500, 250/2.0);  // TODO - Tune.
-        this.targetAngle = 0.0;  // Make sure this is 0.0 for copetition, only 90 for testing
+        this.targetAngle = -90.0;  // Make sure this is 0.0 for copetition, only 90 for testing
 
         this.shoulderMotorMaster = new CANSparkMax(Constants.SHOULDER_MOTOR_MASTER, MotorType.kBrushless);
         this.shoulderMotorSlave = new CANSparkMax(Constants.SHOULDER_MOTOR_SLAVE, MotorType.kBrushless);
 
+        this.shoulderFeedForward = new ArmFeedforward(0.0, 0.02, 0.0); 
 
         this.shoulderMotorMaster.restoreFactoryDefaults();
         this.shoulderMotorSlave.restoreFactoryDefaults();

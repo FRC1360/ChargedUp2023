@@ -99,7 +99,7 @@ public class Robot extends TimedRobot {
     m_robotContainer.wristSubsystem.resetMotorRotations();
     // m_robotContainer.wristSubsystem.holdPIDController.reset();
     // m_robotContainer.shoulderSubsystem.holdPIDController.reset();
-    m_robotContainer.getGoToZeroWristCommand().schedule(); 
+    //m_robotContainer.getGoToZeroWristCommand().schedule(); 
     m_robotContainer.getArmHomeCommand().schedule(); 
   }
 
