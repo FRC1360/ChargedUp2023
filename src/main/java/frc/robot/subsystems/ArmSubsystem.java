@@ -56,8 +56,8 @@ public class ArmSubsystem extends SubsystemBase {
         this.holdkI = 0.0; 
         this.holdkD = 0.0; 
         
-        this.holdPIDTuner = new DashboardTuning("Arm", "Hold_PID", 
-                                new double[] {this.holdkP, this.holdkI, this.holdkD}); 
+        // this.holdPIDTuner = new DashboardTuning("Arm", "Hold_PID", 
+        //                         new double[] {this.holdkP, this.holdkI, this.holdkD}); 
         this.holdPIDController = new OrbitPID(0.2, 0.0, 0.0);
         this.movePIDController = new OrbitPID(0.2, 0.0, 0.0);
 
@@ -65,9 +65,9 @@ public class ArmSubsystem extends SubsystemBase {
         this.armkG = 0.0; 
         this.armkV = 0.0; 
 
-        this.armFeedForwardTuner 
-            = new DashboardTuning("Arm", "Feedforward", 
-                                    new double[] {this.armkS, this.armkG, this.armkV}); 
+        // this.armFeedForwardTuner 
+        //     = new DashboardTuning("Arm", "Feedforward", 
+        //                             new double[] {this.armkS, this.armkG, this.armkV}); 
         
         this.armFeedforward = new ArmFeedforward(0.0, 0.00, 0.0); //ks, kg, kv
 
@@ -78,7 +78,7 @@ public class ArmSubsystem extends SubsystemBase {
          * Max acceleration inital calculation:
          * max velocity / 2 ~= 17.33 in/s^2
          */
-        this.armMotionProfileConstraints = new TrapezoidProfile.Constraints(5.00, 17.33);
+        this.armMotionProfileConstraints = new TrapezoidProfile.Constraints(15.00, 30.33);
 
         this.armMotorMaster.restoreFactoryDefaults();
         this.armMotorSlave.restoreFactoryDefaults();
