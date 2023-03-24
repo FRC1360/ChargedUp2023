@@ -44,7 +44,9 @@ public class ShoulderGoToPositionCommand extends CommandBase {
 
     @Override
     public void execute() {
-
+        this.shoulder.shoulderFeedForward = this.shoulder.feedforwardTuner.getAndUpdate(this.shoulder.shoulderFeedForward); 
+        this.shoulder.movePIDtuner.getAndUpdate(this.shoulder.movePIDController);
+        
         TrapezoidProfile.State profileTarget = this.motionProfile.calculate(this.timer.getTimeDeltaSec());
 
         double target = profileTarget.position;

@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.AnalogEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.util.DashboardTuning;
 import frc.robot.util.OrbitPID;
 
 public class ShoulderSubsystem extends SubsystemBase {
@@ -40,12 +41,28 @@ public class ShoulderSubsystem extends SubsystemBase {
 
     public ArmFeedforward shoulderFeedForward; 
 
+    private double holdkP; 
+    private double holdkI; 
+    private double holdkD; 
+
+    public DashboardTuning holdPIDtuner; 
+    public DashboardTuning movePIDtuner; 
+    public DashboardTuning feedforwardTuner; 
+
     public ShoulderSubsystem(DoubleSupplier manualOffset, BooleanSupplier manualOffsetEnable) {
-        this.holdPIDController = new OrbitPID(0.01, 0.0, 0.0); //kP - 0.045
+        this.holdkP = 0.01; 
+        this.holdkI = 0.0; 
+        this.holdkD = 0.0; 
+
+        this.holdPIDtuner = new DashboardTuning("Shoulder", "Hold_PID", new double[] {this.holdkP, this.holdkI, this.holdkD}); 
+        this.movePIDtuner = new DashboardTuning("Shoulder", "Move_PID", new double[] {0.02, 0.0, 0.0}); 
+        this.feedforwardTuner = new DashboardTuning("Shoulder", "Feedforward", new double[] {0.0, 0.02, 0.0}); 
+
+        this.holdPIDController = new OrbitPID(this.holdkP, this.holdkI, this.holdkD); //kP - 0.045
         this.movePIDController = new OrbitPID(0.02, 0.0, 0.0);  // TODO - Tune kP - 0.01
 
         // This units are deg / second for velocity and deg / sec^2 for acceleration
-        this.shoulderMotionProfileConstraints = new TrapezoidProfile.Constraints(500, 250/2.0);  // TODO - Tune.
+        this.shoulderMotionProfileConstraints = new TrapezoidProfile.Constraints(500, 250.0);  // TODO - Tune.
         this.targetAngle = -90.0;  // Make sure this is 0.0 for copetition, only 90 for testing
 
         this.shoulderMotorMaster = new CANSparkMax(Constants.SHOULDER_MOTOR_MASTER, MotorType.kBrushless);

@@ -24,7 +24,8 @@ public class ShoulderHoldCommand extends CommandBase {
 
     @Override
     public void execute() {
-
+        this.shoulder.shoulderFeedForward = this.shoulder.feedforwardTuner.getAndUpdate(this.shoulder.shoulderFeedForward); 
+        this.shoulder.holdPIDtuner.getAndUpdate(this.shoulder.holdPIDController);
         double target = this.shoulder.getTargetAngle();
         double input = this.shoulder.getShoulderAngle();
         double speed = this.shoulder.holdPIDController.calculate(target, input);
