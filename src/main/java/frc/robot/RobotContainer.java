@@ -23,6 +23,7 @@ import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.arm.ArmGoToPositionCommand;
 import frc.robot.commands.arm.ArmHoldCommand;
 import frc.robot.commands.arm.ArmHomeCommand;
+import frc.robot.commands.arm.ArmTestTuningCommand;
 import frc.robot.commands.assembly.AssemblyGoToConeIntakeCommand;
 import frc.robot.commands.assembly.AssemblyGoToPositionCommand;
 import frc.robot.commands.assembly.AssemblyHomePositionCommand;
@@ -170,7 +171,8 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    return null;
+    //return null;
+    return new ArmTestTuningCommand(armSubsystem);
     //return autoChooser.getSelected();  
   }
 

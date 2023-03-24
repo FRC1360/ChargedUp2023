@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.util.DashboardTuning;
 import frc.robot.util.OrbitPID;
 
 public class ArmSubsystem extends SubsystemBase {
@@ -27,17 +28,47 @@ public class ArmSubsystem extends SubsystemBase {
 
     public ArmFeedforward armFeedforward; 
 
+    public DashboardTuning holdPIDTuner; 
+    public DashboardTuning armFeedForwardTuner; 
+
     private double armVelocity; 
     private double lastTime; 
     private Double lastDistance; 
+
+    private double holdkP; 
+    private double holdkI; 
+    private double holdkD; 
+
+    private double movekP; 
+    private double movekI;
+    private double movekD;  
+
+    private double armkS; 
+    private double armkG; 
+    private double armkV; 
 
     public ArmSubsystem() {
         this.armMotorMaster = new CANSparkMax(Constants.ARM_MOTOR_MASTER, MotorType.kBrushless);
         this.armMotorSlave = new CANSparkMax(Constants.ARM_MOTOR_SLAVE, MotorType.kBrushless);
 
+        
+        this.holdkP = 0.2; 
+        this.holdkI = 0.0; 
+        this.holdkD = 0.0; 
+        
+        this.holdPIDTuner = new DashboardTuning("Arm", "Hold_PID", 
+                                new double[] {this.holdkP, this.holdkI, this.holdkD}); 
         this.holdPIDController = new OrbitPID(0.2, 0.0, 0.0);
         this.movePIDController = new OrbitPID(0.2, 0.0, 0.0);
 
+        this.armkS = 0.0; 
+        this.armkG = 0.0; 
+        this.armkV = 0.0; 
+
+        this.armFeedForwardTuner 
+            = new DashboardTuning("Arm", "Feedforward", 
+                                    new double[] {this.armkS, this.armkG, this.armkV}); 
+        
         this.armFeedforward = new ArmFeedforward(0.0, 0.00, 0.0); //ks, kg, kv
 
         /*\
