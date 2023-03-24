@@ -186,10 +186,6 @@ public class RobotContainer {
     return new WristGoToPositionCommand(wristSubsystem, 0.0); 
   }
 
-  public Command getGoToHomeShoulderCommand() { 
-    return new ShoulderGoToPositionCommand(shoulderSubsystem, -90.0); 
-  }
-
   private static double deadband(double value, double deadband) {
     if (Math.abs(value) > deadband) {
       if (value > 0.0) {
