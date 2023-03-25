@@ -1,5 +1,6 @@
 package frc.robot.commands.arm;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ArmSubsystem;
 
@@ -24,10 +25,13 @@ public class ArmHoldCommand extends CommandBase {
     public void execute() {
         double target = this.arm.getTargetDistance();
         double input = this.arm.getArmDistance();
-        double speed = this.arm.holdPIDController.calculate(target, input);
+        double speedPidOutput = this.arm.holdPIDController.calculate(target, input);
        
+        double speedOnDistance = speedPidOutput * Math.pow(1.01, target);  //base, exponent
 
-        this.arm.setArmNormalizedVoltage(speed);  // Probably going to need an offset based off the angle of the arm
+        SmartDashboard.putNumber("Arm_Speed_Output_With_Distance", speedOnDistance); 
+
+        this.arm.setArmNormalizedVoltage(speedPidOutput);  // Probably going to need an offset based off the angle of the arm
     }
 
     @Override
