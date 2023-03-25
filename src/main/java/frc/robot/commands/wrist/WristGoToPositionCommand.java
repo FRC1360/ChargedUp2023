@@ -70,6 +70,12 @@ public class WristGoToPositionCommand extends CommandBase {
 
         double speed = pidOutput + feedforwardOutput; 
 
+        if(Math.abs(speed) > 0.4) {
+            speed = Math.copySign(0.4, speed);  // Clamping speed to prevent motor stall
+        }
+
+        SmartDashboard.putNumber("Wrist_Move_PID_Output", pidOutput);
+        SmartDashboard.putNumber("Wrist_FF_Output", feedforwardOutput);
         SmartDashboard.putNumber("Wrist_Move_PID_And_FF_Output", speed); 
 
         this.wrist.setWristNormalizedVoltage(speed);

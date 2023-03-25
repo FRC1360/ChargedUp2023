@@ -18,18 +18,18 @@ public class AssemblyGoToCubeIntakeCommand extends SequentialCommandGroup {
     
     public AssemblyGoToCubeIntakeCommand(ShoulderSubsystem shoulder, ShoulderWristMessenger shoulderWristMessenger, 
                                                 WristSubsystem wrist, ArmSubsystem arm) { 
-        addCommands(new ShoulderGoToPositionCommand(shoulder, 40)
-            .raceWith(new WristHoldCommand(wrist))
-            .raceWith(new ArmHoldCommand(arm)), 
-
-                    new WristGoToPositionCommand(wrist, 104.0)
-            .raceWith(new ShoulderHoldCommand(shoulder, () -> 0.0))
-            .raceWith(new ArmHoldCommand(arm)), 
-
-                    new ArmGoToPositionCommand(arm, shoulderWristMessenger, 21.25)
-            .raceWith(new ShoulderHoldCommand(shoulder, () -> 0.0))
-            .raceWith(new WristHoldCommand(wrist))
-            );
+                        addCommands(new ShoulderGoToPositionCommand(shoulder, -52.0)
+                                .raceWith(new WristHoldCommand(wrist, () -> 0.0))
+                                 .raceWith(new ArmHoldCommand(arm)), 
+                                            
+                        new ArmGoToPositionCommand(arm, shoulderWristMessenger, 5.5)
+                                .raceWith(new ShoulderHoldCommand(shoulder, () -> 0.0))
+                                .raceWith(new WristHoldCommand(wrist, () -> 0.0)), 
+                                            
+                        new WristGoToPositionCommand(wrist, 25.0)
+                                .raceWith(new ShoulderHoldCommand(shoulder, () -> 0.0))
+                                .raceWith(new ArmHoldCommand(arm))
+                                                        );
     
     }
 }

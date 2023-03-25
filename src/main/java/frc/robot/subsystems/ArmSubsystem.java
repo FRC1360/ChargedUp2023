@@ -1,5 +1,8 @@
 package frc.robot.subsystems;
 
+import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -35,35 +38,18 @@ public class ArmSubsystem extends SubsystemBase {
     private double lastTime; 
     private Double lastDistance; 
 
-    private double holdkP; 
-    private double holdkI; 
-    private double holdkD; 
+    // private DoubleSupplier manualOffset; 
+    // private BooleanSupplier manualOffsetEnable; 
 
-    private double movekP; 
-    private double movekI;
-    private double movekD;  
-
-    private double armkS; 
-    private double armkG; 
-    private double armkV; 
-
-    public ArmSubsystem() {
+    public ArmSubsystem(/*DoubleSupplier manualOffset, BooleanSupplier manualOffsetEnable*/) {
         this.armMotorMaster = new CANSparkMax(Constants.ARM_MOTOR_MASTER, MotorType.kBrushless);
         this.armMotorSlave = new CANSparkMax(Constants.ARM_MOTOR_SLAVE, MotorType.kBrushless);
 
-        
-        this.holdkP = 0.2; 
-        this.holdkI = 0.0; 
-        this.holdkD = 0.0; 
         
         // this.holdPIDTuner = new DashboardTuning("Arm", "Hold_PID", 
         //                         new double[] {this.holdkP, this.holdkI, this.holdkD}); 
         this.holdPIDController = new OrbitPID(0.2, 0.0, 0.0);
         this.movePIDController = new OrbitPID(0.2, 0.0, 0.0);
-
-        this.armkS = 0.0; 
-        this.armkG = 0.0; 
-        this.armkV = 0.0; 
 
         // this.armFeedForwardTuner 
         //     = new DashboardTuning("Arm", "Feedforward", 
@@ -96,6 +82,9 @@ public class ArmSubsystem extends SubsystemBase {
         
         this.lastTime = -1.0; 
         this.lastDistance = Double.NaN; 
+
+        // this.manualOffset = manualOffset; 
+        // this.manualOffsetEnable = manualOffsetEnable; 
     }
 
     public double getMotorRotations() {
@@ -126,7 +115,8 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
     public double getTargetDistance() {
-        return this.targetDistance;
+        return this.targetDistance 
+                    /*+ (this.manualOffsetEnable.getAsBoolean() ? manualOffset.getAsDouble() : 0.0)*/;
     }
 
     // Distance in inches

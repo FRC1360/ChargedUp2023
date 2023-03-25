@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import com.revrobotics.CANSparkMax.IdleMode;
+
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycle;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -55,7 +57,9 @@ public class Robot extends TimedRobot {
 
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+    m_robotContainer.wristSubsystem.setIdleMode(IdleMode.kBrake);
+  }
 
   @Override
   public void disabledPeriodic() {
@@ -67,6 +71,7 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
+    m_robotContainer.wristSubsystem.setIdleMode(IdleMode.kBrake);
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     // schedule the autonomous command (example)
@@ -95,12 +100,14 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.cancel();
     }
 
+    m_robotContainer.wristSubsystem.setIdleMode(IdleMode.kBrake);
     m_robotContainer.shoulderSubsystem.resetMotorRotations();
     m_robotContainer.wristSubsystem.resetMotorRotations();
     // m_robotContainer.wristSubsystem.holdPIDController.reset();
     // m_robotContainer.shoulderSubsystem.holdPIDController.reset();
-    //m_robotContainer.getGoToZeroWristCommand().schedule(); 
     m_robotContainer.getArmHomeCommand().schedule(); 
+    m_robotContainer.getGoToZeroWristCommand().schedule(); 
+    m_robotContainer.getShoulderZeroCommand().schedule();
   }
 
   /** This function is called periodically during operator control. */

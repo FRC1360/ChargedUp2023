@@ -45,9 +45,9 @@ public class WristSubsystem extends SubsystemBase {
     public WristSubsystem(ShoulderWristMessenger shoulderWristMessenger, DoubleSupplier manualOffset, BooleanSupplier manualOffsetEnable) {
         this.wristMotor = new CANSparkMax(Constants.WRIST_MOTOR, MotorType.kBrushless);
         
-        this.wristOffset = Constants.WRIST_HOME_ANGLE;
-        // kP = 0.00556
-        this.holdPIDController = new OrbitPID(0.0125, 0.000000, 0.25); // kI - 0.000005
+        this.wristOffset = 0.0;
+        // kP = 0.0125
+        this.holdPIDController = new OrbitPID(0.025, 0.000000, 0.25); // kI - 0.000005
         this.movePIDController = new OrbitPID(0.025, 0.000000, 0.4);  // TODO - Tune
 
         this.wristFeedForward = new ArmFeedforward(0.0, 0.125, 0.0); // ks, kg, kv
@@ -70,6 +70,10 @@ public class WristSubsystem extends SubsystemBase {
         this.angularVelocity = Double.NaN; 
 
         resetMotorRotations();
+    }
+
+    public void setIdleMode(IdleMode mode) { 
+        this.wristMotor.setIdleMode(mode); 
     }
 
     public void resetMotorRotations() {
@@ -115,7 +119,7 @@ public class WristSubsystem extends SubsystemBase {
     // This return a GLOBAL angle. The global angle is the angle relative to the shoulder
     public double getTargetAngle() {  // Use getTargetAngle() when doing commands to move the wrist
         
-        return -this.shoulderWristMessenger.getShoulderAngle() + this.getWristOffset() + (manualOffsetEnable.getAsBoolean() ? manualOffset.getAsDouble() : 0);
+        return -this.shoulderWristMessenger.getShoulderAngle() + this.getWristOffset() + (manualOffsetEnable.getAsBoolean() ? manualOffset.getAsDouble() : 0.0);
     }
  
     public void setWristOffset(double offset) {
@@ -153,6 +157,10 @@ public class WristSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Wrist_Hold_P_Gain", this.holdPIDController.getPTerm());
         SmartDashboard.putNumber("Wrist_Hold_I_Gain", this.holdPIDController.getITerm());
         SmartDashboard.putNumber("Wrist_Hold_D_Gain", this.holdPIDController.getDTerm());
+
+        SmartDashboard.putNumber("Wrist_Move_P_Gain", this.movePIDController.getPTerm());
+        SmartDashboard.putNumber("Wrist_Move_I_Gain", this.movePIDController.getITerm());
+        SmartDashboard.putNumber("Wrist_Move_D_Gain", this.movePIDController.getDTerm());
 
         SmartDashboard.putNumber("Wrist_Target_Angle", this.getTargetAngle());
         SmartDashboard.putNumber("Wrist_Angle", this.getWristAngle());

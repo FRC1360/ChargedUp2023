@@ -25,7 +25,7 @@ public class AssemblyGoToPositionCommand extends SequentialCommandGroup {
                     .andThen(new WristGoToPositionCommand(wrist, 90))  // Got to 90 degrees
                     .andThen(
                         new ShoulderGoToPositionCommand(shoulder, angle)  // Set shoulder angle
-                        .raceWith(new WristHoldCommand(wrist))  // Manually call WristHoldCommand() because conditional commands require all subsystems in all subcommands
+                        .raceWith(new WristHoldCommand(wrist, () -> 0.0))  // Manually call WristHoldCommand() because conditional commands require all subsystems in all subcommands
                     )
                     .andThen(new ScheduleCommand(  // WPILib workaround to ensure WristGoToCachePosition initialize is called the right time
                         new WristGoToCachePositionCommand(wrist)
@@ -33,7 +33,7 @@ public class AssemblyGoToPositionCommand extends SequentialCommandGroup {
 
                     // Transition = False
                     new ShoulderGoToPositionCommand(shoulder, angle)  // Set shoulder angle
-                    .raceWith(new WristHoldCommand(wrist)), // Manually call WristHoldCommand() because conditional commands require all subsystems in all subcommands
+                    .raceWith(new WristHoldCommand(wrist, () -> 0.0)), // Manually call WristHoldCommand() because conditional commands require all subsystems in all subcommands
                     
                     shoulder.inTransitionState())
             ));

@@ -25,6 +25,7 @@ import frc.robot.commands.arm.ArmHoldCommand;
 import frc.robot.commands.arm.ArmHomeCommand;
 import frc.robot.commands.arm.ArmTestTuningCommand;
 import frc.robot.commands.assembly.AssemblyGoToConeIntakeCommand;
+import frc.robot.commands.assembly.AssemblyGoToCubeIntakeCommand;
 import frc.robot.commands.assembly.AssemblyGoToPositionCommand;
 import frc.robot.commands.assembly.AssemblyHomePositionCommand;
 import frc.robot.commands.intake.ManualIntakeCommand;
@@ -54,13 +55,13 @@ public class RobotContainer {
   private final CommandXboxController operatorController = new CommandXboxController(2);
 
   // The robot's subsystems and commands are defined here...
-  // public final DrivetrainSubsystem m_drivetrainSubsystem = new DrivetrainSubsystem();
+  public final DrivetrainSubsystem m_drivetrainSubsystem = new DrivetrainSubsystem();
   public final ShoulderSubsystem shoulderSubsystem = new ShoulderSubsystem(() -> operatorController.getRightY()*Constants.SHOULDER_MANUAL_OVERRIDE_RANGE, operatorController.leftBumper());
   private final ShoulderSubsystem.ShoulderWristMessenger messenger = shoulderSubsystem.new ShoulderWristMessenger();
 
   public final WristSubsystem wristSubsystem = new WristSubsystem(messenger, () -> operatorController.getLeftY()*Constants.WRIST_MANUAL_OVERRIDE_RANGE, operatorController.leftBumper());
 
-  public final ArmSubsystem armSubsystem = new ArmSubsystem();
+  public final ArmSubsystem armSubsystem = new ArmSubsystem(/*() -> operatorController.getRightTriggerAxis()*Constants.ARM_MANUAL_OFFSET_RANGE, operatorController.leftBumper()*/);
 
   private final IntakeSubsystem intake = new IntakeSubsystem();
 
@@ -81,17 +82,17 @@ public class RobotContainer {
     // Left stick Y axis -> forward and backwards movement
     // Left stick X axis -> left and right movement
     // Right stick X axis -> rotation
-    // m_drivetrainSubsystem.setDefaultCommand(new DefaultDriveCommand(
-    //         m_drivetrainSubsystem,
-    //         () -> -modifyAxis(left_controller.getY()) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-    //         () -> -modifyAxis(left_controller.getX()) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-    //         () -> modifyAxis(right_controller.getX()) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
-    // ));
+    m_drivetrainSubsystem.setDefaultCommand(new DefaultDriveCommand(
+            m_drivetrainSubsystem,
+            () -> -modifyAxis(left_controller.getY()) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+            () -> -modifyAxis(left_controller.getX()) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+            () -> modifyAxis(right_controller.getX()) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
+     ));
 
     shoulderSubsystem.setDefaultCommand(new ShoulderHoldCommand(shoulderSubsystem, () -> this.operatorController.getRightTriggerAxis()));
     /*shoulderSubsystem.setDefaultCommand(new ShoulderMoveManual(shoulderSubsystem,
       () -> modifyAxis(operatorController.getLeftY()) ));*/
-    //wristSubsystem.setDefaultCommand(new WristHoldCommand(wristSubsystem));
+    wristSubsystem.setDefaultCommand(new WristHoldCommand(wristSubsystem, () -> this.operatorController.getRightTriggerAxis()));
     //wristSubsystem.setDefaultCommand(new InstantCommand(() -> wristSubsystem.setWristSpeed(/*operatorController.getLeftX()*/0.1), wristSubsystem));
     armSubsystem.setDefaultCommand(new ArmHoldCommand(this.armSubsystem));
 
@@ -122,13 +123,27 @@ public class RobotContainer {
     // left_controller.button(1).onTrue(new InstantCommand(m_drivetrainSubsystem::zeroGyroscope)); 
     // operatorController.back().onTrue(new InstantCommand(armSubsystem::resetEncoder));
 
+    //PAST WORK!
     operatorController.x().onTrue(new AssemblyHomePositionCommand(shoulderSubsystem, messenger, wristSubsystem, armSubsystem)); 
+    //  operatorController.b().onTrue(new ArmGoToPositionCommand(armSubsystem, messenger, 10.0));
+    //  operatorController.a().onTrue(new ArmGoToPositionCommand(armSubsystem, messenger, 0.0));
+    // operatorController.y().onTrue(new ArmGoToPositionCommand(armSubsystem, messenger, 15.0));
+    // operatorController.povUp().onTrue(new ShoulderGoToPositionCommand(shoulderSubsystem, 0.0)); 
+    // operatorController.povRight().onTrue(new ShoulderGoToPositionCommand(shoulderSubsystem, -45.0)); 
+    // operatorController.povDown().onTrue(new ShoulderGoToPositionCommand(shoulderSubsystem, -90.0)); 
+    operatorController.povDown().onTrue(new WristGoToPositionCommand(wristSubsystem, 0.0));
+    operatorController.povUp().onTrue(new WristGoToPositionCommand(wristSubsystem, 90));
+    operatorController.povLeft().onTrue(new WristGoToPositionCommand(wristSubsystem, -45.0));
+    operatorController.povRight().onTrue(new WristGoToPositionCommand(wristSubsystem, 45.0));
 
-     operatorController.b().onTrue(new ArmGoToPositionCommand(armSubsystem, messenger, 10.0));
-     operatorController.a().onTrue(new ArmGoToPositionCommand(armSubsystem, messenger, 0.0));
-     //operatorController.y().onTrue(new ArmGoToPositionCommand(armSubsystem, messenger, 15.0));
-    //operatorController.a().onTrue(new ArmGoToPositionCommand(armSubsystem, Constants.ARM_POSITION.HIGH_GOAL));
-     operatorController.y().onTrue(new AssemblyGoToConeIntakeCommand(shoulderSubsystem, messenger, wristSubsystem, armSubsystem)); 
+    operatorController.a().onTrue((new AssemblyGoToCubeIntakeCommand(shoulderSubsystem, messenger, wristSubsystem, armSubsystem)));
+     operatorController.y().onTrue(new AssemblyGoToConeIntakeCommand(shoulderSubsystem, messenger, wristSubsystem, armSubsystem));
+     
+     
+    new Trigger(() -> operatorController.getRightTriggerAxis() > 0.05)
+     .onTrue(new ManualIntakeCommand(intake, () -> operatorController.getRightTriggerAxis()));
+    new Trigger(() -> operatorController.getLeftTriggerAxis() > 0.05)
+     .onTrue(new ManualPutdownCommand(intake, () -> operatorController.getLeftTriggerAxis())); 
     //operatorController.b().onTrue(new ArmGoToPositionCommand(armSubsystem, shoulderSubsystem, Constants.ARM_POSITION.MID_GOAL));
     // operatorController.x().onTrue(new ArmGoToPositionCommand(armSubsystem, shoulderSubsystem, Constants.ARM_POSITION.LOW_GOAL));
 
@@ -143,25 +158,16 @@ public class RobotContainer {
     operatorController.b().onTrue(new
      AssemblyGoToPositionCommand(shoulderSubsystem, wristSubsystem, 150.0));
     operatorController.rightBumper().onTrue(new AssemblyGoToPositionCommand(shoulderSubsystem, wristSubsystem, -50.0));*/
-    operatorController.povUp().onTrue(new ShoulderGoToPositionCommand(shoulderSubsystem, 0.0)); 
-    operatorController.povRight().onTrue(new ShoulderGoToPositionCommand(shoulderSubsystem, -45.0)); 
-    operatorController.povDown().onTrue(new ShoulderGoToPositionCommand(shoulderSubsystem, -90.0)); 
 
-    // operatorController.povUp().onTrue(new WristGoToPositionCommand(wristSubsystem, 90));
-    //  operatorController.povLeft().onTrue(new WristGoToPositionCommand(wristSubsystem, -45.0));
-    //  operatorController.povRight().onTrue(new WristGoToPositionCommand(wristSubsystem, 45.0));
+
     // // operatorController.povRight().onTrue(new WristGoToPositionCommand(wristSubsystem, 135));
-    // operatorController.povDown().onTrue(new WristGoToPositionCommand(wristSubsystem, 0.0));
+   
     // operatorController.povUp().onTrue(new WristGoToPositionCommand(wristSubsystem, 90.0)); 
     
     /* 
     new Trigger(operatorController::getBackButton)
             .onTrue(new InstantCommand(m_drivetrainSubsystem::zeroGyroscope));
             */
-    // new Trigger(() -> operatorController.getRightTriggerAxis() > 0)
-    //         .onTrue(new ManualIntakeCommand(intake, () -> operatorController.getRightTriggerAxis()));
-    // new Trigger(() -> operatorController.getLeftTriggerAxis() > 0)
-    //         .onTrue(new ManualPutdownCommand(intake, () -> operatorController.getLeftTriggerAxis()));
             
   }
 
@@ -173,8 +179,8 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    //return null;
-    return new ArmTestTuningCommand(armSubsystem);
+    return null;
+    // return new ArmTestTuningCommand(armSubsystem);
     //return autoChooser.getSelected();  
   }
 
@@ -184,8 +190,12 @@ public class RobotContainer {
     return new ArmHomeCommand(armSubsystem); 
   }
 
+  public Command getShoulderZeroCommand() { 
+    return new ShoulderGoToPositionCommand(shoulderSubsystem, Constants.SHOULDER_HOME_ANGLE); 
+  }
+
   public Command getGoToZeroWristCommand() { 
-    return new WristGoToPositionCommand(wristSubsystem, 0.0); 
+    return new WristGoToPositionCommand(wristSubsystem, Constants.WRIST_HOME_ANGLE); 
   }
 
   private static double deadband(double value, double deadband) {

@@ -24,26 +24,18 @@ public class ShoulderHoldCommand extends CommandBase {
 
     @Override
     public void execute() {
-        this.shoulder.shoulderFeedForward = this.shoulder.feedforwardTuner.getAndUpdate(this.shoulder.shoulderFeedForward); 
-        this.shoulder.holdPIDtuner.getAndUpdate(this.shoulder.holdPIDController);
         double target = this.shoulder.getTargetAngle();
         double input = this.shoulder.getShoulderAngle();
         double speed = this.shoulder.holdPIDController.calculate(target, input);
 
         double kF = this.shoulder.shoulderFeedForward.calculate(target, 
                                                                 this.shoulder.getAngluarVelocity()); 
+        
+        speed += kF; 
+        if (this.intakeSpeed.getAsDouble() > 0.1) speed = -0.1; 
+        
 
-        // Remember to increase this value and also add kI please
-        //double kF;
-
-        // if(intakeSpeed.getAsDouble() > 0.05) {
-        //    // kF = -0.2;
-        //    kF = 0.18 * Math.sin(Math.toRadians(this.shoulder.getShoulderAngle()));
-        // } else {
-        //     kF = 0.18 * Math.sin(Math.toRadians(this.shoulder.getShoulderAngle()));
-        // }
-
-        this.shoulder.setShoulderNormalizedVoltage(speed + kF);
+        this.shoulder.setShoulderNormalizedVoltage(speed);
         //this.shoulder.setShoulderNormalizedVoltage(0.1); 
 
         SmartDashboard.putNumber("Shoulder_Hold_Output", speed + kF);

@@ -18,14 +18,16 @@ public class AssemblyHomePositionCommand extends SequentialCommandGroup {
     public AssemblyHomePositionCommand(ShoulderSubsystem shoulder, ShoulderWristMessenger shoulderWristMessenger, 
                                         WristSubsystem wrist, ArmSubsystem arm) { 
         addCommands(
-            //new WristGoToPositionCommand(wrist, Constants.WRIST_HOME_ANGLE)
-        //         .raceWith(new ShoulderHoldCommand(shoulder, () -> 0.0))
-        //         .raceWith(new ArmHoldCommand(arm)), 
+
+            // Old
+            new WristGoToPositionCommand(wrist, Constants.WRIST_HOME_ANGLE)
+                .raceWith(new ShoulderHoldCommand(shoulder, () -> 0.0))
+                .raceWith(new ArmHoldCommand(arm)), 
             new ArmGoToPositionCommand(arm, shoulderWristMessenger, 0.0)
                 .raceWith(new ShoulderHoldCommand(shoulder, () -> 0.0))
-                .raceWith(new WristHoldCommand(wrist)), 
-            new ShoulderGoToPositionCommand(shoulder, -90.0)
-                .raceWith(new WristHoldCommand(wrist))
+                .raceWith(new WristHoldCommand(wrist, () -> 0.0)), 
+            new ShoulderGoToPositionCommand(shoulder, Constants.SHOULDER_HOME_ANGLE)
+                .raceWith(new WristHoldCommand(wrist, () -> 0.0))
                 .raceWith(new ArmHoldCommand(arm))
             );
     }

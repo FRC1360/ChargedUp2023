@@ -66,16 +66,17 @@ public final class Constants {
     //public static final double SHOULDER_ENCODER_OFFSET = 0.542;
     public static final double SHOULDER_ENCODER_OFFSET = 0.534;
     public static final double SHOULDER_GEAR_RATIO = (11.0 / 52.0) * (30.0 / 68.0) * (12.0 / 60.0);
-    public static final double SHOULDER_MANUAL_OVERRIDE_RANGE = 20.0; 
+    public static final double SHOULDER_MANUAL_OVERRIDE_RANGE = 20.0;
+    public static final double SHOULDER_HOME_ANGLE = -90.0;  
 
     // WRIST
     public static final int WRIST_MOTOR = 54;
     public static final double WRIST_MANUAL_OVERRIDE_RANGE = 20.0;
     public static final int WRIST_ENCODER = 1;
-    public static final double WRIST_ENCODER_OFFSET = 0.587;
+    public static final double WRIST_ENCODER_OFFSET = 0.585;
     public static final double WRIST_GEAR_RATIO = (1.0 / 36.0) * (35.0 / 60.0);
     //public static final double WRIST_HOME_ANGLE = 140.0; 
-    public static final double WRIST_HOME_ANGLE = 0.0; 
+    public static final double WRIST_HOME_ANGLE = 70.0; 
     
 
     // ARM
@@ -84,6 +85,7 @@ public final class Constants {
     public static final double ARM_GEAR_RATIO = (11.0 / 52.0) * (30.0 / 68.0) * (18.0 / 36.0);
     public static final double ARM_DRUM_DIAMETER = 2.5;  // Arm Drum Diameter in inches
     public static final double ARM_PULLEY_BLOCK_RATIO = 1.0;
+    public static final double ARM_MANUAL_OFFSET_RANGE = 5.0; 
     
 
     public final class ARM_POSITION { 
