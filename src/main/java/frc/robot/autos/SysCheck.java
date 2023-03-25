@@ -42,7 +42,7 @@ public class SysCheck extends SequentialCommandGroup {
 
             new ArmGoToPositionCommand(arm, shoulderWristMessenger, 10.0) // extend arm
                 .raceWith(new ShoulderHoldCommand(shoulder, () -> 0.0))
-                .raceWith(new WristHoldCommand(wrist))
+                .raceWith(new WristHoldCommand(wrist)),
             
             new ArmHoldCommand(arm)
                 .alongWith(new WristHoldCommand(wrist))

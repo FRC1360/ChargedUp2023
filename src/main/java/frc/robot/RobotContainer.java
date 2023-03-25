@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.autos.DriveStraightAuto;
 import frc.robot.autos.EngageStationAuto;
+import frc.robot.autos.SysCheck;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.arm.ArmGoToPositionCommand;
 import frc.robot.commands.arm.ArmHoldCommand;
@@ -162,6 +163,8 @@ public class RobotContainer {
     //         .onTrue(new ManualIntakeCommand(intake, () -> operatorController.getRightTriggerAxis()));
     // new Trigger(() -> operatorController.getLeftTriggerAxis() > 0)
     //         .onTrue(new ManualPutdownCommand(intake, () -> operatorController.getLeftTriggerAxis()));
+
+    operatorController.back().onTrue(new SysCheck(shoulderSubsystem, armSubsystem, wristSubsystem, intake, messenger, operatorController.back())); // system check
             
   }
 
