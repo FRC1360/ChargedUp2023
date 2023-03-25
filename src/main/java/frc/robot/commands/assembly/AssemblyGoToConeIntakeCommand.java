@@ -18,15 +18,15 @@ public class AssemblyGoToConeIntakeCommand extends SequentialCommandGroup {
     
     public AssemblyGoToConeIntakeCommand(ShoulderSubsystem shoulder, ShoulderWristMessenger shoulderWristMessenger, 
                                                 WristSubsystem wrist, ArmSubsystem arm) { 
-        addCommands(new ShoulderGoToPositionCommand(shoulder, 40)
+        addCommands(new ShoulderGoToPositionCommand(shoulder, -45.0)
             .raceWith(new WristHoldCommand(wrist))
             .raceWith(new ArmHoldCommand(arm)), 
 
-                    new WristGoToPositionCommand(wrist, 104.0)
-            .raceWith(new ShoulderHoldCommand(shoulder, () -> 0.0))
-            .raceWith(new ArmHoldCommand(arm)), 
+        //             new WristGoToPositionCommand(wrist, 104.0)
+        //     .raceWith(new ShoulderHoldCommand(shoulder, () -> 0.0))
+        //     .raceWith(new ArmHoldCommand(arm)), 
 
-                    new ArmGoToPositionCommand(arm, shoulderWristMessenger, 21.25)
+                    new ArmGoToPositionCommand(arm, shoulderWristMessenger, 10.0)
             .raceWith(new ShoulderHoldCommand(shoulder, () -> 0.0))
             .raceWith(new WristHoldCommand(wrist))
             );

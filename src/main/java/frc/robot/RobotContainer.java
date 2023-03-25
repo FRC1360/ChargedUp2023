@@ -122,11 +122,13 @@ public class RobotContainer {
     // left_controller.button(1).onTrue(new InstantCommand(m_drivetrainSubsystem::zeroGyroscope)); 
     // operatorController.back().onTrue(new InstantCommand(armSubsystem::resetEncoder));
 
-    //  operatorController.start().onTrue(new AssemblyHomePositionCommand(shoulderSubsystem, messenger, wristSubsystem, armSubsystem)); 
-    //  operatorController.b().onTrue(new ArmGoToPositionCommand(armSubsystem, messenger, 10.0));
-    //  operatorController.a().onTrue(new ArmGoToPositionCommand(armSubsystem, messenger, 0.0));
+    operatorController.x().onTrue(new AssemblyHomePositionCommand(shoulderSubsystem, messenger, wristSubsystem, armSubsystem)); 
+
+     operatorController.b().onTrue(new ArmGoToPositionCommand(armSubsystem, messenger, 10.0));
+     operatorController.a().onTrue(new ArmGoToPositionCommand(armSubsystem, messenger, 0.0));
+     //operatorController.y().onTrue(new ArmGoToPositionCommand(armSubsystem, messenger, 15.0));
     //operatorController.a().onTrue(new ArmGoToPositionCommand(armSubsystem, Constants.ARM_POSITION.HIGH_GOAL));
-    // operatorController.a().onTrue(new AssemblyGoToConeIntakeCommand(shoulderSubsystem, messenger, wristSubsystem, armSubsystem)); 
+     operatorController.y().onTrue(new AssemblyGoToConeIntakeCommand(shoulderSubsystem, messenger, wristSubsystem, armSubsystem)); 
     //operatorController.b().onTrue(new ArmGoToPositionCommand(armSubsystem, shoulderSubsystem, Constants.ARM_POSITION.MID_GOAL));
     // operatorController.x().onTrue(new ArmGoToPositionCommand(armSubsystem, shoulderSubsystem, Constants.ARM_POSITION.LOW_GOAL));
 

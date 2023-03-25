@@ -50,15 +50,7 @@ public class ShoulderSubsystem extends SubsystemBase {
     public DashboardTuning feedforwardTuner; 
 
     public ShoulderSubsystem(DoubleSupplier manualOffset, BooleanSupplier manualOffsetEnable) {
-        this.holdkP = 0.01; 
-        this.holdkI = 0.0; 
-        this.holdkD = 0.0; 
-
-        this.holdPIDtuner = new DashboardTuning("Shoulder", "Hold_PID", new double[] {this.holdkP, this.holdkI, this.holdkD}); 
-        this.movePIDtuner = new DashboardTuning("Shoulder", "Move_PID", new double[] {0.02, 0.0, 0.0}); 
-        this.feedforwardTuner = new DashboardTuning("Shoulder", "Feedforward", new double[] {0.0, 0.02, 0.0}); 
-
-        this.holdPIDController = new OrbitPID(this.holdkP, this.holdkI, this.holdkD); //kP - 0.045
+        this.holdPIDController = new OrbitPID(0.019, 0.0, 0.0); //kP - 0.045
         this.movePIDController = new OrbitPID(0.02, 0.0, 0.0);  // TODO - Tune kP - 0.01
 
         // This units are deg / second for velocity and deg / sec^2 for acceleration
@@ -68,7 +60,7 @@ public class ShoulderSubsystem extends SubsystemBase {
         this.shoulderMotorMaster = new CANSparkMax(Constants.SHOULDER_MOTOR_MASTER, MotorType.kBrushless);
         this.shoulderMotorSlave = new CANSparkMax(Constants.SHOULDER_MOTOR_SLAVE, MotorType.kBrushless);
 
-        this.shoulderFeedForward = new ArmFeedforward(0.0, 0.02, 0.0); 
+        this.shoulderFeedForward = new ArmFeedforward(0.0, 0.065, 0.0); 
 
         this.shoulderMotorMaster.restoreFactoryDefaults();
         this.shoulderMotorSlave.restoreFactoryDefaults();
