@@ -12,22 +12,23 @@ import frc.robot.commands.wrist.WristHoldCommand;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ShoulderSubsystem;
 import frc.robot.subsystems.WristSubsystem;
+import frc.robot.subsystems.ArmSubsystem.ArmShoulderMessenger;
 import frc.robot.subsystems.ShoulderSubsystem.ShoulderWristMessenger;
 
 public class AssemblyGoToCubeIntakeCommand extends SequentialCommandGroup {
     
     public AssemblyGoToCubeIntakeCommand(ShoulderSubsystem shoulder, ShoulderWristMessenger shoulderWristMessenger, 
-                                                WristSubsystem wrist, ArmSubsystem arm) { 
+                                                WristSubsystem wrist, ArmSubsystem arm, ArmShoulderMessenger armMessenger) { 
                         addCommands(new ShoulderGoToPositionCommand(shoulder, -52.0)
                                 .raceWith(new WristHoldCommand(wrist, () -> 0.0))
                                  .raceWith(new ArmHoldCommand(arm)), 
                                             
                         new ArmGoToPositionCommand(arm, shoulderWristMessenger, 5.5)
-                                .raceWith(new ShoulderHoldCommand(shoulder, () -> 0.0))
+                                .raceWith(new ShoulderHoldCommand(shoulder, armMessenger, () -> 0.0))
                                 .raceWith(new WristHoldCommand(wrist, () -> 0.0)), 
                                             
                         new WristGoToPositionCommand(wrist, 25.0)
-                                .raceWith(new ShoulderHoldCommand(shoulder, () -> 0.0))
+                                .raceWith(new ShoulderHoldCommand(shoulder, armMessenger, () -> 0.0))
                                 .raceWith(new ArmHoldCommand(arm))
                                                         );
     

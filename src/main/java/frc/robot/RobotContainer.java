@@ -28,6 +28,8 @@ import frc.robot.commands.assembly.AssemblyGoToConeIntakeCommand;
 import frc.robot.commands.assembly.AssemblyGoToCubeIntakeCommand;
 import frc.robot.commands.assembly.AssemblyGoToPositionCommand;
 import frc.robot.commands.assembly.AssemblyHomePositionCommand;
+import frc.robot.commands.assembly.AssemblyMidScoreCommand;
+import frc.robot.commands.intake.IntakeHoldCommand;
 import frc.robot.commands.intake.ManualIntakeCommand;
 import frc.robot.commands.intake.ManualPutdownCommand;
 import frc.robot.commands.shoulder.ShoulderGoToPositionCommand;
@@ -57,13 +59,14 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   public final DrivetrainSubsystem m_drivetrainSubsystem = new DrivetrainSubsystem();
   public final ShoulderSubsystem shoulderSubsystem = new ShoulderSubsystem(() -> operatorController.getRightY()*Constants.SHOULDER_MANUAL_OVERRIDE_RANGE, operatorController.leftBumper());
-  private final ShoulderSubsystem.ShoulderWristMessenger messenger = shoulderSubsystem.new ShoulderWristMessenger();
+  private final ShoulderSubsystem.ShoulderWristMessenger shoulderMessenger = shoulderSubsystem.new ShoulderWristMessenger();
 
-  public final WristSubsystem wristSubsystem = new WristSubsystem(messenger, () -> operatorController.getLeftY()*Constants.WRIST_MANUAL_OVERRIDE_RANGE, operatorController.leftBumper());
+  public final WristSubsystem wristSubsystem = new WristSubsystem(shoulderMessenger, () -> operatorController.getLeftY()*Constants.WRIST_MANUAL_OVERRIDE_RANGE, operatorController.leftBumper());
 
   public final ArmSubsystem armSubsystem = new ArmSubsystem(/*() -> operatorController.getRightTriggerAxis()*Constants.ARM_MANUAL_OFFSET_RANGE, operatorController.leftBumper()*/);
+  private final ArmSubsystem.ArmShoulderMessenger armMessenger = armSubsystem.new ArmShoulderMessenger(); 
 
-  private final IntakeSubsystem intake = new IntakeSubsystem();
+  private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
 
   // private final ManualIntakeCommand ManualIntakeCommand = new ManualIntakeCommand(intake, 5);
   // private final ManualPutdownCommand ManualPutdownCommand = new ManualPutdownCommand(intake, 5);
@@ -89,12 +92,13 @@ public class RobotContainer {
             () -> modifyAxis(right_controller.getX()) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
      ));
 
-    shoulderSubsystem.setDefaultCommand(new ShoulderHoldCommand(shoulderSubsystem, () -> this.operatorController.getRightTriggerAxis()));
+    shoulderSubsystem.setDefaultCommand(new ShoulderHoldCommand(shoulderSubsystem, armMessenger, () -> this.operatorController.getRightTriggerAxis()));
     /*shoulderSubsystem.setDefaultCommand(new ShoulderMoveManual(shoulderSubsystem,
       () -> modifyAxis(operatorController.getLeftY()) ));*/
     wristSubsystem.setDefaultCommand(new WristHoldCommand(wristSubsystem, () -> this.operatorController.getRightTriggerAxis()));
     //wristSubsystem.setDefaultCommand(new InstantCommand(() -> wristSubsystem.setWristSpeed(/*operatorController.getLeftX()*/0.1), wristSubsystem));
     armSubsystem.setDefaultCommand(new ArmHoldCommand(this.armSubsystem));
+    intakeSubsystem.setDefaultCommand(new IntakeHoldCommand(this.intakeSubsystem));
 
     initializeRobot();
     // Configure the button bindings
@@ -124,7 +128,7 @@ public class RobotContainer {
     // operatorController.back().onTrue(new InstantCommand(armSubsystem::resetEncoder));
 
     //PAST WORK!
-    operatorController.x().onTrue(new AssemblyHomePositionCommand(shoulderSubsystem, messenger, wristSubsystem, armSubsystem)); 
+    operatorController.x().onTrue(new AssemblyHomePositionCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger)); 
     //  operatorController.b().onTrue(new ArmGoToPositionCommand(armSubsystem, messenger, 10.0));
     //  operatorController.a().onTrue(new ArmGoToPositionCommand(armSubsystem, messenger, 0.0));
     // operatorController.y().onTrue(new ArmGoToPositionCommand(armSubsystem, messenger, 15.0));
@@ -136,14 +140,16 @@ public class RobotContainer {
     operatorController.povLeft().onTrue(new WristGoToPositionCommand(wristSubsystem, -45.0));
     operatorController.povRight().onTrue(new WristGoToPositionCommand(wristSubsystem, 45.0));
 
-    operatorController.a().onTrue((new AssemblyGoToCubeIntakeCommand(shoulderSubsystem, messenger, wristSubsystem, armSubsystem)));
-     operatorController.y().onTrue(new AssemblyGoToConeIntakeCommand(shoulderSubsystem, messenger, wristSubsystem, armSubsystem));
+    operatorController.a().onTrue((new AssemblyGoToCubeIntakeCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger)));
+     operatorController.y().onTrue(new AssemblyGoToConeIntakeCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger));
+    operatorController.b().onTrue(new AssemblyMidScoreCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger)); 
      
-     
+
+
     new Trigger(() -> operatorController.getRightTriggerAxis() > 0.05)
-     .onTrue(new ManualIntakeCommand(intake, () -> operatorController.getRightTriggerAxis()));
+     .whileTrue(new ManualIntakeCommand(intakeSubsystem, () -> operatorController.getRightTriggerAxis()));
     new Trigger(() -> operatorController.getLeftTriggerAxis() > 0.05)
-     .onTrue(new ManualPutdownCommand(intake, () -> operatorController.getLeftTriggerAxis())); 
+     .whileTrue(new ManualPutdownCommand(intakeSubsystem, () -> operatorController.getLeftTriggerAxis())); 
     //operatorController.b().onTrue(new ArmGoToPositionCommand(armSubsystem, shoulderSubsystem, Constants.ARM_POSITION.MID_GOAL));
     // operatorController.x().onTrue(new ArmGoToPositionCommand(armSubsystem, shoulderSubsystem, Constants.ARM_POSITION.LOW_GOAL));
 

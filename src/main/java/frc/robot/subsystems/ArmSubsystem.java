@@ -172,5 +172,15 @@ public class ArmSubsystem extends SubsystemBase {
         updateArmVelocity(); 
     }
 
+    public class ArmShoulderMessenger { 
+        public double getArmDistance() { 
+            return ArmSubsystem.this.getArmDistance(); 
+        }
+
+        public double getTargetDistance() { 
+            return ArmSubsystem.this.getTargetDistance(); 
+        }
+    }
+
       
 }

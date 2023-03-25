@@ -78,6 +78,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
   // cause the angle reading to increase until it wraps back over to zero.
   // FIXME Uncomment if you are using a NavX
   private final AHRS m_navx = new AHRS(Port.kMXP, (byte) 200); // NavX connected over MXP
+  //private final AHRS m_navx = new AHRS(Port.kMXP); // NavX connected over MXP
 
   // These are our modules. We initialize them in the constructor.
   private final SwerveModule m_frontLeftModule;

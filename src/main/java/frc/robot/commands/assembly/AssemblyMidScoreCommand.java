@@ -1,8 +1,6 @@
 package frc.robot.commands.assembly;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.Constants;
 import frc.robot.commands.arm.ArmGoToPositionCommand;
 import frc.robot.commands.arm.ArmHoldCommand;
 import frc.robot.commands.shoulder.ShoulderGoToPositionCommand;
@@ -15,19 +13,19 @@ import frc.robot.subsystems.WristSubsystem;
 import frc.robot.subsystems.ArmSubsystem.ArmShoulderMessenger;
 import frc.robot.subsystems.ShoulderSubsystem.ShoulderWristMessenger;
 
-public class AssemblyGoToConeIntakeCommand extends SequentialCommandGroup {
+public class AssemblyMidScoreCommand extends SequentialCommandGroup {
     
-    public AssemblyGoToConeIntakeCommand(ShoulderSubsystem shoulder, ShoulderWristMessenger shoulderWristMessenger, 
+    public AssemblyMidScoreCommand(ShoulderSubsystem shoulder, ShoulderWristMessenger shoulderWristMessenger, 
                                                 WristSubsystem wrist, ArmSubsystem arm, ArmShoulderMessenger armMessenger) { 
-        addCommands(new ShoulderGoToPositionCommand(shoulder, -48.0)
+        addCommands(new ShoulderGoToPositionCommand(shoulder, -5.0)
             .raceWith(new WristHoldCommand(wrist, () -> 0.0))
-            .raceWith(new ArmHoldCommand(arm)), 
+            .raceWith(new ArmHoldCommand(arm)),
 
-                new ArmGoToPositionCommand(arm, shoulderWristMessenger, 5.8)
+            /*    new ArmGoToPositionCommand(arm, shoulderWristMessenger, 10.0)
             .raceWith(new ShoulderHoldCommand(shoulder, armMessenger, () -> 0.0))
-            .raceWith(new WristHoldCommand(wrist, () -> 0.0)), 
+            .raceWith(new WristHoldCommand(wrist, () -> 0.0)), */
 
-                new WristGoToPositionCommand(wrist, 0.0)
+            new WristGoToPositionCommand(wrist, 60.0)
             .raceWith(new ShoulderHoldCommand(shoulder, armMessenger, () -> 0.0))
             .raceWith(new ArmHoldCommand(arm))
             );
