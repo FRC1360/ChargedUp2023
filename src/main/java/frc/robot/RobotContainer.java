@@ -37,6 +37,8 @@ import frc.robot.commands.intake.ManualPutdownCommand;
 import frc.robot.commands.shoulder.ShoulderGoToPositionCommand;
 import frc.robot.commands.shoulder.ShoulderHoldCommand;
 import frc.robot.commands.shoulder.ShoulderMoveManual;
+import frc.robot.commands.vision.RotateAlign;
+import frc.robot.commands.vision.StrafeAlign;
 // import frc.robot.commands.vision.DriveToTarget;
 // import frc.robot.commands.vision.RotateAlign;
 // import frc.robot.commands.vision.StrafeAlign;
@@ -73,7 +75,7 @@ public class RobotContainer {
   public final ArmSubsystem armSubsystem = new ArmSubsystem(/*() -> operatorController.getRightTriggerAxis()*Constants.ARM_MANUAL_OFFSET_RANGE, operatorController.leftBumper()*/);
   private final ArmSubsystem.ArmShoulderMessenger armMessenger = armSubsystem.new ArmShoulderMessenger(); 
 
-  //private final Vision vision = new Vision(); 
+  private final Vision vision = new Vision(); 
 
   ////private final TranslateAlign align = new TranslateAlign(m_drivetrainSubsystem, vision);
   
@@ -217,6 +219,8 @@ public class RobotContainer {
               Vision.Pipeline.LEFT_TARGET
             ));
             */
+
+    left_controller.button(2).whileTrue(new StrafeAlign(m_drivetrainSubsystem, vision, left_controller::getX, left_controller::getY));
   }
 
   
