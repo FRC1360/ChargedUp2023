@@ -6,8 +6,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.autos.basic.Direction;
 import frc.robot.autos.basic.Drive;
-import frc.robot.autos.basic.Rotate;
-import frc.robot.autos.builderSequences.CenterToScore;
+import frc.robot.autos.basic.Rotate; 
 import frc.robot.autos.procedures.GetAndScoreCone;
 import frc.robot.subsystems.DrivetrainSubsystem;
 

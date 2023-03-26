@@ -52,7 +52,9 @@ public final class Constants {
 
 
     public static final class Drivetrain { 
-        public static final double MOTION_PROFILE_MAX_VELOCITY = 2.0; 
-        public static final double MOTION_PROFILE_MAX_ACCELERATION = 2.0; 
+        public static final double DRIVE_MOTION_PROFILE_MAX_VELOCITY = 2.0; 
+        public static final double DRIVE_MOTION_PROFILE_MAX_ACCELERATION = 2.0; 
+        public static final double ROTATION_MOTION_PROFILE_MAX_VELOCITY = 20.0; 
+        public static final double ROTATION_MOTION_PROFILE_MAX_ACCELERATION = 20.0; 
     }
 }

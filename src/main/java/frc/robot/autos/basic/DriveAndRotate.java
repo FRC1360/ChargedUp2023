@@ -1,4 +1,4 @@
-package frc.robot.autos.basic; 
+package frc.robot.autos.basic;
 
 import frc.robot.Constants;
 import frc.robot.subsystems.DrivetrainSubsystem;
@@ -12,12 +12,13 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
  
-public class Drive extends CommandBase {
+public class DriveAndRotate extends CommandBase {
 
     private final DrivetrainSubsystem dt; 
 
     private double xMeters; 
     private double yMeters; 
+    private Rotation2d angleToRotate;
 
     private ChassisSpeeds speeds; 
 
@@ -25,43 +26,46 @@ public class Drive extends CommandBase {
     private TrapezoidProfile.State xEnd; 
     private TrapezoidProfile.State yStart; 
     private TrapezoidProfile.State yEnd; 
+    private TrapezoidProfile.State rotStart;
+    private TrapezoidProfile.State rotEnd; 
 
     private TrapezoidProfile.Constraints driveConstraints; 
+    private TrapezoidProfile.Constraints rotationConstraints; 
 
     private TrapezoidProfile xMotionProfile; 
     private TrapezoidProfile yMotionProfile; 
+    private TrapezoidProfile rotationProfile; 
 
     private OrbitTimer timer;  
 
     private OrbitPID driveXPID;
     private OrbitPID driveYPID; 
+    private OrbitPID driveRotPID; 
 
-    // private final Rotation2d targetAngle;
-
-    // private Rotation2d angToTravel;
-
-    // private double curAngle;
-
-    // private double angle; 
-
-    public Drive(DrivetrainSubsystem dt, double xMeters, double yMeters) { 
+    public DriveAndRotate(DrivetrainSubsystem dt, double xMeters, double yMeters, double angleToRotateDeg) { 
         this.dt = dt;
         this.xMeters = xMeters; 
         this.yMeters = yMeters; 
+        this.angleToRotate = Rotation2d.fromDegrees(angleToRotateDeg); 
 
         this.speeds = new ChassisSpeeds(0.0, 0.0, 0.0); // 0 Rotation
         
         this.driveConstraints = new TrapezoidProfile.Constraints(Constants.Drivetrain.DRIVE_MOTION_PROFILE_MAX_VELOCITY, 
                                                                     Constants.Drivetrain.DRIVE_MOTION_PROFILE_MAX_ACCELERATION); 
+        
+        this.rotationConstraints = new TrapezoidProfile.Constraints(Constants.Drivetrain.ROTATION_MOTION_PROFILE_MAX_VELOCITY, 
+                                                                        Constants.Drivetrain.ROTATION_MOTION_PROFILE_MAX_ACCELERATION); 
 
         // Two PIDs used as values for x and y need to be independently calculated
         this.driveXPID = new OrbitPID(1.0, 0.0, 0.0); 
         this.driveYPID = new OrbitPID(1.0, 0.0, 0.0);
+        this.driveRotPID = new OrbitPID(1.0, 0.0, 0.0); 
 
         this.timer = new OrbitTimer(); 
 
         addRequirements(dt); 
     }
+    
 
     @Override
     public void initialize() { 
@@ -70,14 +74,21 @@ public class Drive extends CommandBase {
         Translation2d curPose = dt.getTranslation(); 
         Translation2d targetPose = curPose.plus(new Translation2d(xMeters, yMeters));
 
+        Rotation2d curAngle = dt.getGyroscopeRotation(); 
+        Rotation2d targetAngle = curAngle.plus(this.angleToRotate); 
+
         this.xStart = new TrapezoidProfile.State(curPose.getX(), 0.0); 
         this.xEnd = new TrapezoidProfile.State(targetPose.getX(), 0.0);
 
         this.yStart = new TrapezoidProfile.State(curPose.getY(), 0.0);
         this.yEnd = new TrapezoidProfile.State(targetPose.getY(), 0.0);
 
+        this.rotStart = new TrapezoidProfile.State(curAngle.getDegrees(), 0.0); 
+        this.rotEnd = new TrapezoidProfile.State(targetAngle.getDegrees(), 0.0); 
+
         this.xMotionProfile = new TrapezoidProfile(this.driveConstraints, this.xEnd, this.xStart); 
-        this.yMotionProfile = new TrapezoidProfile(this.driveConstraints, this.yEnd, this.yStart); 
+        this.yMotionProfile = new TrapezoidProfile(this.driveConstraints, this.yEnd, this.yStart);
+        this.rotationProfile = new TrapezoidProfile(this.rotationConstraints, this.rotEnd, this.rotStart); 
 
         this.timer.start(); 
         this.driveXPID.reset();
@@ -92,24 +103,27 @@ public class Drive extends CommandBase {
         SmartDashboard.putNumber("I XDrive Term", this.driveXPID.getITerm()); 
         SmartDashboard.putNumber("D XDrive Term", this.driveXPID.getDTerm());
 
+        TrapezoidProfile.State xProfileTarget = this.xMotionProfile.calculate(this.timer.getTimeDeltaSec()); 
+        TrapezoidProfile.State yProfileTarget = this.yMotionProfile.calculate(this.timer.getTimeDeltaSec()); 
+        TrapezoidProfile.State rotationProfileTarget = this.rotationProfile.calculate(this.timer.getTimeDeltaSec()); 
 
-        TrapezoidProfile.State xPosition = this.xMotionProfile.calculate(this.timer.getTimeDeltaSec()); 
-        TrapezoidProfile.State yPosition = this.yMotionProfile.calculate(this.timer.getTimeDeltaSec()); 
-
-        SmartDashboard.putNumber("x pos calc", xPosition.velocity); 
-        SmartDashboard.putNumber("y pos calc", yPosition.velocity); 
-
+        SmartDashboard.putNumber("x pos calc", xProfileTarget.velocity); 
+        SmartDashboard.putNumber("y pos calc", yProfileTarget.velocity); 
+        SmartDashboard.putNumber("Rotation Motion Profile Velocity", rotationProfileTarget.velocity); 
+        
         SmartDashboard.putNumber("curXSpeed", speeds.vxMetersPerSecond); 
         SmartDashboard.putNumber("curYSpeed", speeds.vyMetersPerSecond);
+        SmartDashboard.putNumber("curRotSpeed", Math.toDegrees(speeds.omegaRadiansPerSecond));
 
-        double xSpeed = driveXPID.calculate(xPosition.velocity, speeds.vxMetersPerSecond); 
-        double ySpeed = driveYPID.calculate(yPosition.velocity, speeds.vyMetersPerSecond);
-        
-        SmartDashboard.putNumber("x speed", xSpeed); 
-        SmartDashboard.putNumber("y speed", ySpeed); 
+        double xSpeed = driveXPID.calculate(xProfileTarget.velocity, speeds.vxMetersPerSecond); 
+        double ySpeed = driveYPID.calculate(yProfileTarget.velocity, speeds.vyMetersPerSecond); 
+        double rotSpeed = driveRotPID.calculate(rotationProfileTarget.velocity, 
+                                                    Math.toDegrees(speeds.omegaRadiansPerSecond)); 
+    
 
         speeds.vxMetersPerSecond = xSpeed; 
         speeds.vyMetersPerSecond = ySpeed;
+        speeds.omegaRadiansPerSecond = rotSpeed; 
 
         dt.drive(speeds);
     }
@@ -127,8 +141,7 @@ public class Drive extends CommandBase {
         // getDistance() calculated by pythagorean theorem
         //return Math.abs(dt.getTranslation().getDistance(targetPose)) < 0.05;
         return this.xMotionProfile.isFinished(this.timer.getTimeDeltaSec()) 
-               && this.yMotionProfile.isFinished(this.timer.getTimeDeltaSec()); 
-            //    && Math.abs(dt.getPose().getRotation().minus(targetAngle).getDegrees()) < 2; 
+               && this.yMotionProfile.isFinished(this.timer.getTimeDeltaSec())
+                && this.rotationProfile.isFinished(this.timer.getTimeDeltaSec()); 
     }
-
 }
