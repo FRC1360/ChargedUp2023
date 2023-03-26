@@ -1,5 +1,6 @@
 package frc.robot.commands.assembly;
 
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
 import frc.robot.commands.arm.ArmGoToPositionCommand;
@@ -19,6 +20,7 @@ public class AssemblyHomePositionCommand extends SequentialCommandGroup {
     public AssemblyHomePositionCommand(ShoulderSubsystem shoulder, ShoulderWristMessenger shoulderWristMessenger, 
                                         WristSubsystem wrist, ArmSubsystem arm, ArmShoulderMessenger armMessenger) { 
         addCommands(
+            new InstantCommand( () -> shoulder.setInIntakePosition(false)),
 
             new WristGoToPositionCommand(wrist, Constants.WRIST_HOME_ANGLE)
                 .raceWith(new ShoulderHoldCommand(shoulder, armMessenger, () -> 0.0))
@@ -29,15 +31,7 @@ public class AssemblyHomePositionCommand extends SequentialCommandGroup {
             new ShoulderGoToPositionCommand(shoulder, Constants.SHOULDER_HOME_ANGLE)
                 .raceWith(new WristHoldCommand(wrist, () -> 0.0))
                 .raceWith(new ArmHoldCommand(arm))
-            
-            /* 
-            new ArmGoToPositionCommand(arm, shoulderWristMessenger, 0.0)
-                .raceWith(new ShoulderHoldCommand(shoulder, armMessenger, () -> 0.0))
-                .raceWith(new WristHoldCommand(wrist, () -> 0.0)),
-            (new WristGoToPositionCommand(wrist, Constants.WRIST_HOME_ANGLE)
-                .alongWith(new ShoulderGoToPositionCommand(shoulder, Constants.SHOULDER_HOME_ANGLE)))
-                .raceWith(new ArmHoldCommand(arm))   */
-            );
+        );
 
     }
 }

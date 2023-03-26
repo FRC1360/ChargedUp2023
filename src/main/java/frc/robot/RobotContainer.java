@@ -28,7 +28,6 @@ import frc.robot.commands.arm.ArmHomeCommand;
 import frc.robot.commands.arm.ArmTestTuningCommand;
 import frc.robot.commands.assembly.AssemblyGoToConeIntakeCommand;
 import frc.robot.commands.assembly.AssemblyGoToCubeIntakeCommand;
-import frc.robot.commands.assembly.AssemblyGoToPositionCommand;
 import frc.robot.commands.assembly.AssemblyHighScoreCommand;
 import frc.robot.commands.assembly.AssemblyHomePositionCommand;
 import frc.robot.commands.assembly.AssemblyMidScoreCommand;

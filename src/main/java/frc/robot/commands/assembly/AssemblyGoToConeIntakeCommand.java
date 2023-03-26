@@ -1,6 +1,7 @@
 package frc.robot.commands.assembly;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
 import frc.robot.commands.arm.ArmGoToPositionCommand;
@@ -19,17 +20,22 @@ public class AssemblyGoToConeIntakeCommand extends SequentialCommandGroup {
     
     public AssemblyGoToConeIntakeCommand(ShoulderSubsystem shoulder, ShoulderWristMessenger shoulderWristMessenger, 
                                                 WristSubsystem wrist, ArmSubsystem arm, ArmShoulderMessenger armMessenger) { 
-        addCommands(new ShoulderGoToPositionCommand(shoulder, -48.0)
-            .raceWith(new WristHoldCommand(wrist, () -> 0.0))
-            .raceWith(new ArmHoldCommand(arm)), 
+        addCommands(
+            new InstantCommand( () -> shoulder.setInIntakePosition(false)),
 
-                new ArmGoToPositionCommand(arm, shoulderWristMessenger, 5.8)
-            .raceWith(new ShoulderHoldCommand(shoulder, armMessenger, () -> 0.0))
-            .raceWith(new WristHoldCommand(wrist, () -> 0.0)), 
+            new ShoulderGoToPositionCommand(shoulder, -48.0)
+                .raceWith(new WristHoldCommand(wrist, () -> 0.0))
+                .raceWith(new ArmHoldCommand(arm)), 
 
-                new WristGoToPositionCommand(wrist, 48.0)
-            .raceWith(new ShoulderHoldCommand(shoulder, armMessenger, () -> 0.0))
-            .raceWith(new ArmHoldCommand(arm))
+            new ArmGoToPositionCommand(arm, shoulderWristMessenger, 5.8)
+                .raceWith(new ShoulderHoldCommand(shoulder, armMessenger, () -> 0.0))
+                .raceWith(new WristHoldCommand(wrist, () -> 0.0)), 
+
+            new WristGoToPositionCommand(wrist, 48.0)
+                .raceWith(new ShoulderHoldCommand(shoulder, armMessenger, () -> 0.0))
+                .raceWith(new ArmHoldCommand(arm)),
+            
+            new InstantCommand( () -> shoulder.setInIntakePosition(true))
             );
     
     }

@@ -37,13 +37,13 @@ public class ShoulderHoldCommand extends CommandBase {
         
         double speedOutput = speedPidOutput + kF; 
 
-        double speedOnDistance = speedOutput * Math.pow(1.03, this.armMessenger.getArmDistance());  //base, exponent
+        double speedOnDistance = speedOutput * Math.pow(1.03, this.armMessenger.getArmDistance());  //base, exponent - this is ton increase the power based on arm distance
 
         SmartDashboard.putNumber("Shoulder_Speed_Output_With_Distance", speedOnDistance); 
 
         double speed = speedOutput; 
 
-        if (this.intakeSpeed.getAsDouble() > 0.1) speed = -0.1; 
+        if (this.intakeSpeed.getAsDouble() > 0.1 && this.shoulder.getInIntakePosition()) speed = -0.1; // This is to drive the shoulder into the ground while intaking
         
 
         this.shoulder.setShoulderNormalizedVoltage(speed);

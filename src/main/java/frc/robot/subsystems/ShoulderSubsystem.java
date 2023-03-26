@@ -49,7 +49,9 @@ public class ShoulderSubsystem extends SubsystemBase {
 
     public DashboardTuning holdPIDtuner; 
     public DashboardTuning movePIDtuner; 
-    public DashboardTuning feedforwardTuner; 
+    public DashboardTuning feedforwardTuner;
+    
+    private boolean inIntakePosition;
 
     public ShoulderSubsystem(DoubleSupplier manualOffset, BooleanSupplier manualOffsetEnable) {
         this.holdPIDController = new OrbitPID(0.045, 0.00000, 0.0); //kP - 0.045
@@ -83,6 +85,8 @@ public class ShoulderSubsystem extends SubsystemBase {
         this.manualOffsetEnable = manualOffsetEnable;
 
         this.absoluteEncoder = new AnalogEncoder(Constants.SHOULDER_ENCODER);
+
+        this.inIntakePosition = false;
 
         resetMotorRotations();
         
@@ -182,6 +186,14 @@ public class ShoulderSubsystem extends SubsystemBase {
 
     public void checkTransitioning() {
         transitioning = !(Math.abs(this.getShoulderAngle()) < 2) && (this.getScheduledAngle() > 0.0 && this.getShoulderAngle() < 0.0) || (this.getScheduledAngle() < 0.0 && this.getShoulderAngle() > 0.0);
+    }
+
+    public boolean getInIntakePosition() {
+        return this.inIntakePosition;
+    }
+
+    public void setInIntakePosition(boolean inIntakePosition) {
+        this.inIntakePosition = inIntakePosition;
     }
 
     @Override
