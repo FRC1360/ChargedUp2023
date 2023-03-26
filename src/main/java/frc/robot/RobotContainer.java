@@ -27,6 +27,7 @@ import frc.robot.commands.arm.ArmTestTuningCommand;
 import frc.robot.commands.assembly.AssemblyGoToConeIntakeCommand;
 import frc.robot.commands.assembly.AssemblyGoToCubeIntakeCommand;
 import frc.robot.commands.assembly.AssemblyGoToPositionCommand;
+import frc.robot.commands.assembly.AssemblyHighScoreCommand;
 import frc.robot.commands.assembly.AssemblyHomePositionCommand;
 import frc.robot.commands.assembly.AssemblyMidScoreCommand;
 import frc.robot.commands.intake.IntakeHoldCommand;
@@ -135,14 +136,16 @@ public class RobotContainer {
     // operatorController.povUp().onTrue(new ShoulderGoToPositionCommand(shoulderSubsystem, 0.0)); 
     // operatorController.povRight().onTrue(new ShoulderGoToPositionCommand(shoulderSubsystem, -45.0)); 
     // operatorController.povDown().onTrue(new ShoulderGoToPositionCommand(shoulderSubsystem, -90.0)); 
-    operatorController.povDown().onTrue(new WristGoToPositionCommand(wristSubsystem, 0.0));
-    operatorController.povUp().onTrue(new WristGoToPositionCommand(wristSubsystem, 90));
-    operatorController.povLeft().onTrue(new WristGoToPositionCommand(wristSubsystem, -45.0));
-    operatorController.povRight().onTrue(new WristGoToPositionCommand(wristSubsystem, 45.0));
+    // operatorController.povDown().onTrue(new WristGoToPositionCommand(wristSubsystem, 0.0));
+    // operatorController.povUp().onTrue(new WristGoToPositionCommand(wristSubsystem, 90));
+    // operatorController.povLeft().onTrue(new WristGoToPositionCommand(wristSubsystem, -45.0));
+    // operatorController.povRight().onTrue(new WristGoToPositionCommand(wristSubsystem, 45.0));
 
     operatorController.a().onTrue((new AssemblyGoToCubeIntakeCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger)));
      operatorController.y().onTrue(new AssemblyGoToConeIntakeCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger));
     operatorController.b().onTrue(new AssemblyMidScoreCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger)); 
+
+    operatorController.povUp().onTrue(new AssemblyHighScoreCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger)); 
      
 
 

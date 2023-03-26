@@ -20,7 +20,6 @@ public class AssemblyHomePositionCommand extends SequentialCommandGroup {
                                         WristSubsystem wrist, ArmSubsystem arm, ArmShoulderMessenger armMessenger) { 
         addCommands(
 
-            // Old
             new WristGoToPositionCommand(wrist, Constants.WRIST_HOME_ANGLE)
                 .raceWith(new ShoulderHoldCommand(shoulder, armMessenger, () -> 0.0))
                 .raceWith(new ArmHoldCommand(arm)), 
@@ -30,6 +29,15 @@ public class AssemblyHomePositionCommand extends SequentialCommandGroup {
             new ShoulderGoToPositionCommand(shoulder, Constants.SHOULDER_HOME_ANGLE)
                 .raceWith(new WristHoldCommand(wrist, () -> 0.0))
                 .raceWith(new ArmHoldCommand(arm))
+            
+            /* 
+            new ArmGoToPositionCommand(arm, shoulderWristMessenger, 0.0)
+                .raceWith(new ShoulderHoldCommand(shoulder, armMessenger, () -> 0.0))
+                .raceWith(new WristHoldCommand(wrist, () -> 0.0)),
+            (new WristGoToPositionCommand(wrist, Constants.WRIST_HOME_ANGLE)
+                .alongWith(new ShoulderGoToPositionCommand(shoulder, Constants.SHOULDER_HOME_ANGLE)))
+                .raceWith(new ArmHoldCommand(arm))   */
             );
+
     }
 }
