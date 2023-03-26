@@ -36,7 +36,8 @@ public class WristGoToPositionCommand extends CommandBase {
         } 
 
         this.startState = new TrapezoidProfile.State(this.wrist.getWristAngle(), startVelocity);
-        this.endState = new TrapezoidProfile.State(this.wrist.getTargetAngle(), 0.0);
+        //this.endState = new TrapezoidProfile.State(this.wrist.getTargetAngle(), 0.0);
+        this.endState = new TrapezoidProfile.State(this.wrist.getWristOffset(), 0.0);
 
         this.motionProfile = new TrapezoidProfile(this.wrist.wristMotionProfileConstraints, 
             this.endState,
@@ -83,6 +84,7 @@ public class WristGoToPositionCommand extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return this.motionProfile.isFinished(this.timer.getTimeDeltaSec());
+        return this.motionProfile.isFinished(this.timer.getTimeDeltaSec())  
+            /*&& Math.abs(this.wrist.getWristAngle() - this.wrist.getTargetAngle()) < 3.0*/;
     }
 }

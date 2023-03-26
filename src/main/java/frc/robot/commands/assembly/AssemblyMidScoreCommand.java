@@ -17,18 +17,31 @@ public class AssemblyMidScoreCommand extends SequentialCommandGroup {
     
     public AssemblyMidScoreCommand(ShoulderSubsystem shoulder, ShoulderWristMessenger shoulderWristMessenger, 
                                                 WristSubsystem wrist, ArmSubsystem arm, ArmShoulderMessenger armMessenger) { 
-        addCommands(new ShoulderGoToPositionCommand(shoulder, -5.0)
-            .raceWith(new WristHoldCommand(wrist, () -> 0.0))
-            .raceWith(new ArmHoldCommand(arm)),
+        // addCommands(new ShoulderGoToPositionCommand(shoulder, -8.0)
+        //     .raceWith(new WristHoldCommand(wrist, () -> 0.0))
+        //     .raceWith(new ArmHoldCommand(arm)),
 
-            /*    new ArmGoToPositionCommand(arm, shoulderWristMessenger, 10.0)
-            .raceWith(new ShoulderHoldCommand(shoulder, armMessenger, () -> 0.0))
-            .raceWith(new WristHoldCommand(wrist, () -> 0.0)), */
+        //     /*    new ArmGoToPositionCommand(arm, shoulderWristMessenger, 10.0)
+        //     .raceWith(new ShoulderHoldCommand(shoulder, armMessenger, () -> 0.0))
+        //     .raceWith(new WristHoldCommand(wrist, () -> 0.0)), */
 
-            new WristGoToPositionCommand(wrist, 60.0)
-            .raceWith(new ShoulderHoldCommand(shoulder, armMessenger, () -> 0.0))
-            .raceWith(new ArmHoldCommand(arm))
-            );
+        //     new WristGoToPositionCommand(wrist, 60.0)
+        //     .raceWith(new ShoulderHoldCommand(shoulder, armMessenger, () -> 0.0))
+        //     .raceWith(new ArmHoldCommand(arm))
+            //);
+            addCommands(new ShoulderGoToPositionCommand(shoulder, 30.0)
+                .raceWith(new WristHoldCommand(wrist, () -> 0.0))
+                .raceWith(new ArmHoldCommand(arm)),
+    
+                /*    new ArmGoToPositionCommand(arm, shoulderWristMessenger, 10.0)
+                .raceWith(new ShoulderHoldCommand(shoulder, armMessenger, () -> 0.0))
+                .raceWith(new WristHoldCommand(wrist, () -> 0.0)), */
+    
+                new WristGoToPositionCommand(wrist, -45.0)
+                .raceWith(new ShoulderHoldCommand(shoulder, armMessenger, () -> 0.0))
+                .raceWith(new ArmHoldCommand(arm))
+                ); 
+            
     
     }
 }

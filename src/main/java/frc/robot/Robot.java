@@ -100,7 +100,7 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.cancel();
     }
 
-    m_robotContainer.wristSubsystem.setIdleMode(IdleMode.kBrake);
+    m_robotContainer.wristSubsystem.setIdleMode(IdleMode.kCoast);
     m_robotContainer.shoulderSubsystem.resetMotorRotations();
     m_robotContainer.wristSubsystem.resetMotorRotations();
     // m_robotContainer.wristSubsystem.holdPIDController.reset();

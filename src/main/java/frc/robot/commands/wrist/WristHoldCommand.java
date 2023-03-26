@@ -26,7 +26,8 @@ public class WristHoldCommand  extends CommandBase{
     
     @Override
     public void execute() {
-        double target = this.wrist.getTargetAngle();
+        System.out.println("Inside Wrist Hold Command");
+        double target = this.wrist.getWristOffset(); // Originally targetAngle()
         double input = this.wrist.getWristAngle();
 
         double pidOutput = this.wrist.holdPIDController.calculate(target, input);

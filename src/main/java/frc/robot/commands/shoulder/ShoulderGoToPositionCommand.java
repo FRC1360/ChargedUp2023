@@ -34,9 +34,18 @@ public class ShoulderGoToPositionCommand extends CommandBase {
         this.startState = new TrapezoidProfile.State(this.shoulder.getShoulderAngle(), 0.0);
         this.endState = new TrapezoidProfile.State(this.shoulder.getTargetAngle(), 0.0);
 
-        this.motionProfile = new TrapezoidProfile(this.shoulder.shoulderMotionProfileConstraints,
-             this.endState,
-             this.startState);
+        if (this.shoulder.getShoulderAngle() - this.shoulder.getTargetAngle() < 0) { 
+            // Going up
+            this.motionProfile = new TrapezoidProfile(this.shoulder.shoulderUpMotionProfileConstraints,
+                this.endState,
+                this.startState);
+        }
+        else { 
+            // Going down or stationary
+            this.motionProfile = new TrapezoidProfile(this.shoulder.shoulderDownMotionProfileConstraints,
+                this.endState,
+                this.startState);
+        }
 
         this.timer.start();
 

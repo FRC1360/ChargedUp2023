@@ -25,7 +25,9 @@ public class ShoulderSubsystem extends SubsystemBase {
 
     public OrbitPID holdPIDController;  // PID Controller for HoldToTarget
     public OrbitPID movePIDController;  // PID Controller for following Trapazoid Motion Profile
-    public TrapezoidProfile.Constraints shoulderMotionProfileConstraints;
+    public TrapezoidProfile.Constraints shoulderUpMotionProfileConstraints;
+    public TrapezoidProfile.Constraints shoulderDownMotionProfileConstraints;
+
 
     private double angularVelocity;  // angular velocity in deg / second
     private double lastAngle;
@@ -50,17 +52,18 @@ public class ShoulderSubsystem extends SubsystemBase {
     public DashboardTuning feedforwardTuner; 
 
     public ShoulderSubsystem(DoubleSupplier manualOffset, BooleanSupplier manualOffsetEnable) {
-        this.holdPIDController = new OrbitPID(0.019, 0.0, 0.0); //kP - 0.045
+        this.holdPIDController = new OrbitPID(0.045, 0.00000, 0.0); //kP - 0.045
         this.movePIDController = new OrbitPID(0.02, 0.0, 0.0);  // TODO - Tune kP - 0.01
 
         // This units are deg / second for velocity and deg / sec^2 for acceleration
-        this.shoulderMotionProfileConstraints = new TrapezoidProfile.Constraints(500, 250.0);  // TODO - Tune.
+        this.shoulderUpMotionProfileConstraints = new TrapezoidProfile.Constraints(250.0, 250.0);  // TODO - Tune.
+        this.shoulderDownMotionProfileConstraints = new TrapezoidProfile.Constraints(100.0, 250.0); 
         this.targetAngle = Constants.SHOULDER_HOME_ANGLE;  // Make sure this is 0.0 for copetition, only 90 for testing
 
         this.shoulderMotorMaster = new CANSparkMax(Constants.SHOULDER_MOTOR_MASTER, MotorType.kBrushless);
         this.shoulderMotorSlave = new CANSparkMax(Constants.SHOULDER_MOTOR_SLAVE, MotorType.kBrushless);
 
-        this.shoulderFeedForward = new ArmFeedforward(0.0, 0.065, 0.0); 
+        this.shoulderFeedForward = new ArmFeedforward(0.0, 0.15, 0.0); //kG = 0.065
 
         this.shoulderMotorMaster.restoreFactoryDefaults();
         this.shoulderMotorSlave.restoreFactoryDefaults();
