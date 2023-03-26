@@ -17,6 +17,8 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+// import frc.robot.autos.AutoSequence;
+import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.autos.DriveStraightAuto;
 import frc.robot.autos.EngageStationAuto;
 import frc.robot.commands.DefaultDriveCommand;
@@ -36,11 +38,18 @@ import frc.robot.commands.intake.ManualPutdownCommand;
 import frc.robot.commands.shoulder.ShoulderGoToPositionCommand;
 import frc.robot.commands.shoulder.ShoulderHoldCommand;
 import frc.robot.commands.shoulder.ShoulderMoveManual;
+import frc.robot.commands.vision.RotateAlign;
+import frc.robot.commands.vision.StrafeAlign;
+// import frc.robot.commands.vision.DriveToTarget;
+// import frc.robot.commands.vision.RotateAlign;
+// import frc.robot.commands.vision.StrafeAlign;
+import frc.robot.commands.vision.TranslateAlign;
 import frc.robot.commands.wrist.WristGoToPositionCommand;
 import frc.robot.commands.wrist.WristHoldCommand;
 import frc.robot.simulation.Simulator;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
+import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.ShoulderSubsystem;
 import frc.robot.subsystems.WristSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
@@ -67,6 +76,13 @@ public class RobotContainer {
   public final ArmSubsystem armSubsystem = new ArmSubsystem(/*() -> operatorController.getRightTriggerAxis()*Constants.ARM_MANUAL_OFFSET_RANGE, operatorController.leftBumper()*/);
   private final ArmSubsystem.ArmShoulderMessenger armMessenger = armSubsystem.new ArmShoulderMessenger(); 
 
+  private final Vision vision = new Vision(); 
+
+  ////private final TranslateAlign align = new TranslateAlign(m_drivetrainSubsystem, vision);
+  
+  //private final RotateAlign rotAlign = new RotateAlign(m_drivetrainSubsystem, vision); 
+
+  //private final DriveToTarget driveToTarget = new DriveToTarget(m_drivetrainSubsystem, vision);
   private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
 
   // private final ManualIntakeCommand ManualIntakeCommand = new ManualIntakeCommand(intake, 5);
@@ -176,8 +192,38 @@ public class RobotContainer {
     /* 
     new Trigger(operatorController::getBackButton)
             .onTrue(new InstantCommand(m_drivetrainSubsystem::zeroGyroscope));
+
+    /* 
+    new Trigger(m_controller::getAButton)
+            .whileTrue(new StrafeAlign(
+              m_drivetrainSubsystem, 
+              vision, 
+              () -> -modifyAxis(m_controller.getLeftX()) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND / 4, 
+              () -> -modifyAxis(m_controller.getLeftY()) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND / 4)); // limit speed (for now)
+
+    new Trigger(() -> m_controller.getPOV() == 0)
+            .whileTrue(new TranslateAlign(
+              m_drivetrainSubsystem,
+              vision,
+              Vision.Pipeline.CENTER_TARGET
+            ));
+
+    new Trigger(() -> m_controller.getPOV() == 90)
+            .whileTrue(new TranslateAlign(
+              m_drivetrainSubsystem,
+              vision,
+              Vision.Pipeline.RIGHT_TARGET
+            ));
+
+    new Trigger(() -> m_controller.getPOV() == 270)
+            .whileTrue(new TranslateAlign(
+              m_drivetrainSubsystem,
+              vision,
+              Vision.Pipeline.LEFT_TARGET
+            ));
             */
-            
+
+    left_controller.button(2).whileTrue(new StrafeAlign(m_drivetrainSubsystem, vision, left_controller::getX, left_controller::getY));
   }
 
   
