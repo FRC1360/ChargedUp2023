@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.commands.vision;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -6,23 +6,21 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.vision.Vision;
 
+// aligns crosshair to vision tape
 public class TranslateAlign extends CommandBase {
     
     private Vision vision; 
-    private DrivetrainSubsystem dt; 
-    private Vision.Pipeline pipe;
+    private DrivetrainSubsystem dt;
 
-    public TranslateAlign(DrivetrainSubsystem dt, Vision vision, Vision.Pipeline pipe) { 
+    public TranslateAlign(DrivetrainSubsystem dt, Vision vision) { 
         this.vision = vision; 
-        this.dt = dt; 
-        this.pipe = pipe;
+        this.dt = dt;
 
         addRequirements(dt, vision); 
     }
 
     @Override
     public void initialize() {
-        vision.setPipeline(pipe);
     }
 
     @Override
@@ -33,13 +31,13 @@ public class TranslateAlign extends CommandBase {
         {
             double xOffset = vision.getX(); 
             double yOffset = vision.getY(); 
-            double distance = vision.getDistanceFromTarget();
+            // double distance = vision.getDistanceFromTarget();
 
             SmartDashboard.putNumber("X-Offset:", xOffset); 
             SmartDashboard.putNumber("Y-Offset:", yOffset);
-            SmartDashboard.putNumber("Distance:", distance);
+            // SmartDashboard.putNumber("Distance:", distance);
 
-            dt.drive(new ChassisSpeeds(0, -xOffset/10, 0)); 
+            dt.drive(new ChassisSpeeds(yOffset/25, -xOffset/25, 0)); 
         }
     }
 
