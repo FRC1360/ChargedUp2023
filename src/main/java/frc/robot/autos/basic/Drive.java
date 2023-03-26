@@ -31,9 +31,9 @@ public class Drive extends CommandBase {
     private OrbitTimer timer;  
 
     // Two PIDs used as values for x and y need to be independently calculated (one might be at target, other not)
-    private OrbitPID driveXPID = new OrbitPID(1.0, 0.0, 0.0); 
+    private OrbitPID driveXPID = new OrbitPID(0.5, 0.0, 0.0); 
 
-    private OrbitPID driveYPID = new OrbitPID(1.0, 0.0, 0.0); 
+    private OrbitPID driveYPID = new OrbitPID(0.5, 0.0, 0.0); 
 
     private double kF_X = 0.0; 
     private double kF_Y = 0.0;
