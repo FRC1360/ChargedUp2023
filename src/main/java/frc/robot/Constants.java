@@ -30,9 +30,6 @@ public final class Constants {
      */
     public static final double DRIVETRAIN_WHEELBASE_METERS = 0.61; // FIXME Measure and set wheelbase
 
-    public static final int LEAD_INTAKE_MOTOR_ID = 60; 
-    public static final int FOLLOW_INTAKE_MOTOR_ID = 61;
-
     public static final int DRIVETRAIN_PIGEON_ID = 0; // FIXME Set Pigeon ID
 
     public static final int FRONT_LEFT_MODULE_DRIVE_MOTOR = 10; // FIXME Set front left module drive motor ID
@@ -88,7 +85,12 @@ public final class Constants {
     public static final double ARM_DRUM_DIAMETER = 2.5;  // Arm Drum Diameter in inches
     public static final double ARM_PULLEY_BLOCK_RATIO = 1.0;
     public static final double ARM_MANUAL_OFFSET_RANGE = 5.0; 
-    
+
+    //Intake
+    public static final int LEAD_INTAKE_MOTOR_ID = 60; 
+    public static final int FOLLOW_INTAKE_MOTOR_ID = 61;
+    public static final int INTAKE_SENSOR_PORT = 0; 
+
 
     public final class ARM_POSITION { 
         public static final double HIGH_GOAL = -25.0; 
