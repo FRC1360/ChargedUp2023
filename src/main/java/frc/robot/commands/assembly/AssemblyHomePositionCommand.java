@@ -22,13 +22,12 @@ public class AssemblyHomePositionCommand extends SequentialCommandGroup {
         addCommands(
             new InstantCommand( () -> shoulder.setInIntakePosition(false)),
 
-            // Old
-            new WristGoToPositionCommand(wrist, Constants.WRIST_HOME_ANGLE)
-                .raceWith(new ShoulderHoldCommand(shoulder, armMessenger, () -> 0.0))
-                .raceWith(new ArmHoldCommand(arm)), 
             new ArmGoToPositionCommand(arm, shoulderWristMessenger, 0.0)
                 .raceWith(new ShoulderHoldCommand(shoulder, armMessenger, () -> 0.0))
                 .raceWith(new WristHoldCommand(wrist, () -> 0.0)), 
+            new WristGoToPositionCommand(wrist, Constants.WRIST_HOME_ANGLE)
+                .raceWith(new ShoulderHoldCommand(shoulder, armMessenger, () -> 0.0))
+                .raceWith(new ArmHoldCommand(arm)), 
             new ShoulderGoToPositionCommand(shoulder, Constants.SHOULDER_HOME_ANGLE)
                 .raceWith(new WristHoldCommand(wrist, () -> 0.0))
                 .raceWith(new ArmHoldCommand(arm))

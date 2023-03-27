@@ -103,15 +103,15 @@ public class RobotContainer {
     // Right stick X axis -> rotation
     m_drivetrainSubsystem.setDefaultCommand(new DefaultDriveCommand(
             m_drivetrainSubsystem,
-            () -> -modifyAxis(left_controller.getY()) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-            () -> -modifyAxis(left_controller.getX()) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+            () -> modifyAxis(left_controller.getY()) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+            () -> modifyAxis(left_controller.getX()) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
             () -> modifyAxis(right_controller.getX()) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
      ));
 
-    shoulderSubsystem.setDefaultCommand(new ShoulderHoldCommand(shoulderSubsystem, armMessenger, () -> this.operatorController.getRightTriggerAxis()));
+    shoulderSubsystem.setDefaultCommand(new ShoulderHoldCommand(shoulderSubsystem, armMessenger, () -> this.operatorController.getLeftTriggerAxis()));
     /*shoulderSubsystem.setDefaultCommand(new ShoulderMoveManual(shoulderSubsystem,
       () -> modifyAxis(operatorController.getLeftY()) ));*/
-    wristSubsystem.setDefaultCommand(new WristHoldCommand(wristSubsystem, () -> this.operatorController.getRightTriggerAxis()));
+    wristSubsystem.setDefaultCommand(new WristHoldCommand(wristSubsystem, () -> this.operatorController.getLeftTriggerAxis()));
     //wristSubsystem.setDefaultCommand(new InstantCommand(() -> wristSubsystem.setWristSpeed(/*operatorController.getLeftX()*/0.1), wristSubsystem));
     armSubsystem.setDefaultCommand(new ArmHoldCommand(this.armSubsystem));
     intakeSubsystem.setDefaultCommand(new IntakeHoldCommand(this.intakeSubsystem));
@@ -162,10 +162,10 @@ public class RobotContainer {
      
 
 
-    new Trigger(() -> operatorController.getRightTriggerAxis() > 0.05)
-     .whileTrue(new ManualIntakeCommand(intakeSubsystem, () -> operatorController.getRightTriggerAxis()));
     new Trigger(() -> operatorController.getLeftTriggerAxis() > 0.05)
-     .whileTrue(new ManualPutdownCommand(intakeSubsystem, () -> operatorController.getLeftTriggerAxis())); 
+     .whileTrue(new ManualIntakeCommand(intakeSubsystem, () -> operatorController.getLeftTriggerAxis()));
+    new Trigger(() -> operatorController.getRightTriggerAxis() > 0.05)
+     .whileTrue(new ManualPutdownCommand(intakeSubsystem, () -> operatorController.getRightTriggerAxis())); 
     //operatorController.b().onTrue(new ArmGoToPositionCommand(armSubsystem, shoulderSubsystem, Constants.ARM_POSITION.MID_GOAL));
     // operatorController.x().onTrue(new ArmGoToPositionCommand(armSubsystem, shoulderSubsystem, Constants.ARM_POSITION.LOW_GOAL));
 
