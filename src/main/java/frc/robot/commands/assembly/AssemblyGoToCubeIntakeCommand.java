@@ -32,7 +32,7 @@ public class AssemblyGoToCubeIntakeCommand extends SequentialCommandGroup {
                         .raceWith(new ShoulderHoldCommand(shoulder, armMessenger, () -> 0.0))
                         .raceWith(new WristHoldCommand(wrist, () -> 0.0)), 
                                             
-                new WristGoToPositionCommand(wrist, 85.0)
+                new WristGoToPositionCommand(wrist, 70.0)
                         .raceWith(new ShoulderHoldCommand(shoulder, armMessenger, () -> 0.0))
                         .raceWith(new ArmHoldCommand(arm)),
                 

@@ -75,10 +75,10 @@ public final class Constants {
     public static final int WRIST_MOTOR = 54;
     public static final double WRIST_MANUAL_OVERRIDE_RANGE = 20.0;
     public static final int WRIST_ENCODER = 1;
-    public static final double WRIST_ENCODER_OFFSET = 0.585;
-    public static final double WRIST_GEAR_RATIO = (1.0 / 36.0) * (35.0 / 60.0);
+    public static final double WRIST_ENCODER_OFFSET = 0.642;
+    public static final double WRIST_GEAR_RATIO = (1.0 / 64.0) * (35.0 / 60.0);
     //public static final double WRIST_HOME_ANGLE = 140.0; 
-    public static final double WRIST_HOME_ANGLE = 170.0;  // Originally 70 
+    public static final double WRIST_HOME_ANGLE = 140.0;  // Originally 170.0
     
 
     // ARM
