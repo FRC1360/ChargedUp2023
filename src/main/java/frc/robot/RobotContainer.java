@@ -144,7 +144,8 @@ public class RobotContainer {
     // operatorController.back().onTrue(new InstantCommand(armSubsystem::resetEncoder));
 
     //PAST WORK!
-    operatorController.x().onTrue(new AssemblyHomePositionCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger)); 
+    operatorController.x().onTrue(new AssemblyHomePositionCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger)
+                          .andThen(new InstantCommand(() -> m_drivetrainSubsystem.setSpeedLimitFactor(1.0)))); 
     //  operatorController.b().onTrue(new ArmGoToPositionCommand(armSubsystem, messenger, 10.0));
     //  operatorController.a().onTrue(new ArmGoToPositionCommand(armSubsystem, messenger, 0.0));
     // operatorController.y().onTrue(new ArmGoToPositionCommand(armSubsystem, messenger, 15.0));
@@ -156,12 +157,14 @@ public class RobotContainer {
     // operatorController.povLeft().onTrue(new WristGoToPositionCommand(wristSubsystem, -45.0));
     // operatorController.povRight().onTrue(new WristGoToPositionCommand(wristSubsystem, 45.0));
 
-    operatorController.a().onTrue((new AssemblyGoToCubeIntakeCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger)));
-     operatorController.y().onTrue(new AssemblyGoToConeIntakeCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger));
-    operatorController.b().onTrue(new AssemblyMidScoreCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger)); 
-
-    operatorController.povUp().onTrue(new AssemblyHighScoreCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger)); 
-     
+    operatorController.a().onTrue(new AssemblyGoToCubeIntakeCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger)
+                          .alongWith(new InstantCommand(() -> m_drivetrainSubsystem.setSpeedLimitFactor(0.5)))); 
+    operatorController.y().onTrue(new AssemblyGoToConeIntakeCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger)
+                          .alongWith(new InstantCommand(() -> m_drivetrainSubsystem.setSpeedLimitFactor(0.5)))); 
+    operatorController.b().onTrue(new AssemblyMidScoreCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger)
+                          .alongWith(new InstantCommand(() -> m_drivetrainSubsystem.setSpeedLimitFactor(0.5)))); 
+    operatorController.povUp().onTrue(new AssemblyHighScoreCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger)
+                          .alongWith(new InstantCommand(() -> m_drivetrainSubsystem.setSpeedLimitFactor(0.5)))); 
 
 
     new Trigger(() -> operatorController.getLeftTriggerAxis() > 0.05)

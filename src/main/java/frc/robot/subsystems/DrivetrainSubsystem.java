@@ -90,6 +90,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
   private SwerveDriveOdometry2022 odometry = new SwerveDriveOdometry2022(m_kinematics, getGyroscopeRotation());
 
+  // top speed multiplied by this 
+  private double speedLimitingFactor = 1.0;
+
   public DrivetrainSubsystem() {
     ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
 
@@ -182,10 +185,14 @@ public class DrivetrainSubsystem extends SubsystemBase {
     return getPose().getTranslation(); 
   }
 
+  public void setSpeedLimitFactor(double limit) {
+    speedLimitingFactor = limit;
+  }
+
   @Override
   public void periodic() {
     SwerveModuleState[] states = m_kinematics.toSwerveModuleStates(m_chassisSpeeds);
-    SwerveDriveKinematics.desaturateWheelSpeeds(states, MAX_VELOCITY_METERS_PER_SECOND); // this was normalizeWheelSpeeds but WPILib doesn't like that
+    SwerveDriveKinematics.desaturateWheelSpeeds(states, MAX_VELOCITY_METERS_PER_SECOND * speedLimitingFactor); // this was normalizeWheelSpeeds but WPILib doesn't like that
 
     m_frontLeftModule.set(states[0].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, states[0].angle.getRadians());
     m_frontRightModule.set(states[1].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, states[1].angle.getRadians());
