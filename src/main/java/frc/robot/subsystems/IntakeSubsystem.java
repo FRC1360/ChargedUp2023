@@ -28,7 +28,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
     public void intake(double speed){
         leadMotor.set(speed);
-        SmartDashboard.putNumber("Intake motor speed", speed); 
+        //SmartDashboard.putNumber("Intake motor speed", speed); 
     }
 
 }

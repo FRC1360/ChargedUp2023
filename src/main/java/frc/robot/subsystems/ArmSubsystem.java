@@ -31,9 +31,6 @@ public class ArmSubsystem extends SubsystemBase {
 
     public ArmFeedforward armFeedforward; 
 
-    public DashboardTuning holdPIDTuner; 
-    public DashboardTuning armFeedForwardTuner; 
-
     private double armVelocity; 
     private double lastTime; 
     private Double lastDistance; 
@@ -45,15 +42,9 @@ public class ArmSubsystem extends SubsystemBase {
         this.armMotorMaster = new CANSparkMax(Constants.ARM_MOTOR_MASTER, MotorType.kBrushless);
         this.armMotorSlave = new CANSparkMax(Constants.ARM_MOTOR_SLAVE, MotorType.kBrushless);
 
-        
-        // this.holdPIDTuner = new DashboardTuning("Arm", "Hold_PID", 
-        //                         new double[] {this.holdkP, this.holdkI, this.holdkD}); 
+
         this.holdPIDController = new OrbitPID(0.2, 0.0, 0.0);
         this.movePIDController = new OrbitPID(0.2, 0.0, 0.0);
-
-        // this.armFeedForwardTuner 
-        //     = new DashboardTuning("Arm", "Feedforward", 
-        //                             new double[] {this.armkS, this.armkG, this.armkV}); 
         
         this.armFeedforward = new ArmFeedforward(0.0, 0.00, 0.0); //ks, kg, kv
 

@@ -46,10 +46,6 @@ public class ShoulderSubsystem extends SubsystemBase {
     private double holdkP; 
     private double holdkI; 
     private double holdkD; 
-
-    public DashboardTuning holdPIDtuner; 
-    public DashboardTuning movePIDtuner; 
-    public DashboardTuning feedforwardTuner;
     
     private boolean inIntakePosition;
 

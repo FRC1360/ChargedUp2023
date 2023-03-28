@@ -31,6 +31,7 @@ import frc.robot.commands.assembly.AssemblyGoToCubeIntakeCommand;
 import frc.robot.commands.assembly.AssemblyHighScoreCommand;
 import frc.robot.commands.assembly.AssemblyHomePositionCommand;
 import frc.robot.commands.assembly.AssemblyMidScoreCommand;
+import frc.robot.commands.assembly.AssemblyPickUpSingleSubstationCommand;
 import frc.robot.commands.intake.IntakeHoldCommand;
 import frc.robot.commands.intake.ManualIntakeCommand;
 import frc.robot.commands.intake.ManualPutdownCommand;
@@ -103,8 +104,8 @@ public class RobotContainer {
     // Right stick X axis -> rotation
     m_drivetrainSubsystem.setDefaultCommand(new DefaultDriveCommand(
             m_drivetrainSubsystem,
-            () -> modifyAxis(left_controller.getY()) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-            () -> modifyAxis(left_controller.getX()) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+            () -> -modifyAxis(left_controller.getY()) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+            () -> -modifyAxis(left_controller.getX()) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
             () -> modifyAxis(right_controller.getX()) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
      ));
 
@@ -140,26 +141,27 @@ public class RobotContainer {
             // No requirements because we don't need to interrupt anything
             .onTrue(new InstantCommand(m_drivetrainSubsystem::zeroGyroscope));*/
     
-    // left_controller.button(1).onTrue(new InstantCommand(m_drivetrainSubsystem::zeroGyroscope)); 
+    left_controller.button(1).onTrue(new InstantCommand(m_drivetrainSubsystem::zeroGyroscope)); 
     // operatorController.back().onTrue(new InstantCommand(armSubsystem::resetEncoder));
 
     //PAST WORK!
-    operatorController.x().onTrue(new AssemblyHomePositionCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger)); 
     //  operatorController.b().onTrue(new ArmGoToPositionCommand(armSubsystem, messenger, 10.0));
     //  operatorController.a().onTrue(new ArmGoToPositionCommand(armSubsystem, messenger, 0.0));
     // operatorController.y().onTrue(new ArmGoToPositionCommand(armSubsystem, messenger, 15.0));
     // operatorController.povUp().onTrue(new ShoulderGoToPositionCommand(shoulderSubsystem, 0.0)); 
     // operatorController.povRight().onTrue(new ShoulderGoToPositionCommand(shoulderSubsystem, -45.0)); 
     // operatorController.povDown().onTrue(new ShoulderGoToPositionCommand(shoulderSubsystem, -90.0)); 
-    operatorController.povDown().onTrue(new WristGoToPositionCommand(wristSubsystem, 0.0));
+    /*operatorController.povDown().onTrue(new WristGoToPositionCommand(wristSubsystem, 0.0));
     operatorController.povUp().onTrue(new WristGoToPositionCommand(wristSubsystem, 90));
     operatorController.povLeft().onTrue(new WristGoToPositionCommand(wristSubsystem, -45.0));
-    operatorController.povRight().onTrue(new WristGoToPositionCommand(wristSubsystem, 45.0));
+    operatorController.povRight().onTrue(new WristGoToPositionCommand(wristSubsystem, 45.0));*/
 
     operatorController.a().onTrue((new AssemblyGoToCubeIntakeCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger)));
-     operatorController.y().onTrue(new AssemblyGoToConeIntakeCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger));
+    operatorController.y().onTrue(new AssemblyGoToConeIntakeCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger));
     operatorController.b().onTrue(new AssemblyMidScoreCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger)); 
-     
+    operatorController.x().onTrue(new AssemblyHomePositionCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger)); 
+    operatorController.povUp().onTrue(new AssemblyHighScoreCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger)); 
+    operatorController.povDown().onTrue(new AssemblyPickUpSingleSubstationCommand(shoulderSubsystem, wristSubsystem, armSubsystem)); 
 
 
     new Trigger(() -> operatorController.getLeftTriggerAxis() > 0.05)

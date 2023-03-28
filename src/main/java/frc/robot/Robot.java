@@ -71,7 +71,15 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
-    m_robotContainer.wristSubsystem.setIdleMode(IdleMode.kBrake);
+    m_robotContainer.wristSubsystem.setIdleMode(IdleMode.kCoast);
+    m_robotContainer.shoulderSubsystem.resetMotorRotations();
+    m_robotContainer.wristSubsystem.resetMotorRotations();
+    // m_robotContainer.wristSubsystem.holdPIDController.reset();
+    // m_robotContainer.shoulderSubsystem.holdPIDController.reset();
+    m_robotContainer.getArmHomeCommand().schedule(); 
+    m_robotContainer.getGoToZeroWristCommand().schedule(); 
+    m_robotContainer.getShoulderZeroCommand().schedule();
+
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     // schedule the autonomous command (example)
@@ -113,9 +121,9 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    m_robotContainer.shoulderSubsystem.updateSmartDashboard();
-    m_robotContainer.wristSubsystem.updateSmartDashboard();
-    m_robotContainer.armSubsystem.updateSmartDashboard();
+    // m_robotContainer.shoulderSubsystem.updateSmartDashboard();
+    // m_robotContainer.wristSubsystem.updateSmartDashboard();
+    // m_robotContainer.armSubsystem.updateSmartDashboard();
 
   }
 

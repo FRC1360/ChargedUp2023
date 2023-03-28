@@ -41,7 +41,7 @@ public class ShoulderHoldCommand extends CommandBase {
 
         SmartDashboard.putNumber("Shoulder_Speed_Output_With_Distance", speedOnDistance); 
 
-        double speed = speedOutput; 
+        double speed = speedOnDistance; 
 
         if (this.intakeSpeed.getAsDouble() > 0.1 && this.shoulder.getInIntakePosition()) speed = -0.1; // This is to drive the shoulder into the ground while intaking
         
