@@ -157,8 +157,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
       // We will only get valid fused headings if the magnetometer is calibrated
             return Rotation2d.fromDegrees(m_navx.getFusedHeading());
    }*/
-//
-//    // We have to invert the angle of the NavX so that rotating the robot counter-clockwise makes the angle increase.
+//      
+//    // We have to invert the angle of the NavX so that rotating the robot counter-clockwise makes the angle increase
     return Rotation2d.fromDegrees(360.0 - m_navx.getYaw());
   }
 
