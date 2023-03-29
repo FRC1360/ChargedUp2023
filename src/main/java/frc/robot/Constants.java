@@ -67,8 +67,8 @@ public final class Constants {
     public static final double SHOULDER_GEAR_RATIO = (11.0 / 52.0) * (30.0 / 68.0) * (12.0 / 60.0);
     public static final double SHOULDER_MANUAL_OVERRIDE_RANGE = 20.0;
     public static final double SHOULDER_HOME_ANGLE = -90.0; 
-    public static final double MAX_SHOULDER_ANGLE = 60.0; 
-    public static final double MIN_SHOULDER_ANGLE = -100.0; 
+    public static final double MAX_SHOULDER_ANGLE = 90.0; 
+    public static final double MIN_SHOULDER_ANGLE = -110.0; 
 
     // WRIST
     public static final int WRIST_MOTOR = 54;
@@ -78,7 +78,7 @@ public final class Constants {
     public static final double WRIST_GEAR_RATIO = (1.0 / 64.0) * (35.0 / 60.0);
     //public static final double WRIST_HOME_ANGLE = 140.0; 
     public static final double WRIST_HOME_ANGLE = 170.0;  // Originally 170.0
-    public static final double WRIST_MAX_ANGLE = 165.0; 
+    public static final double WRIST_MAX_ANGLE = 200.0; 
     public static final double WRIST_MIN_ANGLE = -165.0; 
     
 
@@ -89,7 +89,7 @@ public final class Constants {
     public static final double ARM_DRUM_DIAMETER = 2.5;  // Arm Drum Diameter in inches
     public static final double ARM_PULLEY_BLOCK_RATIO = 1.0;
     public static final double ARM_MANUAL_OFFSET_RANGE = 5.0;
-    public static final double ARM_MAX_DISTANCE = 18.0;  
+    public static final double ARM_MAX_DISTANCE = 40.0;  
 
     //Intake
     public static final int LEAD_INTAKE_MOTOR_ID = 60; 
