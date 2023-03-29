@@ -97,6 +97,10 @@ public class ShoulderSubsystem extends SubsystemBase {
     }
 
     public void setShoulderSpeed(double speed) {
+        if (this.getShoulderAngle() > Constants.MAX_SHOULDER_ANGLE
+             || this.getShoulderAngle() < Constants.MIN_SHOULDER_ANGLE) 
+                speed = 0.0; 
+
         this.shoulderMotorMaster.set(-speed);
         this.shoulderMotorSlave.set(-speed);
     }
@@ -121,6 +125,9 @@ public class ShoulderSubsystem extends SubsystemBase {
      * Sets arm voltage based off 0.0 - 12.0
      */
     public void setShoulderVoltage(double voltage) {
+        if (this.getShoulderAngle() > Constants.MAX_SHOULDER_ANGLE
+             || this.getShoulderAngle() < Constants.MIN_SHOULDER_ANGLE) 
+                voltage = 0.0; 
         this.shoulderMotorMaster.setVoltage(-voltage);
         this.shoulderMotorSlave.setVoltage(-voltage);
     }

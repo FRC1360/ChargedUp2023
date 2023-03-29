@@ -25,7 +25,7 @@ public class AutoIntakeCommand extends CommandBase{
 
     @Override
     public boolean isFinished() { 
-        return false; // needs to be changed a bit...
+        return this.intake.intakeSensor.get(); 
     }
 
 }
