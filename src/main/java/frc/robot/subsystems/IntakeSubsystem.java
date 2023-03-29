@@ -12,12 +12,12 @@ public class IntakeSubsystem extends SubsystemBase {
     
     private CANSparkMax leadMotor; // the motor to open and close the claw
     private CANSparkMax followingMotor; // the motor that follows the lead motor
-    //private DigitalInput intakeSensor; 
+    public DigitalInput intakeSensor; 
 
     public IntakeSubsystem() { 
         this.leadMotor = new CANSparkMax(Constants.LEAD_INTAKE_MOTOR_ID, MotorType.kBrushless);
         this.followingMotor = new CANSparkMax(Constants.FOLLOW_INTAKE_MOTOR_ID, MotorType.kBrushless);
-        //this.intakeSensor = new DigitalInput(Constants.INTAKE_SENSOR_PORT); 
+        this.intakeSensor = new DigitalInput(Constants.INTAKE_SENSOR_PORT); 
         followingMotor.follow(leadMotor);
     }
 
@@ -29,6 +29,7 @@ public class IntakeSubsystem extends SubsystemBase {
     public void intake(double speed){
         leadMotor.set(speed);
         //SmartDashboard.putNumber("Intake motor speed", speed); 
+        SmartDashboard.putBoolean("Intaked object", this.intakeSensor.get()); 
     }
 
 }

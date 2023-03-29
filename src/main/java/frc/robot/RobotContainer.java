@@ -32,6 +32,7 @@ import frc.robot.commands.assembly.AssemblyHighScoreCommand;
 import frc.robot.commands.assembly.AssemblyHomePositionCommand;
 import frc.robot.commands.assembly.AssemblyMidScoreCommand;
 import frc.robot.commands.assembly.AssemblyPickUpSingleSubstationCommand;
+import frc.robot.commands.assembly.autoAssembly.AutoAssemblyHighScoreCommand;
 import frc.robot.commands.intake.IntakeHoldCommand;
 import frc.robot.commands.intake.ManualIntakeCommand;
 import frc.robot.commands.intake.ManualPutdownCommand;
@@ -234,7 +235,8 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
     return null;
-    // return new ArmTestTuningCommand(armSubsystem);
+    // return new AutoAssemblyHighScoreCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, 
+    //                                           armSubsystem, intakeSubsystem, armMessenger); 
     //return autoChooser.getSelected();  
   }
 
