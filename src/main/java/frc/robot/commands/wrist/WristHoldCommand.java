@@ -10,11 +10,11 @@ public class WristHoldCommand  extends CommandBase{
 
     private WristSubsystem wrist;
 
-    private DoubleSupplier intakeSpeed; 
+    //private DoubleSupplier intakeSpeed; 
 
     public WristHoldCommand(WristSubsystem wrist, DoubleSupplier intakeSpeed) {
         this.wrist = wrist;
-        this.intakeSpeed = intakeSpeed; 
+        //this.intakeSpeed = intakeSpeed; 
 
         addRequirements(wrist);
     }

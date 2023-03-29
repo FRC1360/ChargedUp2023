@@ -1,6 +1,5 @@
 package frc.robot.commands.assembly;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
@@ -23,15 +22,15 @@ public class AssemblyGoToConeIntakeCommand extends SequentialCommandGroup {
         addCommands(
             new InstantCommand( () -> shoulder.setInIntakePosition(false)),
 
-            new ShoulderGoToPositionCommand(shoulder, -48.0)
+            new ShoulderGoToPositionCommand(shoulder, Constants.CONE_INTAKE_POSITION_SHOULDER)
                 .raceWith(new WristHoldCommand(wrist, () -> 0.0))
                 .raceWith(new ArmHoldCommand(arm)), 
 
-            new ArmGoToPositionCommand(arm, shoulderWristMessenger, 5.8)
+            new ArmGoToPositionCommand(arm, shoulderWristMessenger, Constants.CONE_INTAKE_POSITION_ARM)
                 .raceWith(new ShoulderHoldCommand(shoulder, armMessenger, () -> 0.0))
                 .raceWith(new WristHoldCommand(wrist, () -> 0.0)), 
 
-            new WristGoToPositionCommand(wrist, 48.0)
+            new WristGoToPositionCommand(wrist, Constants.CONE_INTAKE_POSITION_WRIST)
                 .raceWith(new ShoulderHoldCommand(shoulder, armMessenger, () -> 0.0))
                 .raceWith(new ArmHoldCommand(arm)),
             

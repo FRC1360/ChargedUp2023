@@ -1,7 +1,5 @@
 package frc.robot.commands.arm;
 
-import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ArmSubsystem;
 
@@ -10,8 +8,6 @@ public class ArmHomeCommand extends CommandBase {
 
     private ArmSubsystem arm;
     private boolean homed;
-
-    private DigitalInput limitSwitch;
 
     public ArmHomeCommand(ArmSubsystem arm) {
             this.arm = arm;

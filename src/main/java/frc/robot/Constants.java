@@ -4,10 +4,6 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.math.geometry.Translation3d;
-
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. All constants should be declared
@@ -66,7 +62,6 @@ public final class Constants {
     public static final double SHOULDER_ENCODER_OFFSET = 0.535;
     public static final double SHOULDER_GEAR_RATIO = (11.0 / 52.0) * (30.0 / 68.0) * (12.0 / 60.0);
     public static final double SHOULDER_MANUAL_OVERRIDE_RANGE = 20.0;
-    public static final double SHOULDER_HOME_ANGLE = -90.0; 
     public static final double MAX_SHOULDER_ANGLE = 90.0; 
     public static final double MIN_SHOULDER_ANGLE = -110.0; 
 
@@ -76,8 +71,6 @@ public final class Constants {
     public static final int WRIST_ENCODER = 1;
     public static final double WRIST_ENCODER_OFFSET = 0.521;
     public static final double WRIST_GEAR_RATIO = (1.0 / 64.0) * (35.0 / 60.0);
-    //public static final double WRIST_HOME_ANGLE = 140.0; 
-    public static final double WRIST_HOME_ANGLE = 170.0;  // Originally 170.0
     public static final double WRIST_MAX_ANGLE = 200.0; 
     public static final double WRIST_MIN_ANGLE = -165.0; 
     
@@ -96,13 +89,46 @@ public final class Constants {
     public static final int FOLLOW_INTAKE_MOTOR_ID = 61;
     public static final int INTAKE_SENSOR_PORT = 0; 
 
-
-    public final class ARM_POSITION { 
-        public static final double HIGH_GOAL = -25.0; 
-        public static final double MID_GOAL = -15.0; 
-        public static final double LOW_GOAL = -5.0; 
-    }
-
     public static final int LIMIT_SWITCH_ARM = 4; // TODO SET THE CORRECT INPUT
+
+    // HOME_POSITION
+    public static final double HOME_POSITION_WRIST = 170.0;  // Originally 170.0
+    public static final double HOME_POSITION_ARM = 0.0;
+    public static final double HOME_POSITION_SHOULDER = -90.0; 
+
+
+    // CONE_INTAKE_POSITION
+    public static final double CONE_INTAKE_POSITION_WRIST = 48.0;
+    public static final double CONE_INTAKE_POSITION_ARM = 5.8;
+    public static final double CONE_INTAKE_POSITION_SHOULDER = -48.0;
+
+    // CUBE_INTAKE_POSITION
+    public static final double CUBE_INTAKE_POSITION_WRIST = 95.0;
+    public static final double CUBE_INTAKE_POSITION_ARM = 5.5;
+    public static final double CUBE_INTAKE_POSITION_SHOULDER = -52.0;
+
+    // CONE_SCORE_HIGH_POSITION
+    public static final double CONE_SCORE_HIGH_POSITION_WRIST = -45.0;
+    public static final double CONE_SCORE_HIGH_POSITION_ARM = 19.0;
+    public static final double CONE_SCORE_HIGH_POSITION_SHOULDER = 43.0;
+
+    // CUBE_SCORE_HIGH_POSITION
+    public static final double CUBE_SCORE_HIGH_POSITION_WRIST = -40.0;
+    public static final double CUBE_SCORE_HIGH_POSITION_ARM = 19.0;
+    public static final double CUBE_SCORE_HIGH_POSITION_SHOULDER = 37.0;
+
+    // SCORE_MID_POSITION
+    public static final double SCORE_MID_POSITION_WRIST = -35.0;
+    public static final double SCORE_MID_POSITION_ARM = HOME_POSITION_ARM;
+    public static final double SCORE_MID_POSITION_SHOULDER = 30.0;
+
+    // SINGLE_SUBSTATION_POSITION
+    public static final double SINGLE_SUBSTATION_POSITION_WRIST = HOME_POSITION_WRIST;
+    public static final double SINGLE_SUBSTATION_POSITION_ARM = HOME_POSITION_ARM;
+    public static final double SINGLE_SUBSTATION_POSITION_SHOULDER = -48.0;
+
+    
+
+    
 
 }

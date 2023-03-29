@@ -14,7 +14,6 @@ import edu.wpi.first.wpilibj.AnalogEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.util.DashboardTuning;
 import frc.robot.util.OrbitPID;
 
 public class ShoulderSubsystem extends SubsystemBase {
@@ -41,11 +40,7 @@ public class ShoulderSubsystem extends SubsystemBase {
 
     private AnalogEncoder absoluteEncoder;
 
-    public ArmFeedforward shoulderFeedForward; 
-
-    private double holdkP; 
-    private double holdkI; 
-    private double holdkD; 
+    public ArmFeedforward shoulderFeedForward;  
     
     private boolean inIntakePosition;
 
@@ -56,7 +51,7 @@ public class ShoulderSubsystem extends SubsystemBase {
         // This units are deg / second for velocity and deg / sec^2 for acceleration
         this.shoulderUpMotionProfileConstraints = new TrapezoidProfile.Constraints(250.0, 250.0);  // TODO - Tune.
         this.shoulderDownMotionProfileConstraints = new TrapezoidProfile.Constraints(100.0, 250.0); 
-        this.targetAngle = Constants.SHOULDER_HOME_ANGLE;  // Make sure this is 0.0 for copetition, only 90 for testing
+        this.targetAngle = Constants.HOME_POSITION_SHOULDER;
 
         this.shoulderMotorMaster = new CANSparkMax(Constants.SHOULDER_MOTOR_MASTER, MotorType.kBrushless);
         this.shoulderMotorSlave = new CANSparkMax(Constants.SHOULDER_MOTOR_SLAVE, MotorType.kBrushless);
