@@ -121,9 +121,9 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    // m_robotContainer.shoulderSubsystem.updateSmartDashboard();
-    // m_robotContainer.wristSubsystem.updateSmartDashboard();
-    // m_robotContainer.armSubsystem.updateSmartDashboard();
+    //m_robotContainer.shoulderSubsystem.updateSmartDashboard();
+    m_robotContainer.wristSubsystem.updateSmartDashboard();
+   // m_robotContainer.armSubsystem.updateSmartDashboard();
 
   }
 

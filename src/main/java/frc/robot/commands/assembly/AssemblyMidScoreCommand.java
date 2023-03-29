@@ -25,7 +25,7 @@ public class AssemblyMidScoreCommand extends SequentialCommandGroup {
                 .raceWith(new WristHoldCommand(wrist, () -> 0.0))
                 .raceWith(new ArmHoldCommand(arm)),
     
-            new WristGoToPositionCommand(wrist, -45.0)
+            new WristGoToPositionCommand(wrist, -35.0)
                 .raceWith(new ShoulderHoldCommand(shoulder, armMessenger, () -> 0.0))
                 .raceWith(new ArmHoldCommand(arm))
         ); 
