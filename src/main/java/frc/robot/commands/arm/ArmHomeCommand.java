@@ -22,7 +22,7 @@ public class ArmHomeCommand extends CommandBase {
 
     @Override
     public void execute() {
-        if (!this.arm.limitSwitch.get()) this.arm.setArmSpeed(-0.1);
+        if (!this.arm.limitSwitch.get()) this.arm.setArmSpeed(-0.2);
         if (this.arm.limitSwitch.get()) {
             this.arm.setArmSpeed(0.0);
             this.arm.resetEncoder();

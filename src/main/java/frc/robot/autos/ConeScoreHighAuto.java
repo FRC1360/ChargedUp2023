@@ -1,6 +1,7 @@
 package frc.robot.autos;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.arm.ArmHoldCommand;
 import frc.robot.commands.assembly.AssemblyHomePositionCommand;
 import frc.robot.commands.assembly.autoAssembly.AutoAssemblyConeHighScoreCommand;
@@ -20,12 +21,15 @@ public class ConeScoreHighAuto extends SequentialCommandGroup {
                                     ArmShoulderMessenger armMessenger) 
     {
         addCommands(
+            new WaitCommand(1), 
             new AutoAssemblyConeHighScoreCommand(shoulder, shoulderWristMessenger, wrist, 
                                                     arm, intake, armMessenger), 
-            new AssemblyHomePositionCommand(shoulder, shoulderWristMessenger, wrist, arm, armMessenger), 
+            new AssemblyHomePositionCommand(shoulder, shoulderWristMessenger, wrist, arm, armMessenger)
+            /* 
             new ShoulderHoldCommand(shoulder, armMessenger, () -> 0.0)
                 .raceWith(new WristHoldCommand(wrist, () -> 0.0))
                 .raceWith(new ArmHoldCommand(arm))
+                */
             );
     }
 }

@@ -87,12 +87,12 @@ public final class Constants {
     //Intake
     public static final int LEAD_INTAKE_MOTOR_ID = 60; 
     public static final int FOLLOW_INTAKE_MOTOR_ID = 61;
-    public static final int INTAKE_SENSOR_PORT = 0; 
+    public static final int INTAKE_SENSOR_PORT = 6; 
 
     public static final int LIMIT_SWITCH_ARM = 4; // TODO SET THE CORRECT INPUT
 
     // HOME_POSITION
-    public static final double HOME_POSITION_WRIST = 170.0;  // Originally 170.0
+    public static final double HOME_POSITION_WRIST = 175.0;  // Originally 170.0
     public static final double HOME_POSITION_ARM = 0.0;
     public static final double HOME_POSITION_SHOULDER = -90.0; 
 

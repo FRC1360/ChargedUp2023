@@ -69,6 +69,8 @@ public class ArmSubsystem extends SubsystemBase {
         this.lastTime = -1.0; 
         this.lastDistance = Double.NaN; 
 
+        this.targetDistance = Constants.HOME_POSITION_ARM; 
+
         // this.manualOffset = manualOffset; 
         // this.manualOffsetEnable = manualOffsetEnable; 
     }
