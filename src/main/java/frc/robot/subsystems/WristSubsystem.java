@@ -97,8 +97,8 @@ public class WristSubsystem extends SubsystemBase {
     }
 
     public void setWristSpeed(double speed) {
-        if (this.getWristAngle() > Constants.WRIST_MAX_ANGLE
-             || this.getWristAngle() < Constants.WRIST_MIN_ANGLE)
+        // if (this.getWristAngle() > Constants.WRIST_MAX_ANGLE
+        //      || this.getWristAngle() < Constants.WRIST_MIN_ANGLE)
              speed = 0.0; 
         this.wristMotor.set(speed);
     }
@@ -107,8 +107,8 @@ public class WristSubsystem extends SubsystemBase {
      * Sets arm voltage based off 0.0 - 12.0
      */
     public void setWristVoltage(double voltage) {
-        if (this.getWristAngle() > Constants.WRIST_MAX_ANGLE
-            || this.getWristAngle() < Constants.WRIST_MIN_ANGLE)
+        // if (this.getWristAngle() > Constants.WRIST_MAX_ANGLE
+        //     || this.getWristAngle() < Constants.WRIST_MIN_ANGLE)
                 voltage = 0.0; 
         this.wristMotor.setVoltage(voltage);
     }

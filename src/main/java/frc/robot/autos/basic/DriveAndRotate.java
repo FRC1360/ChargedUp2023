@@ -18,7 +18,7 @@ public class DriveAndRotate extends CommandBase {
 
     private double xMeters; 
     private double yMeters; 
-    private Rotation2d angleToRotate;
+    private double angleToRotate;
 
     private ChassisSpeeds speeds; 
 
@@ -46,7 +46,7 @@ public class DriveAndRotate extends CommandBase {
         this.dt = dt;
         this.xMeters = xMeters; 
         this.yMeters = yMeters; 
-        this.angleToRotate = Rotation2d.fromDegrees(angleToRotateDeg); 
+        this.angleToRotate = angleToRotateDeg; 
 
         this.speeds = new ChassisSpeeds(0.0, 0.0, 0.0); // 0 Rotation
         
@@ -74,8 +74,8 @@ public class DriveAndRotate extends CommandBase {
         Translation2d curPose = dt.getTranslation(); 
         Translation2d targetPose = curPose.plus(new Translation2d(xMeters, yMeters));
 
-        Rotation2d curAngle = dt.getGyroscopeRotation(); 
-        Rotation2d targetAngle = curAngle.plus(this.angleToRotate); 
+        double curAngle = dt.getGyroscopeRotation().getDegrees(); 
+        double targetAngle = curAngle + this.angleToRotate; 
 
         this.xStart = new TrapezoidProfile.State(curPose.getX(), 0.0); 
         this.xEnd = new TrapezoidProfile.State(targetPose.getX(), 0.0);
@@ -83,8 +83,8 @@ public class DriveAndRotate extends CommandBase {
         this.yStart = new TrapezoidProfile.State(curPose.getY(), 0.0);
         this.yEnd = new TrapezoidProfile.State(targetPose.getY(), 0.0);
 
-        this.rotStart = new TrapezoidProfile.State(curAngle.getDegrees(), 0.0); 
-        this.rotEnd = new TrapezoidProfile.State(targetAngle.getDegrees(), 0.0); 
+        this.rotStart = new TrapezoidProfile.State(curAngle, 0.0); 
+        this.rotEnd = new TrapezoidProfile.State(targetAngle, 0.0); 
 
         this.xMotionProfile = new TrapezoidProfile(this.driveConstraints, this.xEnd, this.xStart); 
         this.yMotionProfile = new TrapezoidProfile(this.driveConstraints, this.yEnd, this.yStart);
@@ -114,19 +114,21 @@ public class DriveAndRotate extends CommandBase {
         
         SmartDashboard.putNumber("curXSpeed", speeds.vxMetersPerSecond); 
         SmartDashboard.putNumber("curYSpeed", speeds.vyMetersPerSecond);
-        SmartDashboard.putNumber("curRotSpeed", Math.toDegrees(speeds.omegaRadiansPerSecond));
+        SmartDashboard.putNumber("curRotSpeed", Math.toDegrees(speeds.omegaRadiansPerSecond) * 2.0);
 
         double xSpeed = driveXPID.calculate(xProfileTarget.velocity, speeds.vxMetersPerSecond); 
         double ySpeed = driveYPID.calculate(yProfileTarget.velocity, speeds.vyMetersPerSecond); 
-        double rotSpeed = Math.toRadians(driveRotPID.calculate(rotationProfileTarget.position, 
+        double rotSpeed = Math.toRadians(driveRotPID.calculate(rotationProfileTarget.velocity, 
                                                     //dt.getGyroscopeRotation().getDegrees()));
                                                     Math.toDegrees(speeds.omegaRadiansPerSecond))); 
+
+        SmartDashboard.putNumber("Gyro angle deg", dt.getGyroscopeRotation().getDegrees()); 
     
 
         speeds.vxMetersPerSecond = xSpeed; 
         speeds.vyMetersPerSecond = ySpeed;
-        //speeds.omegaRadiansPerSecond = rotSpeed; 
-        speeds.omegaRadiansPerSecond = -1.6; 
+        speeds.omegaRadiansPerSecond = rotSpeed * 2.0; 
+        //speeds.omegaRadiansPerSecond = -1.6; 
 
         dt.drive(speeds);
     }
