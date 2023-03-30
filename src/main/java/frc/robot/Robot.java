@@ -30,6 +30,10 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+
+    m_robotContainer.shoulderSubsystem.resetMotorRotations();
+    m_robotContainer.wristSubsystem.resetMotorRotations();
+
   }
 
   /**
@@ -70,17 +74,23 @@ public class Robot extends TimedRobot {
     m_robotContainer.wristSubsystem.setIdleMode(IdleMode.kCoast);
     m_robotContainer.shoulderSubsystem.resetMotorRotations();
     m_robotContainer.wristSubsystem.resetMotorRotations();
-    // m_robotContainer.wristSubsystem.holdPIDController.reset();
-    // m_robotContainer.shoulderSubsystem.holdPIDController.reset();
-    m_robotContainer.getArmHomeCommand().schedule(); 
+    
+    /*m_robotContainer.getArmHomeCommand().schedule(); 
     m_robotContainer.getGoToZeroWristCommand().schedule(); 
-    m_robotContainer.getShoulderZeroCommand().schedule();
+    m_robotContainer.getShoulderZeroCommand().schedule();*/
 
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
-      m_autonomousCommand.schedule();
+      (m_robotContainer.getArmHomeCommand()
+      .andThen(m_robotContainer.getGoToZeroWristCommand())
+      .andThen(m_robotContainer.getShoulderZeroCommand())
+      .andThen(m_autonomousCommand)).schedule();
+    } else {
+      (m_robotContainer.getArmHomeCommand()
+      .andThen(m_robotContainer.getGoToZeroWristCommand())
+      .andThen(m_robotContainer.getShoulderZeroCommand())).schedule(); 
     }
 
    // m_robotContainer.getArmHomeCommand().schedule(); 
@@ -102,17 +112,24 @@ public class Robot extends TimedRobot {
     // this line or comment it out.
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
+
+      m_robotContainer.wristSubsystem.setIdleMode(IdleMode.kCoast);
+      m_robotContainer.shoulderSubsystem.resetMotorRotations();
+      m_robotContainer.wristSubsystem.resetMotorRotations();
+      m_robotContainer.wristSubsystem.holdPIDController.reset();
+    } else {
+      m_robotContainer.wristSubsystem.setIdleMode(IdleMode.kCoast);
+      m_robotContainer.shoulderSubsystem.resetMotorRotations();
+      m_robotContainer.wristSubsystem.resetMotorRotations();
+      m_robotContainer.wristSubsystem.holdPIDController.reset();
+
+      (m_robotContainer.getArmHomeCommand()
+        .andThen(m_robotContainer.getGoToZeroWristCommand())
+        .andThen(m_robotContainer.getShoulderZeroCommand())).schedule(); 
     }
 
-    m_robotContainer.wristSubsystem.setIdleMode(IdleMode.kCoast);
-    m_robotContainer.shoulderSubsystem.resetMotorRotations();
-    m_robotContainer.wristSubsystem.resetMotorRotations();
-    m_robotContainer.wristSubsystem.holdPIDController.reset();
+    
     // m_robotContainer.shoulderSubsystem.holdPIDController.reset();
-
-    (m_robotContainer.getArmHomeCommand()
-      .andThen(m_robotContainer.getGoToZeroWristCommand())
-      .andThen(m_robotContainer.getShoulderZeroCommand())).schedule(); 
     
     /*m_robotContainer.getGoToZeroWristCommand().schedule(); 
     m_robotContainer.getShoulderZeroCommand().schedule();*/
