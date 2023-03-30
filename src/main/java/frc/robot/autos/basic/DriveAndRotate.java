@@ -110,6 +110,7 @@ public class DriveAndRotate extends CommandBase {
         SmartDashboard.putNumber("x pos calc", xProfileTarget.velocity); 
         SmartDashboard.putNumber("y pos calc", yProfileTarget.velocity); 
         SmartDashboard.putNumber("Rotation Motion Profile Velocity", rotationProfileTarget.velocity); 
+        SmartDashboard.putNumber("Rotation Motion Profile Position", rotationProfileTarget.position); 
         
         SmartDashboard.putNumber("curXSpeed", speeds.vxMetersPerSecond); 
         SmartDashboard.putNumber("curYSpeed", speeds.vyMetersPerSecond);
@@ -117,13 +118,15 @@ public class DriveAndRotate extends CommandBase {
 
         double xSpeed = driveXPID.calculate(xProfileTarget.velocity, speeds.vxMetersPerSecond); 
         double ySpeed = driveYPID.calculate(yProfileTarget.velocity, speeds.vyMetersPerSecond); 
-        double rotSpeed = driveRotPID.calculate(rotationProfileTarget.velocity, 
-                                                    Math.toDegrees(speeds.omegaRadiansPerSecond)); 
+        double rotSpeed = Math.toRadians(driveRotPID.calculate(rotationProfileTarget.position, 
+                                                    //dt.getGyroscopeRotation().getDegrees()));
+                                                    Math.toDegrees(speeds.omegaRadiansPerSecond))); 
     
 
         speeds.vxMetersPerSecond = xSpeed; 
         speeds.vyMetersPerSecond = ySpeed;
-        speeds.omegaRadiansPerSecond = rotSpeed; 
+        //speeds.omegaRadiansPerSecond = rotSpeed; 
+        speeds.omegaRadiansPerSecond = -1.6; 
 
         dt.drive(speeds);
     }

@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.autos.basic.Direction;
 import frc.robot.autos.basic.Drive;
+import frc.robot.autos.basic.DriveAndRotate;
 import frc.robot.autos.basic.Rotate; 
 import frc.robot.autos.procedures.GetAndScoreCone;
 import frc.robot.subsystems.DrivetrainSubsystem;
@@ -20,8 +21,9 @@ public class RightSide2ConeAuto extends SequentialCommandGroup {
                     // new GetAndScoreCone(dt, Direction.FRONT_CENTER, Direction.RIGHT), 
                     // new CenterToScore(dt, Direction.LEFT), 
                     // new GetAndScoreCone(dt, Direction.LEFT, Direction.LEFT)
-                    new Drive(dt, 7.0, 0.0)
-                    //new Drive(dt, -7.0, 0.0), 
+                    //new Drive(dt, 7.0, 0.0)
+                    new DriveAndRotate(dt, 0.0, 0.0, 179.0)
+                    //new Drive(dt, -7.0, 0.0)
                     //new Drive(dt, 0.0, -1.0)
                     );
                     
