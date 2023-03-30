@@ -17,6 +17,8 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.autos.LeftSide2ConeAuto;
 import frc.robot.autos.RightSide2ConeAuto;
+import frc.robot.autos.ConeHighAndBalanceAuto;
+import frc.robot.autos.ConeHighAndDriveAuto;
 import frc.robot.autos.ConeScoreHighAuto;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.arm.ArmHoldCommand;
@@ -67,9 +69,14 @@ public class RobotContainer {
 
   private final SendableChooser<Command> autoChooser = new SendableChooser<Command>(); 
 
-  private final RightSide2ConeAuto rightConeAuto = new RightSide2ConeAuto(m_drivetrainSubsystem); 
+  // private final RightSide2ConeAuto rightConeAuto = new RightSide2ConeAuto(m_drivetrainSubsystem); 
 
-  private final LeftSide2ConeAuto leftConeAuto = new LeftSide2ConeAuto(m_drivetrainSubsystem);
+  // private final LeftSide2ConeAuto leftConeAuto = new LeftSide2ConeAuto(m_drivetrainSubsystem);
+
+  private final ConeHighAndBalanceAuto highConeAndBalanceAuto = new ConeHighAndBalanceAuto(m_drivetrainSubsystem, shoulderSubsystem, shoulderMessenger, 
+                                                                                            wristSubsystem, armSubsystem, intakeSubsystem, armMessenger);
+  private final ConeHighAndDriveAuto highConeAndDriveAuto = new ConeHighAndDriveAuto(m_drivetrainSubsystem, shoulderSubsystem, shoulderMessenger, 
+                                                                                      wristSubsystem, armSubsystem, intakeSubsystem, armMessenger); 
 
   private final Simulator sim = new Simulator(m_drivetrainSubsystem); 
 
@@ -103,9 +110,10 @@ public class RobotContainer {
   }
 
   public void initializeRobot() { 
-    autoChooser.addOption("Both sides auto", rightConeAuto);
     //autoChooser.setDefaultOption("One side, two cargo, balance", leftConeAuto);
     autoChooser.setDefaultOption("No auto", new WaitCommand(15));
+    autoChooser.addOption("High cone and balance", highConeAndBalanceAuto);
+    autoChooser.addOption("High cone and drive straight", highConeAndDriveAuto);
     SmartDashboard.putData("Auto Chooser", autoChooser);
   }
   
@@ -149,11 +157,11 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
     //return autoChooser.getSelected();
-    return rightConeAuto; 
+    //return rightConeAuto; 
     //return leftConeAuto; 
     //return null;
     //return new ConeScoreHighAuto(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, intakeSubsystem, armMessenger); 
-    //return autoChooser.getSelected();  
+    return autoChooser.getSelected();  
   }
 
   

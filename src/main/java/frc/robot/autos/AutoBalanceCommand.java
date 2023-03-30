@@ -1,6 +1,7 @@
 package frc.robot.autos;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DrivetrainSubsystem;
 
@@ -21,6 +22,8 @@ public class AutoBalanceCommand extends CommandBase {
     public void execute() { 
         double xSpeed = this.autoBalanceFactory.autoBalanceRoutine()
                         * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND; 
+
+        SmartDashboard.putNumber("Accelerometer Pitch Reading", this.autoBalanceFactory.getTilt()); 
 
         speeds.vxMetersPerSecond = xSpeed; 
 

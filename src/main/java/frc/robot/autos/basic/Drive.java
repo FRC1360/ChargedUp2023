@@ -49,7 +49,7 @@ public class Drive extends CommandBase {
         this.xMeters = xMeters; 
         this.yMeters = yMeters; 
 
-        this.speeds = new ChassisSpeeds(0.0, 0.0, 0.0); // 0 Rotation
+        this.speeds = new ChassisSpeeds(0.0, 0.0, 0.0); // 0 Rotation, left is positive y, forwards is positive x
         
         this.driveConstraints = new TrapezoidProfile.Constraints(Constants.Drivetrain.DRIVE_MOTION_PROFILE_MAX_VELOCITY, 
                                                                     Constants.Drivetrain.DRIVE_MOTION_PROFILE_MAX_ACCELERATION); 
