@@ -107,11 +107,15 @@ public class Robot extends TimedRobot {
     m_robotContainer.wristSubsystem.setIdleMode(IdleMode.kCoast);
     m_robotContainer.shoulderSubsystem.resetMotorRotations();
     m_robotContainer.wristSubsystem.resetMotorRotations();
-    // m_robotContainer.wristSubsystem.holdPIDController.reset();
+    m_robotContainer.wristSubsystem.holdPIDController.reset();
     // m_robotContainer.shoulderSubsystem.holdPIDController.reset();
-    m_robotContainer.getArmHomeCommand().schedule(); 
-    m_robotContainer.getGoToZeroWristCommand().schedule(); 
-    m_robotContainer.getShoulderZeroCommand().schedule();
+
+    (m_robotContainer.getArmHomeCommand()
+      .andThen(m_robotContainer.getGoToZeroWristCommand())
+      .andThen(m_robotContainer.getShoulderZeroCommand())).schedule(); 
+    
+    /*m_robotContainer.getGoToZeroWristCommand().schedule(); 
+    m_robotContainer.getShoulderZeroCommand().schedule();*/
   }
 
   /** This function is called periodically during operator control. */
@@ -119,7 +123,7 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
     //m_robotContainer.shoulderSubsystem.updateSmartDashboard();
     m_robotContainer.wristSubsystem.updateSmartDashboard();
-   // m_robotContainer.armSubsystem.updateSmartDashboard();
+    m_robotContainer.armSubsystem.updateSmartDashboard();
 
   }
 
