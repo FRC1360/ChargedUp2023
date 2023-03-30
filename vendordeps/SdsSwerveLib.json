@@ -11,7 +11,7 @@
         {
             "groupId": "com.github.FRC1360",
             "artifactId": "swerve-lib-1360",
-            "version": "d179f1ac7e"
+            "version": "f14802c907"
         }
     ],
     "jniDependencies": [],

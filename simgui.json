@@ -1,14 +1,20 @@
 {
+  "HALProvider": {
+    "RoboRIO": {
+      "window": {
+        "visible": true
+      }
+    }
+  },
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
       "/SmartDashboard/Auto Chooser": "String Chooser",
       "/SmartDashboard/Field": "Field2d",
-      "/SmartDashboard/SendableChooser[0]": "String Chooser"
+      "/SmartDashboard/SendableChooser[1]": "String Chooser"
     },
     "windows": {
       "/SmartDashboard/Field": {
-        "image": ".\\2023-field.png",
         "window": {
           "visible": true
         }
@@ -17,11 +23,17 @@
   },
   "NetworkTables": {
     "transitory": {
-      "SmartDashboard": {
-        "Field": {
+      "LiveWindow": {
+        "open": true
+      },
+      "Shuffleboard": {
+        "Drivetrain": {
           "open": true
         },
-        "SendableChooser[0]": {
+        "open": true
+      },
+      "SmartDashboard": {
+        "SendableChooser[1]": {
           "open": true
         },
         "open": true
@@ -32,12 +44,6 @@
     "Plot <0>": {
       "plots": [
         {
-          "axis": [
-            {
-              "max": 4.0,
-              "min": -4.0
-            }
-          ],
           "height": 332,
           "series": [
             {
@@ -47,7 +53,7 @@
                 0.6901960968971252,
                 1.0
               ],
-              "id": "NT:/SmartDashboard/x pos calc"
+              "id": "NT:/SmartDashboard/Time_Diff"
             },
             {
               "color": [
@@ -56,7 +62,7 @@
                 0.32156863808631897,
                 1.0
               ],
-              "id": "NT:/SmartDashboard/P XDrive Term"
+              "id": "NT:/SmartDashboard/Arm_Velocity"
             },
             {
               "color": [
@@ -65,7 +71,43 @@
                 0.4078431725502014,
                 1.0
               ],
-              "id": "NT:/SmartDashboard/x speed"
+              "id": "NT:/SmartDashboard/Arm_Move_P_Gain"
+            },
+            {
+              "color": [
+                0.7686275243759155,
+                0.30588236451148987,
+                0.32156863808631897,
+                1.0
+              ],
+              "id": "NT:/SmartDashboard/Arm_Hold_P_Gain"
+            },
+            {
+              "color": [
+                0.5058823823928833,
+                0.44705885648727417,
+                0.7019608020782471,
+                1.0
+              ],
+              "id": "NT:/SmartDashboard/Arm_kP"
+            },
+            {
+              "color": [
+                0.5764706134796143,
+                0.4705882668495178,
+                0.3764706254005432,
+                1.0
+              ],
+              "id": "NT:/SmartDashboard/Arm_Feedforward_Output"
+            },
+            {
+              "color": [
+                0.8549020290374756,
+                0.545098066329956,
+                0.7647059559822083,
+                1.0
+              ],
+              "id": "NT:/SmartDashboard/Arm_kG"
             }
           ]
         }

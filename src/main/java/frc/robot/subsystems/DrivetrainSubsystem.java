@@ -4,7 +4,6 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.sensors.PigeonIMU;
 import com.kauailabs.navx.frc.AHRS;
 import com.swervedrivespecialties.swervelib.Mk4iSwerveModuleHelper;
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
@@ -16,11 +15,11 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.util.OrbitPID;
 import frc.robot.util.SwerveDriveOdometry2022;
@@ -28,7 +27,7 @@ import frc.robot.util.SwerveDriveOdometry2022;
 import static frc.robot.Constants.*;
 
 public class DrivetrainSubsystem extends SubsystemBase {
-  /**
+  /** 
    * The maximum voltage that will be delivered to the drive motors.
    * <p>
    * This can be reduced to cap the robot's maximum speed. Typically, this is useful during initial testing of the robot.
@@ -76,6 +75,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
   // cause the angle reading to increase until it wraps back over to zero.
   // FIXME Uncomment if you are using a NavX
   private final AHRS m_navx = new AHRS(Port.kMXP, (byte) 200); // NavX connected over MXP
+  //private final AHRS m_navx = new AHRS(Port.kMXP); // NavX connected over MXP
 
   // These are our modules. We initialize them in the constructor.
   private final SwerveModule m_frontLeftModule;
@@ -102,6 +102,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
                 FRONT_LEFT_MODULE_STEER_MOTOR,
                 FRONT_LEFT_MODULE_STEER_ENCODER,
                 FRONT_LEFT_MODULE_STEER_OFFSET);
+        
 
         m_frontRightModule = Mk4iSwerveModuleHelper.createNeo(
                 tab.getLayout("Front Right Module", BuiltInLayouts.kList)
@@ -134,7 +135,14 @@ public class DrivetrainSubsystem extends SubsystemBase {
                 BACK_RIGHT_MODULE_STEER_ENCODER,
                 BACK_RIGHT_MODULE_STEER_OFFSET);
 
-        this.drivePID = new OrbitPID(0.05, 0.0, 0.05); 
+        /*CANSparkMax fl_motor = new CANSparkMax(FRONT_LEFT_MODULE_DRIVE_MOTOR, MotorType.kBrushless);
+        fl_motor.setIdleMode(IdleMode.kCoast);
+        CANSparkMax fr_motor = new CANSparkMax(FRONT_RIGHT_MODULE_DRIVE_MOTOR, MotorType.kBrushless);
+        fr_motor.setIdleMode(IdleMode.kCoast);
+        CANSparkMax bl_motor = new CANSparkMax(BACK_LEFT_MODULE_DRIVE_MOTOR, MotorType.kBrushless);
+        bl_motor.setIdleMode(IdleMode.kCoast);
+        CANSparkMax br_motor = new CANSparkMax(BACK_RIGHT_MODULE_DRIVE_MOTOR, MotorType.kBrushless);
+        br_motor.setIdleMode(IdleMode.kCoast);*/
   }
 
   /**
@@ -153,8 +161,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
       // We will only get valid fused headings if the magnetometer is calibrated
             return Rotation2d.fromDegrees(m_navx.getFusedHeading());
    }*/
-//
-//    // We have to invert the angle of the NavX so that rotating the robot counter-clockwise makes the angle increase.
+//      
+//    // We have to invert the angle of the NavX so that rotating the robot counter-clockwise makes the angle increase
     return Rotation2d.fromDegrees(360.0 - m_navx.getYaw());
   }
 
@@ -188,10 +196,14 @@ public class DrivetrainSubsystem extends SubsystemBase {
     SwerveDriveKinematics.desaturateWheelSpeeds(states, MAX_VELOCITY_METERS_PER_SECOND); // this was normalizeWheelSpeeds but WPILib doesn't like that
 
     m_frontLeftModule.set(states[0].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, states[0].angle.getRadians());
-    m_backLeftModule.set(states[1].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, states[1].angle.getRadians());
-    m_frontRightModule.set(states[2].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, states[2].angle.getRadians());
+    m_frontRightModule.set(states[1].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, states[1].angle.getRadians());
+    m_backLeftModule.set(states[2].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, states[2].angle.getRadians());
     m_backRightModule.set(states[3].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, states[3].angle.getRadians());    
 
     odometry.update(getGyroscopeRotation(), states);
+
+    SmartDashboard.putNumber("Drivetrain_gyro", getGyroscopeRotation().getDegrees());  
+    SmartDashboard.putNumber("Drivetrain_Speed_X", m_chassisSpeeds.vxMetersPerSecond); 
+    SmartDashboard.putNumber("Drivetrain_Speed_Y", m_chassisSpeeds.vyMetersPerSecond); 
   } 
 }
