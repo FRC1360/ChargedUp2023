@@ -51,6 +51,12 @@ public final class Constants {
     public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(54.767 + 180.0 + 90.0); // FIXME Measure and set back right steer offset
 
 
+    public static final class Drivetrain { 
+        public static final double DRIVE_MOTION_PROFILE_MAX_VELOCITY = 3.250; 
+        public static final double DRIVE_MOTION_PROFILE_MAX_ACCELERATION = 3.250; 
+        public static final double ROTATION_MOTION_PROFILE_MAX_VELOCITY = 90.0; 
+        public static final double ROTATION_MOTION_PROFILE_MAX_ACCELERATION = 90.0; 
+    }
     //GENERAL
     public static double NEO_ENCODER_TICKS_PER_REV = 42;
 

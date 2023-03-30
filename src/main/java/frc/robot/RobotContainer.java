@@ -8,12 +8,15 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.autos.LeftSide2ConeAuto;
+import frc.robot.autos.RightSide2ConeAuto;
 import frc.robot.autos.ConeScoreHighAuto;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.arm.ArmHoldCommand;
@@ -33,6 +36,7 @@ import frc.robot.commands.shoulder.ShoulderHoldCommand;
 import frc.robot.commands.vision.StrafeAlign;
 import frc.robot.commands.wrist.WristGoToPositionCommand;
 import frc.robot.commands.wrist.WristHoldCommand;
+import frc.robot.simulation.Simulator;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.vision.Vision;
@@ -62,6 +66,12 @@ public class RobotContainer {
   public final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
 
   private final SendableChooser<Command> autoChooser = new SendableChooser<Command>(); 
+
+  private final RightSide2ConeAuto rightConeAuto = new RightSide2ConeAuto(m_drivetrainSubsystem); 
+
+  private final LeftSide2ConeAuto leftConeAuto = new LeftSide2ConeAuto(m_drivetrainSubsystem);
+
+  private final Simulator sim = new Simulator(m_drivetrainSubsystem); 
 
   // private final DriveStraightAuto driveStraightAuto = new DriveStraightAuto(m_drivetrainSubsystem, wristSubsystem); 
   // private final EngageStationAuto engageStationAuto = new EngageStationAuto(m_drivetrainSubsystem); 
@@ -93,11 +103,12 @@ public class RobotContainer {
   }
 
   public void initializeRobot() { 
-    // autoChooser.addOption("Tip cone & drive straight auto", driveStraightAuto);
-    // autoChooser.addOption("Engage charge station auto", engageStationAuto);
+    autoChooser.addOption("Both sides auto", rightConeAuto);
+    //autoChooser.setDefaultOption("One side, two cargo, balance", leftConeAuto);
     autoChooser.setDefaultOption("No auto", new WaitCommand(15));
     SmartDashboard.putData("Auto Chooser", autoChooser);
   }
+  
 
   /**
    * Use this method to define your button->command mappings. Buttons can be created by
@@ -137,8 +148,11 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
+    //return autoChooser.getSelected();
+    return rightConeAuto; 
+    //return leftConeAuto; 
     //return null;
-    return new ConeScoreHighAuto(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, intakeSubsystem, armMessenger); 
+    //return new ConeScoreHighAuto(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, intakeSubsystem, armMessenger); 
     //return autoChooser.getSelected();  
   }
 
@@ -178,3 +192,4 @@ public class RobotContainer {
     return value;
   }
 }
+
