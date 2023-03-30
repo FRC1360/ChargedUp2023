@@ -36,6 +36,7 @@ import frc.robot.commands.shoulder.ShoulderHoldCommand;
 import frc.robot.commands.vision.StrafeAlign;
 import frc.robot.commands.wrist.WristGoToPositionCommand;
 import frc.robot.commands.wrist.WristHoldCommand;
+import frc.robot.simulation.Simulator;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.vision.Vision;
@@ -72,8 +73,6 @@ public class RobotContainer {
 
   private final Simulator sim = new Simulator(m_drivetrainSubsystem); 
 
-  private final SendableChooser<Command> autoChooser = new SendableChooser<Command>(); 
-
   // private final DriveStraightAuto driveStraightAuto = new DriveStraightAuto(m_drivetrainSubsystem, wristSubsystem); 
   // private final EngageStationAuto engageStationAuto = new EngageStationAuto(m_drivetrainSubsystem); 
   //private final Simulator sim = new Simulator(m_drivetrainSubsystem); 
@@ -105,14 +104,11 @@ public class RobotContainer {
 
   public void initializeRobot() { 
     autoChooser.addOption("Both sides auto", rightConeAuto);
-    autoChooser.setDefaultOption("One side, two cargo, balance", leftConeAuto);
-    SmartDashboard.putData("Auto Chooser", autoChooser);
-  }
-    // autoChooser.addOption("Tip cone & drive straight auto", driveStraightAuto);
-    // autoChooser.addOption("Engage charge station auto", engageStationAuto);
+    //autoChooser.setDefaultOption("One side, two cargo, balance", leftConeAuto);
     autoChooser.setDefaultOption("No auto", new WaitCommand(15));
     SmartDashboard.putData("Auto Chooser", autoChooser);
   }
+  
 
   /**
    * Use this method to define your button->command mappings. Buttons can be created by
@@ -156,7 +152,7 @@ public class RobotContainer {
     return rightConeAuto; 
     //return leftConeAuto; 
     //return null;
-    return new ConeScoreHighAuto(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, intakeSubsystem, armMessenger); 
+    //return new ConeScoreHighAuto(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, intakeSubsystem, armMessenger); 
     //return autoChooser.getSelected();  
   }
 
@@ -196,3 +192,4 @@ public class RobotContainer {
     return value;
   }
 }
+
