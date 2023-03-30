@@ -161,7 +161,8 @@ public class RobotContainer {
     //return leftConeAuto; 
     //return null;
     //return new ConeScoreHighAuto(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, intakeSubsystem, armMessenger); 
-    return autoChooser.getSelected();  
+    //return autoChooser.getSelected();  
+    return highConeAndBalanceAuto; 
   }
 
   

@@ -89,13 +89,13 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
     public void setArmSpeed(double speed) {
-        /*if (this.getArmDistance() > Constants.ARM_MAX_DISTANCE)*/ speed = 0.0; 
+        if (this.getArmDistance() > Constants.ARM_MAX_DISTANCE) speed = 0.0; 
         this.armMotorMaster.set(speed);
         this.armMotorSlave.set(speed);
     }
 
     public void setArmVoltage(double voltage) {
-        /*if (this.getArmDistance() > Constants.ARM_MAX_DISTANCE)*/ voltage = 0.0; 
+        if (this.getArmDistance() > Constants.ARM_MAX_DISTANCE) voltage = 0.0; 
         this.armMotorMaster.setVoltage(voltage);
         this.armMotorSlave.setVoltage(voltage);
     }

@@ -1,6 +1,9 @@
 package frc.robot.autos;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.commands.arm.ArmHoldCommand;
+import frc.robot.commands.shoulder.ShoulderHoldCommand;
+import frc.robot.commands.wrist.WristHoldCommand;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ArmSubsystem.ArmShoulderMessenger;
 import frc.robot.subsystems.DrivetrainSubsystem;
@@ -15,7 +18,10 @@ public class ConeHighAndBalanceAuto extends SequentialCommandGroup {
                                     WristSubsystem wrist, ArmSubsystem arm, IntakeSubsystem intake, 
                                         ArmShoulderMessenger armMessenger) { 
         
-        addCommands(new ConeScoreHighAuto(shoulder, shoulderWristMessenger, wrist, arm, intake, armMessenger), 
-                    new AutoBalanceCommand(dt)); 
+        addCommands(//new ConeScoreHighAuto(shoulder, shoulderWristMessenger, wrist, arm, intake, armMessenger), 
+                    new AutoBalanceCommand(dt)
+                        .raceWith(new ShoulderHoldCommand(shoulder, armMessenger, () -> 0.0))
+                        .raceWith(new WristHoldCommand(wrist, () -> 0.0))
+                        .raceWith(new ArmHoldCommand(arm))); 
     }
 }
