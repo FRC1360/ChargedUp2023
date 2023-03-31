@@ -134,6 +134,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
                 BACK_RIGHT_MODULE_STEER_MOTOR,
                 BACK_RIGHT_MODULE_STEER_ENCODER,
                 BACK_RIGHT_MODULE_STEER_OFFSET);
+        
+        //m_navx.enableLogging(true);
 
         /*CANSparkMax fl_motor = new CANSparkMax(FRONT_LEFT_MODULE_DRIVE_MOTOR, MotorType.kBrushless);
         fl_motor.setIdleMode(IdleMode.kCoast);

@@ -15,13 +15,19 @@ public class AutoBalanceCommand extends CommandBase {
     public AutoBalanceCommand(DrivetrainSubsystem dt) { 
         this.dt = dt; 
         this.autoBalanceFactory = new AutoBalance(); 
-        this.speeds = new ChassisSpeeds(); 
+        this.speeds = new ChassisSpeeds(0.0, 0.0, 0.0); 
+
+        addRequirements(dt);
     }
 
     @Override
     public void execute() { 
         double xSpeed = this.autoBalanceFactory.autoBalanceRoutine()
                         * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND; 
+
+        SmartDashboard.putNumber("Auto balance speed", xSpeed); 
+        SmartDashboard.putNumber("Balance state", this.autoBalanceFactory.state); 
+        SmartDashboard.putNumber("Debounce count", this.autoBalanceFactory.debounceCount); 
 
         SmartDashboard.putNumber("Accelerometer Pitch Reading", this.autoBalanceFactory.getTilt()); 
 

@@ -3,9 +3,9 @@ package frc.robot.autos;
 import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 
 public class AutoBalance {
-    private BuiltInAccelerometer mRioAccel;
-    private int state;
-    private int debounceCount;
+    public BuiltInAccelerometer mRioAccel;
+    public int state;
+    public int debounceCount;
     private double robotSpeedSlow;
     private double robotSpeedFast;
     private double onChargeStationDegree;
@@ -88,10 +88,12 @@ public class AutoBalance {
     // returns a value from -1.0 to 1.0, which left and right motors should be set
     // to.
     public double autoBalanceRoutine() {
+        //System.out.println("Before Switch");
         switch (state) {
             // drive forwards to approach station, exit when tilt is detected
             case 0:
-                if (getTilt() > onChargeStationDegree) {
+                //System.out.println("In case staement 0");
+                if (getTilt() < -onChargeStationDegree) {
                     debounceCount++;
                 }
                 if (debounceCount > secondsToTicks(debounceTime)) {
@@ -102,7 +104,7 @@ public class AutoBalance {
                 return robotSpeedFast;
             // driving up charge station, drive slower, stopping when level
             case 1:
-                if (getTilt() < levelDegree) {
+                if (Math.abs(getTilt()) < levelDegree) {
                     debounceCount++;
                 }
                 if (debounceCount > secondsToTicks(debounceTime)) {
@@ -123,15 +125,18 @@ public class AutoBalance {
                 }
 
                 // if not level yet...
-                if (getTilt() >= levelDegree) {
-                    return robotSpeedSlow / 2;
-                } else if (getTilt() <= -levelDegree) {
-                    return -(robotSpeedSlow / 2);
+                if (getTilt() <= -levelDegree) {
+                    System.out.println("Positive Speed");
+                    return robotSpeedSlow / 2.0;
+                } else if (getTilt() >= levelDegree) {
+                    System.out.println("Negative Speed");
+                    return -(robotSpeedSlow / 2.0);
+    
                 }
 
             case 3:
                 return 0;
         }
-        return 0;
+        return 0.0;
     }
 }

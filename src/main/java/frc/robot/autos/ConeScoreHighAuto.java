@@ -20,11 +20,11 @@ public class ConeScoreHighAuto extends SequentialCommandGroup {
                                 WristSubsystem wrist, ArmSubsystem arm, IntakeSubsystem intake, 
                                     ArmShoulderMessenger armMessenger) 
     {
-        addCommands(
-            new WaitCommand(1), 
+        addCommands( 
             new AutoAssemblyConeHighScoreCommand(shoulder, shoulderWristMessenger, wrist, 
                                                     arm, intake, armMessenger), 
-            new AssemblyHomePositionCommand(shoulder, shoulderWristMessenger, wrist, arm, armMessenger)
+            new AssemblyHomePositionCommand(shoulder, shoulderWristMessenger, 
+                            wrist, arm, armMessenger)
             /* 
             new ShoulderHoldCommand(shoulder, armMessenger, () -> 0.0)
                 .raceWith(new WristHoldCommand(wrist, () -> 0.0))
