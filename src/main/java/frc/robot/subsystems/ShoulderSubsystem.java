@@ -208,22 +208,22 @@ public class ShoulderSubsystem extends SubsystemBase {
     }
 
     public void updateSmartDashboard() {
-        SmartDashboard.putNumber("Shoulder_Hold_P_Gain", this.holdPIDController.getPTerm());
-        SmartDashboard.putNumber("Shoulder_Hold_I_Gain", this.holdPIDController.getITerm());
-        SmartDashboard.putNumber("Shoulder_Hold_D_Gain", this.holdPIDController.getDTerm());
+        // SmartDashboard.putNumber("Shoulder_Hold_P_Gain", this.holdPIDController.getPTerm());
+        // SmartDashboard.putNumber("Shoulder_Hold_I_Gain", this.holdPIDController.getITerm());
+        // SmartDashboard.putNumber("Shoulder_Hold_D_Gain", this.holdPIDController.getDTerm());
 
         SmartDashboard.putNumber("Shoulder_Target_Angle", this.getTargetAngle());
         SmartDashboard.putNumber("Shoulder_Angle", this.getShoulderAngle());
-        SmartDashboard.putNumber("Shoulder_Manual_Offset", this.manualOffset.getAsDouble());
-        SmartDashboard.putNumber("Shoulder_Scheduled_Angle", this.getScheduledAngle());
+        // SmartDashboard.putNumber("Shoulder_Manual_Offset", this.manualOffset.getAsDouble());
+        // SmartDashboard.putNumber("Shoulder_Scheduled_Angle", this.getScheduledAngle());
 
         SmartDashboard.putNumber("Shoulder_Angular_Velocity", this.getAngluarVelocity());
 
-        SmartDashboard.putNumber("Shoulder_Move_P_Gain", this.movePIDController.getPTerm());
-        SmartDashboard.putNumber("Shoulder_Move_I_Gain", this.movePIDController.getITerm());
-        SmartDashboard.putNumber("Shoulder_Move_D_Gain", this.movePIDController.getDTerm());
+        // SmartDashboard.putNumber("Shoulder_Move_P_Gain", this.movePIDController.getPTerm());
+        // SmartDashboard.putNumber("Shoulder_Move_I_Gain", this.movePIDController.getITerm());
+        // SmartDashboard.putNumber("Shoulder_Move_D_Gain", this.movePIDController.getDTerm());
 
-        SmartDashboard.putBoolean("Shoulder_Transition_State", transitioning);
+        // SmartDashboard.putBoolean("Shoulder_Transition_State", transitioning);
 
         SmartDashboard.putNumber("Shoulder_Absolute_Encoder_Get", this.absoluteEncoder.get());
         SmartDashboard.putNumber("Shoulder_Absolute_Encoder_Absolute", this.absoluteEncoder.getAbsolutePosition());

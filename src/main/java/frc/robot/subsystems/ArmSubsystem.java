@@ -139,17 +139,17 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
     public void updateSmartDashboard() {
-        SmartDashboard.putNumber("Arm_Hold_P_Gain", this.holdPIDController.getPTerm());
-        SmartDashboard.putNumber("Arm_Hold_I_Gain", this.holdPIDController.getITerm());
-        SmartDashboard.putNumber("Arm_Hold_D_Gain", this.holdPIDController.getDTerm());
+        // SmartDashboard.putNumber("Arm_Hold_P_Gain", this.holdPIDController.getPTerm());
+        // SmartDashboard.putNumber("Arm_Hold_I_Gain", this.holdPIDController.getITerm());
+        // SmartDashboard.putNumber("Arm_Hold_D_Gain", this.holdPIDController.getDTerm());
 
         SmartDashboard.putNumber("Arm_Target_Distance", this.getTargetDistance());
         SmartDashboard.putNumber("Arm_Distance", this.getArmDistance());
         SmartDashboard.putNumber("Arm_Encoder_Value", this.armMotorMaster.getEncoder().getPosition()); 
 
-        SmartDashboard.putNumber("Arm_Move_P_Gain", this.movePIDController.getPTerm());
-        SmartDashboard.putNumber("Arm_Move_I_Gain", this.movePIDController.getITerm());
-        SmartDashboard.putNumber("Arm_Move_D_Gain", this.movePIDController.getDTerm());
+        // SmartDashboard.putNumber("Arm_Move_P_Gain", this.movePIDController.getPTerm());
+        // SmartDashboard.putNumber("Arm_Move_I_Gain", this.movePIDController.getITerm());
+        // SmartDashboard.putNumber("Arm_Move_D_Gain", this.movePIDController.getDTerm());
 
         SmartDashboard.putBoolean("Arm_Limit_Switch_Status", this.limitSwitch.get()); 
 

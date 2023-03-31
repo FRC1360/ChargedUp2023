@@ -158,20 +158,20 @@ public class WristSubsystem extends SubsystemBase {
     }
 
     public void updateSmartDashboard() {
-        SmartDashboard.putNumber("Wrist_Hold_P_Gain", this.holdPIDController.getPTerm());
-        SmartDashboard.putNumber("Wrist_Hold_I_Gain", this.holdPIDController.getITerm());
-        SmartDashboard.putNumber("Wrist_Hold_D_Gain", this.holdPIDController.getDTerm());
+        // SmartDashboard.putNumber("Wrist_Hold_P_Gain", this.holdPIDController.getPTerm());
+        // SmartDashboard.putNumber("Wrist_Hold_I_Gain", this.holdPIDController.getITerm());
+        // SmartDashboard.putNumber("Wrist_Hold_D_Gain", this.holdPIDController.getDTerm());
 
-        SmartDashboard.putNumber("Wrist_Move_P_Gain", this.movePIDController.getPTerm());
-        SmartDashboard.putNumber("Wrist_Move_I_Gain", this.movePIDController.getITerm());
-        SmartDashboard.putNumber("Wrist_Move_D_Gain", this.movePIDController.getDTerm());
+        // SmartDashboard.putNumber("Wrist_Move_P_Gain", this.movePIDController.getPTerm());
+        // SmartDashboard.putNumber("Wrist_Move_I_Gain", this.movePIDController.getITerm());
+        // SmartDashboard.putNumber("Wrist_Move_D_Gain", this.movePIDController.getDTerm());
 
-        SmartDashboard.putNumber("Wrist_Target_Angle", this.getTargetAngle());
+        // SmartDashboard.putNumber("Wrist_Target_Angle", this.getTargetAngle());
         SmartDashboard.putNumber("Wrist_Angle", this.getWristAngle());
         SmartDashboard.putNumber("Wrist_NEO_Encoder", this.getMotorRotations()); 
         SmartDashboard.putNumber("Wrist_Motor_Rotations", this.getMotorRotations());
-        SmartDashboard.putNumber("Wrist_Cache_Offset", this.getCacheOffset());
-        SmartDashboard.putNumber("Wrist_Manual_Offset", this.manualOffset.getAsDouble());
+        // SmartDashboard.putNumber("Wrist_Cache_Offset", this.getCacheOffset());
+        // SmartDashboard.putNumber("Wrist_Manual_Offset", this.manualOffset.getAsDouble());
         SmartDashboard.putNumber("Wrist_Offset", this.getWristOffset());
         SmartDashboard.putNumber("Wrist_Absolute_Encoder_Relative", this.absoluteEncoder.get());
         SmartDashboard.putNumber("Wrist_Absolute_Encoder_Absolute", this.absoluteEncoder.getAbsolutePosition());
