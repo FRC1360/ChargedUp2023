@@ -5,6 +5,7 @@ import frc.robot.Constants;
 import frc.robot.commands.arm.ArmGoToPositionCommand;
 import frc.robot.commands.arm.ArmHoldCommand;
 import frc.robot.commands.intake.AutoPutDownCommand;
+import frc.robot.commands.intake.IntakeHoldCommand;
 import frc.robot.commands.shoulder.ShoulderGoToPositionCommand;
 import frc.robot.commands.shoulder.ShoulderHoldCommand;
 import frc.robot.commands.wrist.WristGoToPositionCommand;
@@ -26,15 +27,18 @@ public class AutoAssemblyConeHighScoreCommand extends SequentialCommandGroup {
 
             new ShoulderGoToPositionCommand(shoulder, Constants.CONE_SCORE_HIGH_POSITION_SHOULDER)
                 .raceWith(new WristHoldCommand(wrist, () -> 0.0))
-                .raceWith(new ArmHoldCommand(arm)),
+                .raceWith(new ArmHoldCommand(arm))
+                .raceWith(new IntakeHoldCommand(intake)),
 
             new WristGoToPositionCommand(wrist, Constants.CONE_SCORE_HIGH_POSITION_WRIST)
                 .raceWith(new ShoulderHoldCommand(shoulder, armMessenger, () -> 0.0))
-                .raceWith(new ArmHoldCommand(arm)), 
+                .raceWith(new ArmHoldCommand(arm))
+                .raceWith(new IntakeHoldCommand(intake)), 
     
             new ArmGoToPositionCommand(arm, shoulderWristMessenger, Constants.CONE_SCORE_HIGH_POSITION_ARM)
                 .raceWith(new ShoulderHoldCommand(shoulder, armMessenger, () -> 0.0))
-                .raceWith(new WristHoldCommand(wrist, () -> 0.0)), 
+                .raceWith(new WristHoldCommand(wrist, () -> 0.0))
+                .raceWith(new IntakeHoldCommand(intake)), 
 
             new AutoPutDownCommand(intake, 0.8)
                 .raceWith(new ShoulderHoldCommand(shoulder, armMessenger, () -> 0.0))

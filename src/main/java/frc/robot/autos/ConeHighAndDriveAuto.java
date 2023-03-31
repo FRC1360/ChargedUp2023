@@ -22,11 +22,11 @@ public class ConeHighAndDriveAuto extends SequentialCommandGroup {
                                         ArmShoulderMessenger armMessenger) { 
         
         addCommands(new AutoAssemblyConeHighScoreCommand(shoulder, shoulderWristMessenger, wrist, arm, intake, armMessenger), 
-                    new Drive(dt, 7.5, 0.0)
-                        .alongWith(new AssemblyHomePositionCommand(shoulder, shoulderWristMessenger, wrist, arm, armMessenger))
-                        // .raceWith(new ShoulderHoldCommand(shoulder, armMessenger, () -> 0.0))
-                        // .raceWith(new WristHoldCommand(wrist, () -> 0.0))
-                        // .raceWith(new ArmHoldCommand(arm))
+                    new AssemblyHomePositionCommand(shoulder, shoulderWristMessenger, wrist, arm, armMessenger), 
+                    new Drive(dt, 8.0, 0.0)
+                        .raceWith(new ShoulderHoldCommand(shoulder, armMessenger, () -> 0.0))
+                        .raceWith(new WristHoldCommand(wrist, () -> 0.0))
+                        .raceWith(new ArmHoldCommand(arm))
                         ); 
     }
 }

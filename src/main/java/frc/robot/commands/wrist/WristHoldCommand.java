@@ -39,10 +39,10 @@ public class WristHoldCommand  extends CommandBase{
         } 
 
        
-        SmartDashboard.putNumber("Wrist_Hold_FF", feedforwardOutput); 
+        // SmartDashboard.putNumber("Wrist_Hold_FF", feedforwardOutput); 
         double speed = pidOutput + feedforwardOutput; 
 
-        SmartDashboard.putNumber("Wrist_Hold_PID_Output", speed); 
+        // SmartDashboard.putNumber("Wrist_Hold_PID_Output", speed); 
 
         //if (this.intakeSpeed.getAsDouble() > 0.5) speed = -0.1; 
         this.wrist.setWristNormalizedVoltage(speed);         

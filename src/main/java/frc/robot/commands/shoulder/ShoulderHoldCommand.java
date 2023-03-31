@@ -39,7 +39,7 @@ public class ShoulderHoldCommand extends CommandBase {
 
         double speedOnDistance = speedOutput * Math.pow(1.03, this.armMessenger.getArmDistance());  //base, exponent - this is ton increase the power based on arm distance
 
-        SmartDashboard.putNumber("Shoulder_Speed_Output_With_Distance", speedOnDistance); 
+        //SmartDashboard.putNumber("Shoulder_Speed_Output_With_Distance", speedOnDistance); 
 
         double speed = speedOnDistance; 
 
@@ -49,7 +49,7 @@ public class ShoulderHoldCommand extends CommandBase {
         this.shoulder.setShoulderNormalizedVoltage(speed);
         //this.shoulder.setShoulderNormalizedVoltage(0.1); 
 
-        SmartDashboard.putNumber("Shoulder_Hold_Output", speed);
+        //SmartDashboard.putNumber("Shoulder_Hold_Output", speed);
 
     }
 
