@@ -99,9 +99,9 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
-    m_robotContainer.shoulderSubsystem.updateSmartDashboard();
-    m_robotContainer.wristSubsystem.updateSmartDashboard();
-    m_robotContainer.armSubsystem.updateSmartDashboard();
+    // m_robotContainer.shoulderSubsystem.updateSmartDashboard();
+    // m_robotContainer.wristSubsystem.updateSmartDashboard();
+    // m_robotContainer.armSubsystem.updateSmartDashboard();
   }
 
   @Override
@@ -139,8 +139,8 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     //m_robotContainer.shoulderSubsystem.updateSmartDashboard();
-    m_robotContainer.wristSubsystem.updateSmartDashboard();
-    m_robotContainer.armSubsystem.updateSmartDashboard();
+    // m_robotContainer.wristSubsystem.updateSmartDashboard();
+    // m_robotContainer.armSubsystem.updateSmartDashboard();
 
   }
 
