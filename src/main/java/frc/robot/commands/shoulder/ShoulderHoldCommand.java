@@ -5,15 +5,18 @@ import java.util.function.DoubleSupplier;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ShoulderSubsystem;
+import frc.robot.subsystems.ArmSubsystem.ArmShoulderMessenger;
 
 public class ShoulderHoldCommand extends CommandBase {
     
     private ShoulderSubsystem shoulder;
     private DoubleSupplier intakeSpeed;
+    private ArmShoulderMessenger armMessenger; 
 
-    public ShoulderHoldCommand(ShoulderSubsystem shoulder, DoubleSupplier intakeSpeed) {
+    public ShoulderHoldCommand(ShoulderSubsystem shoulder, ArmShoulderMessenger armMessenger, DoubleSupplier intakeSpeed) {
         this.shoulder = shoulder;
         this.intakeSpeed = intakeSpeed;
+        this.armMessenger = armMessenger; 
         addRequirements(shoulder);
     }
 
@@ -24,27 +27,29 @@ public class ShoulderHoldCommand extends CommandBase {
 
     @Override
     public void execute() {
-
         double target = this.shoulder.getTargetAngle();
         double input = this.shoulder.getShoulderAngle();
-        double speed = this.shoulder.holdPIDController.calculate(target, input);
+        double speedPidOutput = this.shoulder.holdPIDController.calculate(target, input);
 
-        if (Math.abs(speed) > 0.25) speed = Math.copySign(0.25, speed); 
+        double kF = this.shoulder.shoulderFeedForward.calculate(target, 
+                this.shoulder.getAngluarVelocity()); 
+        
+        
+        double speedOutput = speedPidOutput + kF; 
 
-        // Remember to increase this value and also add kI please
-        double kF;
+        double speedOnDistance = speedOutput * Math.pow(1.03, this.armMessenger.getArmDistance());  //base, exponent - this is ton increase the power based on arm distance
 
-        if(intakeSpeed.getAsDouble() > 0.05) {
-           // kF = -0.2;
-           kF = 0.18 * Math.sin(Math.toRadians(this.shoulder.getShoulderAngle()));
-        } else {
-            kF = 0.18 * Math.sin(Math.toRadians(this.shoulder.getShoulderAngle()));
-        }
+        SmartDashboard.putNumber("Shoulder_Speed_Output_With_Distance", speedOnDistance); 
 
-        this.shoulder.setShoulderNormalizedVoltage(speed + kF);
+        double speed = speedOnDistance; 
+
+        if (this.intakeSpeed.getAsDouble() > 0.1 && this.shoulder.getInIntakePosition()) speed = -0.1; // This is to drive the shoulder into the ground while intaking
+        
+
+        this.shoulder.setShoulderNormalizedVoltage(speed);
         //this.shoulder.setShoulderNormalizedVoltage(0.1); 
 
-        SmartDashboard.putNumber("Shoulder_Hold_Output", speed + kF);
+        SmartDashboard.putNumber("Shoulder_Hold_Output", speed);
 
     }
 

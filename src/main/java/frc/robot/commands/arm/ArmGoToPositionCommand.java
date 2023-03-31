@@ -4,7 +4,6 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ArmSubsystem;
-import frc.robot.subsystems.ShoulderSubsystem;
 import frc.robot.subsystems.ShoulderSubsystem.ShoulderWristMessenger;
 import frc.robot.util.OrbitTimer;
 
@@ -13,7 +12,7 @@ public class ArmGoToPositionCommand extends CommandBase {
     private ArmSubsystem arm;
     private double position;
 
-    private ShoulderSubsystem shoulder; 
+    private ShoulderWristMessenger shoulderMessenger; 
 
     private TrapezoidProfile motionProfile;
     private TrapezoidProfile.State startState;
@@ -21,9 +20,9 @@ public class ArmGoToPositionCommand extends CommandBase {
 
     private OrbitTimer timer;
 
-    public ArmGoToPositionCommand(ArmSubsystem arm, ShoulderSubsystem shoulder, double position) {
+    public ArmGoToPositionCommand(ArmSubsystem arm, ShoulderWristMessenger shoulderMessenger, double position) {
             this.arm = arm;
-            this.shoulder = shoulder; 
+            this.shoulderMessenger = shoulderMessenger; 
             this.position = position;
 
             this.timer = new OrbitTimer();
@@ -56,13 +55,20 @@ public class ArmGoToPositionCommand extends CommandBase {
         SmartDashboard.putNumber("Arm_Move_Profile_Position", profileTarget.position);
         SmartDashboard.putNumber("Arm_Move_Profile_Velocity", profileTarget.velocity);
 
-        double speed = this.arm.movePIDController.calculate(target, input);
+        double pidOutput = this.arm.movePIDController.calculate(target, input);
 
-        double kF = -0.18 * Math.cos(Math.toRadians(this.shoulder.getShoulderAngle())); 
-       
+        double kF = this.arm.armFeedforward.calculate(this.shoulderMessenger.getShoulderAngle()-90.0, 
+                                                        this.arm.getArmVelocity()); 
+
+        //double kF = -0.18 * Math.cos(Math.toRadians(this.shoulder.getShoulderAngle())); 
+
+        double speed = pidOutput + kF; 
+        
+        SmartDashboard.putNumber("Arm_PID_Output", pidOutput); 
+        SmartDashboard.putNumber("Arm_FeedForward_Output", kF);
         SmartDashboard.putNumber("Arm_Move_Speed", speed); 
 
-        this.arm.setArmNormalizedVoltage(speed + kF);
+        this.arm.setArmNormalizedVoltage(speed);
     }
 
     @Override

@@ -1,16 +1,26 @@
 package frc.robot.commands.intake;
 
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.util.OrbitTimer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class AutoIntakeCommand extends CommandBase{
     private IntakeSubsystem intake;
     private double speed; 
 
+    private OrbitTimer timer; 
+
     public AutoIntakeCommand(IntakeSubsystem intake, double speed) {
         this.intake = intake;
         this.speed = speed;
+        this.timer = new OrbitTimer(); 
+
         addRequirements(intake);
+    }
+
+    @Override
+    public void initialize() { 
+        this.timer.start();
     }
 
     @Override
@@ -25,7 +35,7 @@ public class AutoIntakeCommand extends CommandBase{
 
     @Override
     public boolean isFinished() { 
-        return false; // needs to be changed a bit...
+        return this.timer.getTimeDeltaSec() > 1.0;  
     }
 
 }

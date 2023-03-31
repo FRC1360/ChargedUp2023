@@ -34,9 +34,18 @@ public class ShoulderGoToPositionCommand extends CommandBase {
         this.startState = new TrapezoidProfile.State(this.shoulder.getShoulderAngle(), 0.0);
         this.endState = new TrapezoidProfile.State(this.shoulder.getTargetAngle(), 0.0);
 
-        this.motionProfile = new TrapezoidProfile(this.shoulder.shoulderMotionProfileConstraints,
-             this.endState,
-             this.startState);
+        if (this.shoulder.getShoulderAngle() - this.shoulder.getTargetAngle() < 0) { 
+            // Going up
+            this.motionProfile = new TrapezoidProfile(this.shoulder.shoulderUpMotionProfileConstraints,
+                this.endState,
+                this.startState);
+        }
+        else { 
+            // Going down or stationary
+            this.motionProfile = new TrapezoidProfile(this.shoulder.shoulderDownMotionProfileConstraints,
+                this.endState,
+                this.startState);
+        }
 
         this.timer.start();
 
@@ -44,7 +53,7 @@ public class ShoulderGoToPositionCommand extends CommandBase {
 
     @Override
     public void execute() {
-
+        
         TrapezoidProfile.State profileTarget = this.motionProfile.calculate(this.timer.getTimeDeltaSec());
 
         double target = profileTarget.position;
@@ -54,12 +63,16 @@ public class ShoulderGoToPositionCommand extends CommandBase {
 
         double input = this.shoulder.getShoulderAngle();
 
-        double speed = this.shoulder.movePIDController.calculate(target, input);
+        double pidOutput = this.shoulder.movePIDController.calculate(target, input);
 
-        if (Math.abs(speed) > 0.25) speed = Math.copySign(0.25, speed); 
+        double feedforwardOutput = this.shoulder.shoulderFeedForward
+                                    .calculate(target, this.shoulder.getAngluarVelocity()); 
+
+        double speed = pidOutput + feedforwardOutput;
+        
+        SmartDashboard.putNumber("Shoulder_Move_Output", speed); 
 
         this.shoulder.setShoulderNormalizedVoltage(speed);
-
     }
 
     @Override
