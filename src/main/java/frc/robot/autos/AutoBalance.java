@@ -23,7 +23,7 @@ public class AutoBalance {
     public AutoBalance(DrivetrainSubsystem dt) {
         mRioAccel = new BuiltInAccelerometer();
         this.mNavx = dt.getNavx(); 
-        state = 0;
+        state = 2;
         debounceCount = 0;
         wobbleCount = 0; 
 
@@ -141,6 +141,7 @@ public class AutoBalance {
                     System.out.println("Negative Speed");
                     return -(robotSpeedSlow / 1.5);
                 }
+                return 0.0; 
             case 3:
                 return 0.0;
         }
