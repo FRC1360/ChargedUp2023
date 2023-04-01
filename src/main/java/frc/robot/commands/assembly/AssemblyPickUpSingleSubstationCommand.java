@@ -26,13 +26,14 @@ public class AssemblyPickUpSingleSubstationCommand extends SequentialCommandGrou
             new ArmGoToPositionCommand(arm, shoulderWristMessenger, Constants.SINGLE_SUBSTATION_POSITION_ARM)
                 .raceWith(new ShoulderHoldCommand(shoulder, armMessenger, () -> 0.0))
                 .raceWith(new WristHoldCommand(wrist, () -> 0.0)), 
-            new WristGoToPositionCommand(wrist, Constants.SINGLE_SUBSTATION_POSITION_WRIST)
-                .raceWith(new ShoulderHoldCommand(shoulder, armMessenger, () -> 0.0))
-                .raceWith(new ArmHoldCommand(arm)),
 
             new ShoulderGoToPositionCommand(shoulder, Constants.SINGLE_SUBSTATION_POSITION_SHOULDER)
                 .raceWith(new WristHoldCommand(wrist, () -> 0.0))
-                .raceWith(new ArmHoldCommand(arm))
+                .raceWith(new ArmHoldCommand(arm)), 
+            
+            new WristGoToPositionCommand(wrist, Constants.SINGLE_SUBSTATION_POSITION_WRIST)
+            .raceWith(new ShoulderHoldCommand(shoulder, armMessenger, () -> 0.0))
+            .raceWith(new ArmHoldCommand(arm))
         );
     }
 }

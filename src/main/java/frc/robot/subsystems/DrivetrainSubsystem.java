@@ -176,6 +176,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
     m_chassisSpeeds = STOPPING_SPEEDS; 
   }
 
+  public AHRS getNavx() { 
+    return m_navx; 
+  }
+
   public Pose2d getPose() {
     return this.odometry.getPoseMeters();
   }
@@ -205,6 +209,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
     odometry.update(getGyroscopeRotation(), states);
 
     SmartDashboard.putNumber("Drivetrain_gyro", getGyroscopeRotation().getDegrees());  
+    SmartDashboard.putNumber("NavX pitch", this.m_navx.getPitch()); 
+    SmartDashboard.putNumber("NavX roll", this.m_navx.getRoll()); 
     SmartDashboard.putNumber("Drivetrain_Speed_X", m_chassisSpeeds.vxMetersPerSecond); 
     SmartDashboard.putNumber("Drivetrain_Speed_Y", m_chassisSpeeds.vyMetersPerSecond); 
   } 
