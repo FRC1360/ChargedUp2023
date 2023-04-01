@@ -58,8 +58,8 @@ public class ShoulderGoToPositionCommand extends CommandBase {
 
         double target = profileTarget.position;
 
-        // SmartDashboard.putNumber("Shoulder_Move_Profile_Position", profileTarget.position);
-        // SmartDashboard.putNumber("Shoulder_Move_Profile_Velocity", profileTarget.velocity);
+        SmartDashboard.putNumber("Shoulder_Move_Profile_Position", profileTarget.position);
+        SmartDashboard.putNumber("Shoulder_Move_Profile_Velocity", profileTarget.velocity);
 
         double input = this.shoulder.getShoulderAngle();
 
@@ -70,7 +70,7 @@ public class ShoulderGoToPositionCommand extends CommandBase {
 
         double speed = pidOutput + feedforwardOutput;
         
-        // SmartDashboard.putNumber("Shoulder_Move_Output", speed); 
+        SmartDashboard.putNumber("Shoulder_Move_Output", speed); 
 
         this.shoulder.setShoulderNormalizedVoltage(speed);
     }

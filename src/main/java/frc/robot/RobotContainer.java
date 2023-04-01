@@ -137,12 +137,12 @@ public class RobotContainer {
     
     left_controller.button(1).onTrue(new InstantCommand(m_drivetrainSubsystem::zeroGyroscope)); 
 
-    operatorController.a().onTrue((new AssemblyGoToCubeIntakeCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger)));
-    operatorController.y().onTrue(new AssemblyGoToConeIntakeCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger));
+    operatorController.a().onTrue((new AssemblyGoToCubeIntakeCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger, intakeSubsystem)));
+    operatorController.y().onTrue(new AssemblyGoToConeIntakeCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger, intakeSubsystem));
     operatorController.b().onTrue(new AssemblyMidScoreCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger)); 
     operatorController.x().onTrue(new AssemblyHomePositionCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger)); 
     operatorController.povUp().onTrue(new AssemblyHighScoreCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger, () -> operatorController.leftBumper().getAsBoolean())); 
-    operatorController.povDown().onTrue(new AssemblyPickUpSingleSubstationCommand(shoulderSubsystem, wristSubsystem, armSubsystem, shoulderMessenger, armMessenger)); 
+    operatorController.povDown().onTrue(new AssemblyPickUpSingleSubstationCommand(shoulderSubsystem, wristSubsystem, armSubsystem, shoulderMessenger, armMessenger, intakeSubsystem)); 
 
 
     new Trigger(() -> operatorController.getLeftTriggerAxis() > 0.05)

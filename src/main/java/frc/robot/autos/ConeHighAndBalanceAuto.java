@@ -20,13 +20,14 @@ public class ConeHighAndBalanceAuto extends SequentialCommandGroup {
                                         ArmShoulderMessenger armMessenger) { 
         
         addCommands(//new ConeScoreHighAuto(shoulder, shoulderWristMessenger, wrist, arm, intake, armMessenger), 
-                    new DriveEncoder(dt, 4.0, 0.0)
+                    new DriveEncoder(dt, 3.5, 0.0)
                         .raceWith(new ShoulderHoldCommand(shoulder, armMessenger, () -> 0.0))
                         .raceWith(new WristHoldCommand(wrist, () -> 0.0))
-                        .raceWith(new ArmHoldCommand(arm)), 
-                    new AutoBalanceCommand(dt)
-                        .raceWith(new ShoulderHoldCommand(shoulder, armMessenger, () -> 0.0))
-                        .raceWith(new WristHoldCommand(wrist, () -> 0.0))
-                        .raceWith(new ArmHoldCommand(arm))); 
+                        .raceWith(new ArmHoldCommand(arm))
+                    // new AutoBalanceCommand(dt)
+                    //     .raceWith(new ShoulderHoldCommand(shoulder, armMessenger, () -> 0.0))
+                    //     .raceWith(new WristHoldCommand(wrist, () -> 0.0))
+                    //     .raceWith(new ArmHoldCommand(arm))
+                    ); 
     }
 }

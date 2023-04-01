@@ -17,7 +17,8 @@ public class ManualIntakeCommand extends CommandBase{
     }
     @Override
     public void execute() {
-        intake.intake(speed.getAsDouble() * 0.25);  // Speed cap of 25%        
+        if (this.intake.getAtSubstationState()) intake.intake(speed.getAsDouble() * 0.4);  // Speed cap of 25%   
+        else intake.intake(speed.getAsDouble() * 0.25);      
         SmartDashboard.putNumber("Intake speed", this.speed.getAsDouble()); 
     }
 
