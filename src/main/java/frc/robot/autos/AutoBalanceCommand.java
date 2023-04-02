@@ -31,9 +31,24 @@ public class AutoBalanceCommand extends CommandBase {
 
         SmartDashboard.putNumber("NavX Pitch Reading", this.autoBalanceFactory.getTilt()); 
 
-        speeds.vxMetersPerSecond = xSpeed; 
+        this.speeds.vxMetersPerSecond = xSpeed; 
+        
+        // if(xSpeed == 0.0) {
+        //     speeds.vyMetersPerSecond = 0.01;
+        // }
 
-        dt.drive(speeds); 
+        dt.drive(this.speeds); 
+    }
+
+    @Override
+    public void end(boolean interrupted) { 
+        this.speeds.vyMetersPerSecond = 0.01; 
+        dt.drive(this.speeds);
+    }
+
+    @Override
+    public boolean isFinished() {
+        return this.speeds.vxMetersPerSecond == 0.0; 
     }
     
 }

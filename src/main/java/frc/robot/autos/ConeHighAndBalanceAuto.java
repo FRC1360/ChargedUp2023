@@ -23,11 +23,11 @@ public class ConeHighAndBalanceAuto extends SequentialCommandGroup {
                     new DriveEncoder(dt, 3.5, 0.0)
                         .raceWith(new ShoulderHoldCommand(shoulder, armMessenger, () -> 0.0))
                         .raceWith(new WristHoldCommand(wrist, () -> 0.0))
+                        .raceWith(new ArmHoldCommand(arm)),
+                    new AutoBalanceCommand(dt)
+                        .raceWith(new ShoulderHoldCommand(shoulder, armMessenger, () -> 0.0))
+                        .raceWith(new WristHoldCommand(wrist, () -> 0.0))
                         .raceWith(new ArmHoldCommand(arm))
-                    // new AutoBalanceCommand(dt)
-                    //     .raceWith(new ShoulderHoldCommand(shoulder, armMessenger, () -> 0.0))
-                    //     .raceWith(new WristHoldCommand(wrist, () -> 0.0))
-                    //     .raceWith(new ArmHoldCommand(arm))
                     ); 
     }
 }

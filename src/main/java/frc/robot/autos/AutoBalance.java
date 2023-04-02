@@ -44,13 +44,13 @@ public class AutoBalance {
         // Angle where the robot can assume it is level on the charging station
         // Used for exiting the drive forward sequence as well as for auto balancing,
         // default = 6.0
-        levelDegree = 6.0;
+        levelDegree = 10.0;
 
         // Amount of time a sensor condition needs to be met before changing states in
         // seconds
         // Reduces the impact of sensor noice, but too high can make the auto run
         // slower, default = 0.2
-        debounceTime = 0.19;
+        debounceTime = 0.1;
 
         // Amount of time to drive towards to scoring target when trying to bump the
         // game piece off
@@ -80,13 +80,15 @@ public class AutoBalance {
     // returns the magnititude of the robot's tilt calculated by the root of
     // pitch^2 + roll^2, used to compensate for diagonally mounted rio
     public double getTilt() {
-        double pitch = getPitch();
+        /*double pitch = getPitch();
         double roll = getRoll();
         if ((pitch + roll) >= 0) {
             return Math.sqrt(pitch * pitch + roll * roll);
         } else {
             return -Math.sqrt(pitch * pitch + roll * roll);
-        }
+        }*/
+        System.out.println("NavX Pitch " + this.mNavx.getRoll());
+        return this.mNavx.getRoll();
     }
 
     public int secondsToTicks(double time) {
@@ -124,7 +126,7 @@ public class AutoBalance {
                 return robotSpeedSlow;
             case 2: 
                 // on charge station, stop motors and wait for end of auto 
-                if (Math.abs(getTilt()) <= levelDegree / 2) {
+                if (Math.abs(getTilt()) <= levelDegree) {
                     debounceCount++;
                 }
                 if (debounceCount > secondsToTicks(debounceTime)) {
@@ -134,12 +136,12 @@ public class AutoBalance {
                 }
 
                 // if not level yet...
-                if (getTilt() <= -levelDegree) {
+                if (getTilt() >= levelDegree) {
                     System.out.println("Positive Speed");
-                    return robotSpeedSlow / 1.5;
-                } else if (getTilt() >= levelDegree) {
+                    return robotSpeedSlow / 2.5;
+                } else if (getTilt() <= -levelDegree) {
                     System.out.println("Negative Speed");
-                    return -(robotSpeedSlow / 1.5);
+                    return -(robotSpeedSlow / 2.5);
                 }
                 return 0.0; 
             case 3:
