@@ -30,13 +30,9 @@ public class AssemblyGoToCubeIntakeCommand extends SequentialCommandGroup {
                         .raceWith(new WristHoldCommand(wrist, () -> 0.0))
                         .raceWith(new ArmHoldCommand(arm)), 
                                             
-                new ArmGoToPositionCommand(arm, shoulderWristMessenger, Constants.CUBE_INTAKE_POSITION_ARM)
-                        .raceWith(new ShoulderHoldCommand(shoulder, armMessenger, () -> 0.0))
-                        .raceWith(new WristHoldCommand(wrist, () -> 0.0)), 
-                                            
-                new WristGoToPositionCommand(wrist, Constants.CUBE_INTAKE_POSITION_WRIST)
-                        .raceWith(new ShoulderHoldCommand(shoulder, armMessenger, () -> 0.0))
-                        .raceWith(new ArmHoldCommand(arm)),
+                (new ArmGoToPositionCommand(arm, shoulderWristMessenger, Constants.CUBE_INTAKE_POSITION_ARM)
+                        .alongWith(new WristGoToPositionCommand(wrist, Constants.CUBE_INTAKE_POSITION_WRIST)))
+                        .raceWith(new ShoulderHoldCommand(shoulder, armMessenger, () -> 0.0)),
                 
                 new InstantCommand(() -> shoulder.setInIntakePosition(true))
                 
