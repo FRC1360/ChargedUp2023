@@ -25,6 +25,7 @@ public class AssemblyHighScoreCommand extends SequentialCommandGroup {
                                                 BooleanSupplier scoreCube) { 
         addCommands(
             new InstantCommand( () -> shoulder.setInIntakePosition(false)),
+            
 
             /*new ShoulderGoToPositionCommand(shoulder, 43)
                 .raceWith(new WristHoldCommand(wrist, () -> 0.0))

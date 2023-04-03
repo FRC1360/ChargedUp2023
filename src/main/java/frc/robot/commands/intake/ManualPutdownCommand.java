@@ -18,7 +18,7 @@ public class ManualPutdownCommand extends CommandBase {
 
     @Override
     public void execute() {      
-        intake.intake(-speed.getAsDouble());
+        intake.intake(-speed.getAsDouble() * 0.8);
     }   
 
     @Override

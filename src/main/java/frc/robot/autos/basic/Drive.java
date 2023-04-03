@@ -86,27 +86,27 @@ public class Drive extends CommandBase {
 
     @Override
     public void execute() { 
-        SmartDashboard.putNumber("time", this.timer.getTimeDeltaSec());
+        // SmartDashboard.putNumber("time", this.timer.getTimeDeltaSec());
 
-        SmartDashboard.putNumber("P XDrive Term", this.driveXPID.getPTerm()); 
-        SmartDashboard.putNumber("I XDrive Term", this.driveXPID.getITerm()); 
-        SmartDashboard.putNumber("D XDrive Term", this.driveXPID.getDTerm());
+        // SmartDashboard.putNumber("P XDrive Term", this.driveXPID.getPTerm()); 
+        // SmartDashboard.putNumber("I XDrive Term", this.driveXPID.getITerm()); 
+        // SmartDashboard.putNumber("D XDrive Term", this.driveXPID.getDTerm());
 
 
         TrapezoidProfile.State xPosition = this.xMotionProfile.calculate(this.timer.getTimeDeltaSec()); 
         TrapezoidProfile.State yPosition = this.yMotionProfile.calculate(this.timer.getTimeDeltaSec()); 
 
-        SmartDashboard.putNumber("x pos calc", xPosition.velocity); 
-        SmartDashboard.putNumber("y pos calc", yPosition.velocity); 
+        // SmartDashboard.putNumber("x pos calc", xPosition.velocity); 
+        // SmartDashboard.putNumber("y pos calc", yPosition.velocity); 
 
-        SmartDashboard.putNumber("curXSpeed", speeds.vxMetersPerSecond); 
-        SmartDashboard.putNumber("curYSpeed", speeds.vyMetersPerSecond);
+        // SmartDashboard.putNumber("curXSpeed", speeds.vxMetersPerSecond); 
+        // SmartDashboard.putNumber("curYSpeed", speeds.vyMetersPerSecond);
 
         double xSpeed = driveXPID.calculate(xPosition.velocity, speeds.vxMetersPerSecond); 
         double ySpeed = driveYPID.calculate(yPosition.velocity, speeds.vyMetersPerSecond);
         
-        SmartDashboard.putNumber("x speed", xSpeed); 
-        SmartDashboard.putNumber("y speed", ySpeed); 
+        // SmartDashboard.putNumber("x speed", xSpeed); 
+        // SmartDashboard.putNumber("y speed", ySpeed); 
 
         speeds.vxMetersPerSecond = xSpeed; 
         speeds.vyMetersPerSecond = ySpeed;

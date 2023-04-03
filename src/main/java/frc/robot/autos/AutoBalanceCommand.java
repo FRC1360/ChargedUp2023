@@ -14,7 +14,7 @@ public class AutoBalanceCommand extends CommandBase {
 
     public AutoBalanceCommand(DrivetrainSubsystem dt) { 
         this.dt = dt; 
-        this.autoBalanceFactory = new AutoBalance(); 
+        this.autoBalanceFactory = new AutoBalance(this.dt); 
         this.speeds = new ChassisSpeeds(0.0, 0.0, 0.0); 
 
         addRequirements(dt);
@@ -29,11 +29,26 @@ public class AutoBalanceCommand extends CommandBase {
         SmartDashboard.putNumber("Balance state", this.autoBalanceFactory.state); 
         SmartDashboard.putNumber("Debounce count", this.autoBalanceFactory.debounceCount); 
 
-        SmartDashboard.putNumber("Accelerometer Pitch Reading", this.autoBalanceFactory.getTilt()); 
+        SmartDashboard.putNumber("NavX Pitch Reading", this.autoBalanceFactory.getTilt()); 
 
-        speeds.vxMetersPerSecond = xSpeed; 
+        this.speeds.vxMetersPerSecond = xSpeed; 
+        
+        // if(xSpeed == 0.0) {
+        //     speeds.vyMetersPerSecond = 0.01;
+        // }
 
-        dt.drive(speeds); 
+        dt.drive(this.speeds); 
+    }
+
+    @Override
+    public void end(boolean interrupted) { 
+        this.speeds.vyMetersPerSecond = 0.01; 
+        dt.drive(this.speeds);
+    }
+
+    @Override
+    public boolean isFinished() {
+        return this.speeds.vxMetersPerSecond == 0.0; 
     }
     
 }

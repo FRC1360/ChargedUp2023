@@ -1,7 +1,10 @@
 package frc.robot.autos;
 
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.autos.basic.Drive;
+import frc.robot.autos.basic.DriveSpeed;
 import frc.robot.commands.arm.ArmHoldCommand;
 import frc.robot.commands.assembly.AssemblyHomePositionCommand;
 import frc.robot.commands.assembly.autoAssembly.AutoAssemblyConeHighScoreCommand;
@@ -21,7 +24,8 @@ public class ConeHighAndDriveAuto extends SequentialCommandGroup {
                                     WristSubsystem wrist, ArmSubsystem arm, IntakeSubsystem intake, 
                                         ArmShoulderMessenger armMessenger) { 
         
-        addCommands(new AutoAssemblyConeHighScoreCommand(shoulder, shoulderWristMessenger, wrist, arm, intake, armMessenger), 
+        addCommands(new AutoAssemblyConeHighScoreCommand(shoulder, shoulderWristMessenger, wrist, arm, intake, armMessenger),
+                       // .raceWith(new DriveSpeed(dt, -0.5, 0.0)),   // New - To be tested!!!!
                     new AssemblyHomePositionCommand(shoulder, shoulderWristMessenger, wrist, arm, armMessenger), 
                     new Drive(dt, 8.0, 0.0)
                         .raceWith(new ShoulderHoldCommand(shoulder, armMessenger, () -> 0.0))
