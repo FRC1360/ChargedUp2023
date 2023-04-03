@@ -50,7 +50,7 @@ public class ArmSubsystem extends SubsystemBase {
          * Max acceleration inital calculation:
          * max velocity / 2 ~= 17.33 in/s^2
          */
-        this.armMotionProfileConstraints = new TrapezoidProfile.Constraints(15.00, 30.33);
+        this.armMotionProfileConstraints = new TrapezoidProfile.Constraints(25.00, 36.0);
 
         this.armMotorMaster.restoreFactoryDefaults();
         this.armMotorSlave.restoreFactoryDefaults();

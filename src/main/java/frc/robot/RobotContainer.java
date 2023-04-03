@@ -36,6 +36,7 @@ import frc.robot.commands.intake.ManualIntakeCommand;
 import frc.robot.commands.intake.ManualPutdownCommand;
 import frc.robot.commands.shoulder.ShoulderGoToPositionCommand;
 import frc.robot.commands.shoulder.ShoulderHoldCommand;
+import frc.robot.commands.shoulder.ShoulderMoveManual;
 import frc.robot.commands.vision.StrafeAlign;
 import frc.robot.commands.wrist.WristGoToPositionCommand;
 import frc.robot.commands.wrist.WristHoldCommand;
@@ -104,6 +105,7 @@ public class RobotContainer {
      ));
 
     shoulderSubsystem.setDefaultCommand(new ShoulderHoldCommand(shoulderSubsystem, armMessenger, () -> this.operatorController.getLeftTriggerAxis()));
+    //shoulderSubsystem.setDefaultCommand(new ShoulderMoveManual(shoulderSubsystem, () -> this.operatorController.getLeftY()));
     wristSubsystem.setDefaultCommand(new WristHoldCommand(wristSubsystem, () -> this.operatorController.getLeftTriggerAxis()));
     armSubsystem.setDefaultCommand(new ArmHoldCommand(this.armSubsystem));
     intakeSubsystem.setDefaultCommand(new IntakeHoldCommand(this.intakeSubsystem));
