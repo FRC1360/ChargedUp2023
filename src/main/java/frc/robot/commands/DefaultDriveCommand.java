@@ -15,9 +15,7 @@ public class DefaultDriveCommand extends CommandBase {
     private final DoubleSupplier m_translationXSupplier;
     private final DoubleSupplier m_translationYSupplier;
     private final DoubleSupplier m_rotationSupplier;
-    private final CommandJoystick rotationJoystick; 
-
-    private OrbitPID driveRotPID; 
+    private final CommandJoystick rotationJoystick;  
 
     public DefaultDriveCommand(DrivetrainSubsystem drivetrainSubsystem,
                                DoubleSupplier translationXSupplier,
@@ -30,16 +28,8 @@ public class DefaultDriveCommand extends CommandBase {
         this.m_rotationSupplier = rotationSupplier;
         this.rotationJoystick = rotationJoystick; 
 
-        this.driveRotPID = new OrbitPID(0.1, 0.0, 0.0); 
-
         addRequirements(drivetrainSubsystem);
     }
-
-    final double[] rotationalTargets = {
-        0.0, 90.0, 180.0, 270.0
-    };
-
-    double[] rotationalError = new double[4];
 
     @Override
     public void execute() {
@@ -48,13 +38,8 @@ public class DefaultDriveCommand extends CommandBase {
         double rotSpeed = m_rotationSupplier.getAsDouble(); 
 
         double curAngle = m_drivetrainSubsystem.getGyroscopeRotation().getDegrees() % 360.0;
-        // rotationalError[0] = getDirection(rotationalTargets[0], curAngle);
-        // rotationalError[1] = getDirection(rotationalTargets[1], curAngle);
-        // rotationalError[2] = getDirection(rotationalTargets[2], curAngle);
-        // rotationalError[3] = getDirection(rotationalTargets[3], curAngle);
         
         double curAngle2 = (m_drivetrainSubsystem.getGyroscopeRotation().getDegrees() + 180.0) % 360.0;
-        // double direction = 0.0;
 
         SmartDashboard.putNumber("Default_Drive_Command_Cur_Angle", curAngle); 
         // 2 -> 0 (180deg in alternative frame of reference)
@@ -63,11 +48,14 @@ public class DefaultDriveCommand extends CommandBase {
         // 4 -> 270
 
         
-        if (this.rotationJoystick.button(3).getAsBoolean()) rotSpeed = -this.driveRotPID.calculate(180.0, curAngle); 
-        else if (this.rotationJoystick.button(2).getAsBoolean()) rotSpeed = -this.driveRotPID.calculate(180.0, curAngle2); 
-        else if (this.rotationJoystick.button(5).getAsBoolean()) rotSpeed = -this.driveRotPID.calculate(90.0, curAngle); 
+        if (this.rotationJoystick.button(3).getAsBoolean()) 
+            rotSpeed = -this.m_drivetrainSubsystem.driveRotPID.calculate(180.0, curAngle); 
+        else if (this.rotationJoystick.button(2).getAsBoolean()) 
+            rotSpeed = -this.m_drivetrainSubsystem.driveRotPID.calculate(180.0, curAngle2); 
+        else if (this.rotationJoystick.button(5).getAsBoolean()) 
+            rotSpeed = -this.m_drivetrainSubsystem.driveRotPID.calculate(90.0, curAngle); 
         else if (this.rotationJoystick.button(4).getAsBoolean()) {
-            rotSpeed = -this.driveRotPID.calculate(270.0, curAngle+(Math.abs(270-curAngle)>180?360:0));
+            rotSpeed = -this.m_drivetrainSubsystem.driveRotPID.calculate(270.0, curAngle+(Math.abs(270-curAngle)>180?360:0));
         }
         
 
