@@ -83,10 +83,11 @@ public class Robot extends TimedRobot {
 
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
-      (m_robotContainer.getArmHomeCommand()
-      .andThen(m_robotContainer.getGoToZeroWristCommand())
-      .andThen(m_robotContainer.getShoulderZeroCommand())
-      .andThen(m_autonomousCommand)).schedule();
+      // (m_robotContainer.getArmHomeCommand()
+      // .andThen(m_robotContainer.getGoToZeroWristCommand())
+      // .andThen(m_robotContainer.getShoulderZeroCommand())
+      // .andThen
+        (m_autonomousCommand).schedule();
     } else {
       (m_robotContainer.getArmHomeCommand()
       .andThen(m_robotContainer.getGoToZeroWristCommand())
