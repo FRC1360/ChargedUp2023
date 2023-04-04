@@ -73,7 +73,7 @@ public class RobotContainer {
 
   // private final RightSide2ConeAuto rightConeAuto = new RightSide2ConeAuto(m_drivetrainSubsystem); 
 
-  // private final LeftSide2ConeAuto leftConeAuto = new LeftSide2ConeAuto(m_drivetrainSubsystem);
+  private final LeftSide2ConeAuto leftConeAuto = new LeftSide2ConeAuto(m_drivetrainSubsystem);
 
   private final ConeHighAndBalanceAuto highConeAndBalanceAuto = new ConeHighAndBalanceAuto(m_drivetrainSubsystem, shoulderSubsystem, shoulderMessenger, 
                                                                                             wristSubsystem, armSubsystem, intakeSubsystem, armMessenger);
@@ -101,7 +101,8 @@ public class RobotContainer {
             m_drivetrainSubsystem,
             () -> -modifyAxis(left_controller.getY()) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
             () -> -modifyAxis(left_controller.getX()) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-            () -> modifyAxis(right_controller.getX()) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
+            () -> modifyAxis(right_controller.getX()) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND, 
+            right_controller
      ));
 
     shoulderSubsystem.setDefaultCommand(new ShoulderHoldCommand(shoulderSubsystem, armMessenger, () -> this.operatorController.getLeftTriggerAxis()));
@@ -165,10 +166,10 @@ public class RobotContainer {
     // An ExampleCommand will run in autonomous
     //return autoChooser.getSelected();
     //return rightConeAuto; 
-    //return leftConeAuto; 
+    return leftConeAuto; 
     //return null;
     //return new ConeScoreHighAuto(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, intakeSubsystem, armMessenger); 
-    return autoChooser.getSelected();  
+    //return autoChooser.getSelected();  
     //return highConeAndBalanceAuto; 
   }
 

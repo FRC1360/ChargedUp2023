@@ -54,8 +54,8 @@ public final class Constants {
     public static final class Drivetrain { 
         public static final double DRIVE_MOTION_PROFILE_MAX_VELOCITY = 4.000; 
         public static final double DRIVE_MOTION_PROFILE_MAX_ACCELERATION = 3.550; 
-        public static final double ROTATION_MOTION_PROFILE_MAX_VELOCITY = 90.0; 
-        public static final double ROTATION_MOTION_PROFILE_MAX_ACCELERATION = 90.0; 
+        public static final double ROTATION_MOTION_PROFILE_MAX_VELOCITY = 180.0; 
+        public static final double ROTATION_MOTION_PROFILE_MAX_ACCELERATION = 180.0; 
     }
     //GENERAL
     public static double NEO_ENCODER_TICKS_PER_REV = 42;
