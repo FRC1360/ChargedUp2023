@@ -164,12 +164,10 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    //return autoChooser.getSelected();
     //return rightConeAuto; 
-    return leftConeAuto; 
-    //return null;
-    //return new ConeScoreHighAuto(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, intakeSubsystem, armMessenger); 
-    //return autoChooser.getSelected();  
+    // return leftConeAuto; 
+    //return null; 
+    return autoChooser.getSelected();  
     //return highConeAndBalanceAuto; 
   }
 
