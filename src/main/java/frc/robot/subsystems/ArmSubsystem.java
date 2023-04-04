@@ -19,7 +19,8 @@ public class ArmSubsystem extends SubsystemBase {
 
     public OrbitPID holdPIDController;
     public OrbitPID movePIDController;
-    public TrapezoidProfile.Constraints armMotionProfileConstraints;
+    public TrapezoidProfile.Constraints armMotionProfileConstraintsExtend;
+    public TrapezoidProfile.Constraints armMotionProfileConstraintsRetract;
     public DigitalInput limitSwitch;
 
     private double targetDistance;
@@ -50,7 +51,8 @@ public class ArmSubsystem extends SubsystemBase {
          * Max acceleration inital calculation:
          * max velocity / 2 ~= 17.33 in/s^2
          */
-        this.armMotionProfileConstraints = new TrapezoidProfile.Constraints(25.00, 36.0);
+        this.armMotionProfileConstraintsExtend = new TrapezoidProfile.Constraints(25.00, 36.0);
+        this.armMotionProfileConstraintsRetract = new TrapezoidProfile.Constraints(17.5, 36.0);
 
         this.armMotorMaster.restoreFactoryDefaults();
         this.armMotorSlave.restoreFactoryDefaults();

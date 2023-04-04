@@ -38,9 +38,17 @@ public class ArmGoToPositionCommand extends CommandBase {
         this.startState = new TrapezoidProfile.State(this.arm.getArmDistance(), 0.0);
         this.endState = new TrapezoidProfile.State(this.arm.getTargetDistance(), 0.0);
 
-        this.motionProfile = new TrapezoidProfile(this.arm.armMotionProfileConstraints, 
+        if(this.arm.getTargetDistance() > this.arm.getArmDistance()) {
+            this.motionProfile = new TrapezoidProfile(this.arm.armMotionProfileConstraintsExtend, 
             endState,
             startState);
+        } else {
+            this.motionProfile = new TrapezoidProfile(this.arm.armMotionProfileConstraintsRetract, 
+            endState,
+            startState);
+        }
+
+        
         
         this.timer.start();
     }

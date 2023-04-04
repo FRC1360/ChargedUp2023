@@ -47,7 +47,7 @@ public class ShoulderSubsystem extends SubsystemBase {
     private boolean isSafe; 
 
     public ShoulderSubsystem(DoubleSupplier manualOffset, BooleanSupplier manualOffsetEnable) {
-        this.holdPIDController = new OrbitPID(0.0975, 0.00000, 0.0); //kP = 0.045
+        this.holdPIDController = new OrbitPID(0.0925, 0.00000, 0.0); //kP = 0.045
         this.movePIDController = new OrbitPID(0.0632, 0.0, 0.0);  // kP = 0.02
 
         // This units are deg / second for velocity and deg / sec^2 for acceleration
