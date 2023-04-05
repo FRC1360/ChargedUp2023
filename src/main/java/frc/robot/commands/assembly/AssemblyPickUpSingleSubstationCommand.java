@@ -11,6 +11,7 @@ import frc.robot.commands.wrist.WristGoToPositionCommand;
 import frc.robot.commands.wrist.WristHoldCommand;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.ShoulderSubsystem;
 import frc.robot.subsystems.WristSubsystem;
 import frc.robot.subsystems.ArmSubsystem.ArmShoulderMessenger;
@@ -19,11 +20,12 @@ import frc.robot.subsystems.ShoulderSubsystem.ShoulderWristMessenger;
 public class AssemblyPickUpSingleSubstationCommand extends SequentialCommandGroup {
     
     public AssemblyPickUpSingleSubstationCommand(ShoulderSubsystem shoulder, WristSubsystem wrist, ArmSubsystem arm,
-        ShoulderWristMessenger shoulderWristMessenger, ArmShoulderMessenger armMessenger, IntakeSubsystem intake) { 
+        ShoulderWristMessenger shoulderWristMessenger, ArmShoulderMessenger armMessenger, IntakeSubsystem intake, LEDSubsystem ledSubsystem) { 
 
         addCommands(
             new InstantCommand( () -> shoulder.setInIntakePosition(false)),
             new InstantCommand( () -> intake.setAtSubstationState(true)),
+            new InstantCommand(ledSubsystem::setLEDDisable),
 
             new ArmGoToPositionCommand(arm, shoulderWristMessenger, Constants.SINGLE_SUBSTATION_POSITION_ARM)
                 .raceWith(new ShoulderHoldCommand(shoulder, armMessenger, () -> 0.0))
@@ -35,7 +37,8 @@ public class AssemblyPickUpSingleSubstationCommand extends SequentialCommandGrou
             
             new WristGoToPositionCommand(wrist, Constants.SINGLE_SUBSTATION_POSITION_WRIST)
             .raceWith(new ShoulderHoldCommand(shoulder, armMessenger, () -> 0.0))
-            .raceWith(new ArmHoldCommand(arm))
+            .raceWith(new ArmHoldCommand(arm)),
+            new InstantCommand(ledSubsystem::setLEDEnable)
         );
     }
 }

@@ -117,7 +117,7 @@ public final class Constants {
     // CONE_SCORE_HIGH_POSITION
     public static final double CONE_SCORE_HIGH_POSITION_WRIST = -40.0;
     public static final double CONE_SCORE_HIGH_POSITION_ARM = 19.0;
-    public static final double CONE_SCORE_HIGH_POSITION_SHOULDER = 40.0;
+    public static final double CONE_SCORE_HIGH_POSITION_SHOULDER = 44.0;
 
     // CUBE_SCORE_HIGH_POSITION
     public static final double CUBE_SCORE_HIGH_POSITION_WRIST = -40.0;

@@ -11,6 +11,7 @@ import frc.robot.commands.wrist.WristGoToPositionCommand;
 import frc.robot.commands.wrist.WristHoldCommand;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.ShoulderSubsystem;
 import frc.robot.subsystems.WristSubsystem;
 import frc.robot.subsystems.ArmSubsystem.ArmShoulderMessenger;
@@ -20,10 +21,12 @@ public class AssemblyGoToConeIntakeCommand extends SequentialCommandGroup {
     
     public AssemblyGoToConeIntakeCommand(ShoulderSubsystem shoulder, ShoulderWristMessenger shoulderWristMessenger, 
                                                 WristSubsystem wrist, ArmSubsystem arm, ArmShoulderMessenger armMessenger, 
-                                                IntakeSubsystem intake) { 
+                                                IntakeSubsystem intake,
+                                                LEDSubsystem ledSubsystem) { 
         addCommands(
             new InstantCommand( () -> shoulder.setInIntakePosition(false)), 
             new InstantCommand( () -> intake.setAtSubstationState(false)), 
+            new InstantCommand(ledSubsystem::setLEDDisable),
 
             new ShoulderGoToPositionCommand(shoulder, Constants.CONE_INTAKE_POSITION_SHOULDER)
                 .raceWith(new WristHoldCommand(wrist, () -> 0.0))
@@ -33,7 +36,8 @@ public class AssemblyGoToConeIntakeCommand extends SequentialCommandGroup {
                 .alongWith(new WristGoToPositionCommand(wrist, Constants.CONE_INTAKE_POSITION_WRIST)))
                 .raceWith(new ShoulderHoldCommand(shoulder, armMessenger, () -> 0.0)),
             
-            new InstantCommand( () -> shoulder.setInIntakePosition(true))
+            new InstantCommand( () -> shoulder.setInIntakePosition(true)),
+            new InstantCommand(ledSubsystem::setLEDEnable)
             );
     
     }

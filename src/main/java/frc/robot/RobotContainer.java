@@ -47,6 +47,7 @@ import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.ShoulderSubsystem;
 import frc.robot.subsystems.WristSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.LEDSubsystem;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -68,6 +69,7 @@ public class RobotContainer {
   private final ArmSubsystem.ArmShoulderMessenger armMessenger = armSubsystem.new ArmShoulderMessenger(); 
   private final Vision vision = new Vision(); 
   public final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
+  public final LEDSubsystem ledSubsystem = new LEDSubsystem();
 
   private final SendableChooser<Command> autoChooser = new SendableChooser<Command>(); 
 
@@ -78,10 +80,10 @@ public class RobotContainer {
   private final ConeHighAndBalanceAuto highConeAndBalanceAuto = new ConeHighAndBalanceAuto(m_drivetrainSubsystem, shoulderSubsystem, shoulderMessenger, 
                                                                                             wristSubsystem, armSubsystem, intakeSubsystem, armMessenger);
   private final ConeHighAndDriveAuto highConeAndDriveAuto = new ConeHighAndDriveAuto(m_drivetrainSubsystem, shoulderSubsystem, shoulderMessenger, 
-                                                                                      wristSubsystem, armSubsystem, intakeSubsystem, armMessenger); 
+                                                                                      wristSubsystem, armSubsystem, intakeSubsystem, armMessenger, ledSubsystem); 
 
   private final ConeScoreHighAuto highConeAuto = new ConeScoreHighAuto(shoulderSubsystem, shoulderMessenger, wristSubsystem, 
-                                                                          armSubsystem, intakeSubsystem, armMessenger); 
+                                                                          armSubsystem, intakeSubsystem, armMessenger, ledSubsystem); 
 
   private final Simulator sim = new Simulator(m_drivetrainSubsystem); 
 
@@ -140,12 +142,12 @@ public class RobotContainer {
     
     left_controller.button(1).onTrue(new InstantCommand(m_drivetrainSubsystem::zeroGyroscope)); 
 
-    operatorController.a().onTrue((new AssemblyGoToCubeIntakeCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger, intakeSubsystem)));
-    operatorController.y().onTrue(new AssemblyGoToConeIntakeCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger, intakeSubsystem));
-    operatorController.b().onTrue(new AssemblyMidScoreCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger, () -> operatorController.leftBumper().getAsBoolean())); 
-    operatorController.x().onTrue(new AssemblyHomePositionCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger)); 
-    operatorController.povUp().onTrue(new AssemblyHighScoreCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger, () -> operatorController.leftBumper().getAsBoolean())); 
-    operatorController.povDown().onTrue(new AssemblyPickUpSingleSubstationCommand(shoulderSubsystem, wristSubsystem, armSubsystem, shoulderMessenger, armMessenger, intakeSubsystem)); 
+    operatorController.a().onTrue((new AssemblyGoToCubeIntakeCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger, intakeSubsystem, ledSubsystem)));
+    operatorController.y().onTrue(new AssemblyGoToConeIntakeCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger, intakeSubsystem, ledSubsystem));
+    operatorController.b().onTrue(new AssemblyMidScoreCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger, ledSubsystem, () -> operatorController.leftBumper().getAsBoolean())); 
+    operatorController.x().onTrue(new AssemblyHomePositionCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger, ledSubsystem)); 
+    operatorController.povUp().onTrue(new AssemblyHighScoreCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger, () -> operatorController.leftBumper().getAsBoolean(), ledSubsystem)); 
+    operatorController.povDown().onTrue(new AssemblyPickUpSingleSubstationCommand(shoulderSubsystem, wristSubsystem, armSubsystem, shoulderMessenger, armMessenger, intakeSubsystem, ledSubsystem)); 
 
 
     new Trigger(() -> operatorController.getLeftTriggerAxis() > 0.05)
