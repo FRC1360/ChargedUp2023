@@ -31,14 +31,14 @@ public class AssemblyHighScoreCommand extends SequentialCommandGroup {
             
             new ConditionalCommand(
                 // Score Cube
-                (new ArmGoToPositionCommand(arm, shoulderWristMessenger, Constants.SINGLE_SUBSTATION_POSITION_ARM)
+                (new ArmGoToPositionCommand(arm, shoulderWristMessenger, 0.0)
                         .raceWith(new ShoulderHoldCommand(shoulder, armMessenger, () -> 0.0))
                         .raceWith(new WristHoldCommand(wrist, () -> 0.0)))
-                    .andThen(new ShoulderGoToPositionCommand(shoulder, -7.5)
+                    .andThen(new ShoulderGoToPositionCommand(shoulder, Constants.CUBE_SCORE_HIGH_POSITION_SHOULDER)
                         .raceWith(new WristHoldCommand(wrist, () -> 0.0))
                         .raceWith(new ArmHoldCommand(arm)))
-                    .andThen((new WristGoToPositionCommand(wrist, 130.0)
-                        .alongWith(new ArmGoToPositionCommand(arm, shoulderWristMessenger, 5.0)))
+                    .andThen((new WristGoToPositionCommand(wrist, Constants.CUBE_SCORE_HIGH_POSITION_WRIST)
+                        .alongWith(new ArmGoToPositionCommand(arm, shoulderWristMessenger, Constants.CUBE_SCORE_HIGH_POSITION_ARM)))
                         .raceWith(new ShoulderHoldCommand(shoulder, armMessenger, () -> 0.0))),
                 
                 //Score Cone

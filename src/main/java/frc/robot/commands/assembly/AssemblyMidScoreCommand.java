@@ -33,27 +33,27 @@ public class AssemblyMidScoreCommand extends SequentialCommandGroup {
                 new ConditionalCommand(
                         // Score Cube
                         (new ArmGoToPositionCommand(arm, shoulderWristMessenger,
-                                Constants.SINGLE_SUBSTATION_POSITION_ARM)
+                                Constants.CUBE_SCORE_MID_POSITION_ARM)
                                 .raceWith(new ShoulderHoldCommand(shoulder, armMessenger, () -> 0.0))
                                 .raceWith(new WristHoldCommand(wrist, () -> 0.0)))
                                 .andThen(new ShoulderGoToPositionCommand(shoulder,
-                                        Constants.SINGLE_SUBSTATION_POSITION_SHOULDER)
+                                        Constants.CUBE_SCORE_MID_POSITION_SHOULDER)
                                         .raceWith(new WristHoldCommand(wrist, () -> 0.0))
                                         .raceWith(new ArmHoldCommand(arm)))
-                                .andThen(new WristGoToPositionCommand(wrist, 170.0)
+                                .andThen(new WristGoToPositionCommand(wrist, Constants.CUBE_SCORE_MID_POSITION_WRIST)
                                         .raceWith(new ShoulderHoldCommand(shoulder, armMessenger, () -> 0.0))
                                         .raceWith(new ArmHoldCommand(arm))),
 
                         // Score Cone
 
-                        (new ArmGoToPositionCommand(arm, shoulderWristMessenger, Constants.SCORE_MID_POSITION_ARM)
+                        (new ArmGoToPositionCommand(arm, shoulderWristMessenger, Constants.CONE_SCORE_MID_POSITION_ARM)
                                 .raceWith(new ShoulderHoldCommand(shoulder, armMessenger, () -> 0.0))
                                 .raceWith(new WristHoldCommand(wrist, () -> 0.0)))
                                 .andThen(
-                                        new ShoulderGoToPositionCommand(shoulder, Constants.SCORE_MID_POSITION_SHOULDER)
+                                        new ShoulderGoToPositionCommand(shoulder, Constants.CONE_SCORE_MID_POSITION_SHOULDER)
                                                 .raceWith(new WristHoldCommand(wrist, () -> 0.0))
                                                 .raceWith(new ArmHoldCommand(arm)))
-                                .andThen(new WristGoToPositionCommand(wrist, Constants.SCORE_MID_POSITION_WRIST)
+                                .andThen(new WristGoToPositionCommand(wrist, Constants.CONE_SCORE_MID_POSITION_WRIST)
                                         .raceWith(new ShoulderHoldCommand(shoulder, armMessenger, () -> 0.0))
                                         .raceWith(new ArmHoldCommand(arm))),
 

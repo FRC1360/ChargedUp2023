@@ -120,14 +120,19 @@ public final class Constants {
     public static final double CONE_SCORE_HIGH_POSITION_SHOULDER = 44.0;
 
     // CUBE_SCORE_HIGH_POSITION
-    public static final double CUBE_SCORE_HIGH_POSITION_WRIST = -40.0;
-    public static final double CUBE_SCORE_HIGH_POSITION_ARM = 19.0;
-    public static final double CUBE_SCORE_HIGH_POSITION_SHOULDER = 37.0;
+    public static final double CUBE_SCORE_HIGH_POSITION_WRIST = 130.0;
+    public static final double CUBE_SCORE_HIGH_POSITION_ARM = 5.0;
+    public static final double CUBE_SCORE_HIGH_POSITION_SHOULDER = -7.5;
 
     // SCORE_MID_POSITION
-    public static final double SCORE_MID_POSITION_WRIST = -35.0;
-    public static final double SCORE_MID_POSITION_ARM = HOME_POSITION_ARM;
-    public static final double SCORE_MID_POSITION_SHOULDER = 30.0;
+    public static final double CONE_SCORE_MID_POSITION_WRIST = -35.0;
+    public static final double CONE_SCORE_MID_POSITION_ARM = HOME_POSITION_ARM;
+    public static final double CONE_SCORE_MID_POSITION_SHOULDER = 30.0;
+
+    // CUBE_SCORE_MID_POSITION
+    public static final double CUBE_SCORE_MID_POSITION_WRIST = 170.0;
+    public static final double CUBE_SCORE_MID_POSITION_ARM = 0.0;
+    public static final double CUBE_SCORE_MID_POSITION_SHOULDER = -48.0;
 
     // SINGLE_SUBSTATION_POSITION
     public static final double SINGLE_SUBSTATION_POSITION_WRIST = 150.0;
