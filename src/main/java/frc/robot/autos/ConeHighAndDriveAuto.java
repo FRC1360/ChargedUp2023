@@ -26,9 +26,7 @@ public class ConeHighAndDriveAuto extends SequentialCommandGroup {
                                         ArmShoulderMessenger armMessenger,
                                         LEDSubsystem ledSubsystem) { 
         
-        addCommands(new AutoAssemblyConeHighScoreCommand(shoulder, shoulderWristMessenger, wrist, arm, intake, armMessenger),
-                       // .raceWith(new DriveSpeed(dt, -0.5, 0.0)),   // New - To be tested!!!!
-                    new AssemblyHomePositionCommand(shoulder, shoulderWristMessenger, wrist, arm, armMessenger, ledSubsystem), 
+        addCommands(new ConeScoreHighAuto(shoulder, shoulderWristMessenger, wrist, arm, intake, armMessenger, ledSubsystem), 
                     new Drive(dt, 8.0, 0.0)
                         .raceWith(new ShoulderHoldCommand(shoulder, armMessenger, () -> 0.0))
                         .raceWith(new WristHoldCommand(wrist, () -> 0.0))
