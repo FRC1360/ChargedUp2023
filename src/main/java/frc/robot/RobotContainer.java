@@ -36,6 +36,7 @@ import frc.robot.commands.intake.ManualIntakeCommand;
 import frc.robot.commands.intake.ManualPutdownCommand;
 import frc.robot.commands.shoulder.ShoulderGoToPositionCommand;
 import frc.robot.commands.shoulder.ShoulderHoldCommand;
+import frc.robot.commands.shoulder.ShoulderMoveManual;
 import frc.robot.commands.vision.StrafeAlign;
 import frc.robot.commands.wrist.WristGoToPositionCommand;
 import frc.robot.commands.wrist.WristHoldCommand;
@@ -46,6 +47,7 @@ import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.ShoulderSubsystem;
 import frc.robot.subsystems.WristSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.LEDSubsystem;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -60,27 +62,28 @@ public class RobotContainer {
 
   // The robot's subsystems and commands are defined here...
   public final DrivetrainSubsystem m_drivetrainSubsystem = new DrivetrainSubsystem();
-  public final ShoulderSubsystem shoulderSubsystem = new ShoulderSubsystem(() -> operatorController.getRightY()*Constants.SHOULDER_MANUAL_OVERRIDE_RANGE, operatorController.leftBumper());
+  public final ShoulderSubsystem shoulderSubsystem = new ShoulderSubsystem(() -> operatorController.getRightY()*Constants.SHOULDER_MANUAL_OVERRIDE_RANGE, operatorController.rightBumper());
   private final ShoulderSubsystem.ShoulderWristMessenger shoulderMessenger = shoulderSubsystem.new ShoulderWristMessenger();
-  public final WristSubsystem wristSubsystem = new WristSubsystem(shoulderMessenger, () -> operatorController.getLeftY()*Constants.WRIST_MANUAL_OVERRIDE_RANGE, operatorController.leftBumper());
-  public final ArmSubsystem armSubsystem = new ArmSubsystem(/*() -> operatorController.getRightTriggerAxis()*Constants.ARM_MANUAL_OFFSET_RANGE, operatorController.leftBumper()*/);
+  public final WristSubsystem wristSubsystem = new WristSubsystem(shoulderMessenger, () -> operatorController.getLeftY()*Constants.WRIST_MANUAL_OVERRIDE_RANGE, () -> false);
+  public final ArmSubsystem armSubsystem = new ArmSubsystem(() -> operatorController.getLeftY()*Constants.ARM_MANUAL_OFFSET_RANGE, operatorController.rightBumper());
   private final ArmSubsystem.ArmShoulderMessenger armMessenger = armSubsystem.new ArmShoulderMessenger(); 
   private final Vision vision = new Vision(); 
   public final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
+  public final LEDSubsystem ledSubsystem = new LEDSubsystem();
 
   private final SendableChooser<Command> autoChooser = new SendableChooser<Command>(); 
 
   // private final RightSide2ConeAuto rightConeAuto = new RightSide2ConeAuto(m_drivetrainSubsystem); 
 
-  // private final LeftSide2ConeAuto leftConeAuto = new LeftSide2ConeAuto(m_drivetrainSubsystem);
+  private final LeftSide2ConeAuto leftConeAuto = new LeftSide2ConeAuto(m_drivetrainSubsystem);
 
   private final ConeHighAndBalanceAuto highConeAndBalanceAuto = new ConeHighAndBalanceAuto(m_drivetrainSubsystem, shoulderSubsystem, shoulderMessenger, 
                                                                                             wristSubsystem, armSubsystem, intakeSubsystem, armMessenger);
   private final ConeHighAndDriveAuto highConeAndDriveAuto = new ConeHighAndDriveAuto(m_drivetrainSubsystem, shoulderSubsystem, shoulderMessenger, 
-                                                                                      wristSubsystem, armSubsystem, intakeSubsystem, armMessenger); 
+                                                                                      wristSubsystem, armSubsystem, intakeSubsystem, armMessenger, ledSubsystem); 
 
   private final ConeScoreHighAuto highConeAuto = new ConeScoreHighAuto(shoulderSubsystem, shoulderMessenger, wristSubsystem, 
-                                                                          armSubsystem, intakeSubsystem, armMessenger); 
+                                                                          armSubsystem, intakeSubsystem, armMessenger, ledSubsystem); 
 
   private final Simulator sim = new Simulator(m_drivetrainSubsystem); 
 
@@ -100,10 +103,12 @@ public class RobotContainer {
             m_drivetrainSubsystem,
             () -> -modifyAxis(left_controller.getY()) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
             () -> -modifyAxis(left_controller.getX()) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-            () -> modifyAxis(right_controller.getX()) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND
+            () -> modifyAxis(right_controller.getX()) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND, 
+            right_controller
      ));
 
     shoulderSubsystem.setDefaultCommand(new ShoulderHoldCommand(shoulderSubsystem, armMessenger, () -> this.operatorController.getLeftTriggerAxis()));
+    //shoulderSubsystem.setDefaultCommand(new ShoulderMoveManual(shoulderSubsystem, () -> this.operatorController.getLeftY()));
     wristSubsystem.setDefaultCommand(new WristHoldCommand(wristSubsystem, () -> this.operatorController.getLeftTriggerAxis()));
     armSubsystem.setDefaultCommand(new ArmHoldCommand(this.armSubsystem));
     intakeSubsystem.setDefaultCommand(new IntakeHoldCommand(this.intakeSubsystem));
@@ -137,12 +142,12 @@ public class RobotContainer {
     
     left_controller.button(1).onTrue(new InstantCommand(m_drivetrainSubsystem::zeroGyroscope)); 
 
-    operatorController.a().onTrue((new AssemblyGoToCubeIntakeCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger, intakeSubsystem)));
-    operatorController.y().onTrue(new AssemblyGoToConeIntakeCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger, intakeSubsystem));
-    operatorController.b().onTrue(new AssemblyMidScoreCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger)); 
-    operatorController.x().onTrue(new AssemblyHomePositionCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger)); 
-    operatorController.povUp().onTrue(new AssemblyHighScoreCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger, () -> operatorController.leftBumper().getAsBoolean())); 
-    operatorController.povDown().onTrue(new AssemblyPickUpSingleSubstationCommand(shoulderSubsystem, wristSubsystem, armSubsystem, shoulderMessenger, armMessenger, intakeSubsystem)); 
+    operatorController.a().onTrue((new AssemblyGoToCubeIntakeCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger, intakeSubsystem, ledSubsystem)));
+    operatorController.y().onTrue(new AssemblyGoToConeIntakeCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger, intakeSubsystem, ledSubsystem));
+    operatorController.b().onTrue(new AssemblyMidScoreCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger, ledSubsystem, () -> operatorController.leftBumper().getAsBoolean())); 
+    operatorController.x().onTrue(new AssemblyHomePositionCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger, ledSubsystem)); 
+    operatorController.povUp().onTrue(new AssemblyHighScoreCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger, () -> operatorController.leftBumper().getAsBoolean(), ledSubsystem)); 
+    operatorController.povDown().onTrue(new AssemblyPickUpSingleSubstationCommand(shoulderSubsystem, wristSubsystem, armSubsystem, shoulderMessenger, armMessenger, intakeSubsystem, ledSubsystem)); 
 
 
     new Trigger(() -> operatorController.getLeftTriggerAxis() > 0.05)
@@ -161,11 +166,9 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    //return autoChooser.getSelected();
     //return rightConeAuto; 
-    //return leftConeAuto; 
-    //return null;
-    //return new ConeScoreHighAuto(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, intakeSubsystem, armMessenger); 
+    // return leftConeAuto; 
+    //return null; 
     return autoChooser.getSelected();  
     //return highConeAndBalanceAuto; 
   }

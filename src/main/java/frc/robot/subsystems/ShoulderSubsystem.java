@@ -47,18 +47,18 @@ public class ShoulderSubsystem extends SubsystemBase {
     private boolean isSafe; 
 
     public ShoulderSubsystem(DoubleSupplier manualOffset, BooleanSupplier manualOffsetEnable) {
-        this.holdPIDController = new OrbitPID(0.0975, 0.00000, 0.0); //kP = 0.045
+        this.holdPIDController = new OrbitPID(0.035, 0.0000075, 0.0); //kP = 0.045
         this.movePIDController = new OrbitPID(0.0632, 0.0, 0.0);  // kP = 0.02
 
         // This units are deg / second for velocity and deg / sec^2 for acceleration
-        this.shoulderUpMotionProfileConstraints = new TrapezoidProfile.Constraints(250.0, 250.0);  // TODO - Tune.
+        this.shoulderUpMotionProfileConstraints = new TrapezoidProfile.Constraints(200.0, 500.0);  // TODO - Tune.
         this.shoulderDownMotionProfileConstraints = new TrapezoidProfile.Constraints(100.0, 250.0); 
         this.targetAngle = Constants.HOME_POSITION_SHOULDER;
 
         this.shoulderMotorMaster = new CANSparkMax(Constants.SHOULDER_MOTOR_MASTER, MotorType.kBrushless);
         this.shoulderMotorSlave = new CANSparkMax(Constants.SHOULDER_MOTOR_SLAVE, MotorType.kBrushless); 
 
-        this.shoulderFeedForward = new ArmFeedforward(0.0, 0.15, 0.0); //kG = 0.065
+        this.shoulderFeedForward = new ArmFeedforward(0.0, 0.0005, 0.0); //kG = 0.001
 
         this.shoulderMotorMaster.restoreFactoryDefaults();
         this.shoulderMotorSlave.restoreFactoryDefaults();
@@ -103,7 +103,6 @@ public class ShoulderSubsystem extends SubsystemBase {
              || this.getShoulderAngle() < Constants.MIN_SHOULDER_ANGLE) 
                 speed = 0.0; 
         
-
         this.shoulderMotorMaster.set(-speed);
         this.shoulderMotorSlave.set(-speed);
     }
@@ -130,9 +129,7 @@ public class ShoulderSubsystem extends SubsystemBase {
     public void setShoulderVoltage(double voltage) {
         if (this.getShoulderAngle() > Constants.MAX_SHOULDER_ANGLE
              || this.getShoulderAngle() < Constants.MIN_SHOULDER_ANGLE) 
-                voltage = 0.0; 
-
-        System.out.println("Speed = " + voltage);
+                voltage = 0.0;
         
         this.shoulderMotorMaster.setVoltage(voltage);
         this.shoulderMotorSlave.setVoltage(voltage);
@@ -219,9 +216,9 @@ public class ShoulderSubsystem extends SubsystemBase {
     }
 
     public void updateSmartDashboard() {
-        // SmartDashboard.putNumber("Shoulder_Hold_P_Gain", this.holdPIDController.getPTerm());
-        // SmartDashboard.putNumber("Shoulder_Hold_I_Gain", this.holdPIDController.getITerm());
-        // SmartDashboard.putNumber("Shoulder_Hold_D_Gain", this.holdPIDController.getDTerm());
+        SmartDashboard.putNumber("Shoulder_Hold_P_Gain", this.holdPIDController.getPTerm());
+        SmartDashboard.putNumber("Shoulder_Hold_I_Gain", this.holdPIDController.getITerm());
+        SmartDashboard.putNumber("Shoulder_Hold_D_Gain", this.holdPIDController.getDTerm());
 
         SmartDashboard.putNumber("Shoulder_Target_Angle", this.getTargetAngle());
         SmartDashboard.putNumber("Shoulder_Angle", this.getShoulderAngle());

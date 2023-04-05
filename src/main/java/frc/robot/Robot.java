@@ -85,8 +85,8 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       (m_robotContainer.getArmHomeCommand()
       .andThen(m_robotContainer.getGoToZeroWristCommand())
-      .andThen(m_robotContainer.getShoulderZeroCommand())
-      .andThen(m_autonomousCommand)).schedule();
+      .andThen(m_robotContainer.getShoulderZeroCommand()))
+      .andThen(m_autonomousCommand).schedule();
     } else {
       (m_robotContainer.getArmHomeCommand()
       .andThen(m_robotContainer.getGoToZeroWristCommand())
@@ -138,7 +138,7 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    // m_robotContainer.shoulderSubsystem.updateSmartDashboard();
+    m_robotContainer.shoulderSubsystem.updateSmartDashboard();
     // m_robotContainer.wristSubsystem.updateSmartDashboard();
     // m_robotContainer.armSubsystem.updateSmartDashboard();
 

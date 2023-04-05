@@ -55,11 +55,11 @@ public class WristGoToPositionCommand extends CommandBase {
         double target = profileTarget.position;
         double input = this.wrist.getWristAngle();
 
-        // SmartDashboard.putNumber("Wrist_Move_Profile_Position", profileTarget.position);
-        // SmartDashboard.putNumber("Wrist_Move_Profile_Velocity", profileTarget.velocity);
+        SmartDashboard.putNumber("Wrist_Move_Profile_Position", profileTarget.position);
+        SmartDashboard.putNumber("Wrist_Move_Profile_Velocity", profileTarget.velocity);
 
         double pidOutput = this.wrist.movePIDController.calculate(target, input);
-        // SmartDashboard.putNumber("Wrist_Motion_Profile_Ouput", pidOutput);
+        //SmartDashboard.putNumber("Wrist_Motion_Profile_Ouput", pidOutput);
 
         //if (Math.abs(speed) > 0.50) speed =  Math.copySign(0.5, speed); 
         double feedforwardOutput = 0.0;
@@ -77,7 +77,7 @@ public class WristGoToPositionCommand extends CommandBase {
 
         // SmartDashboard.putNumber("Wrist_Move_PID_Output", pidOutput);
         // SmartDashboard.putNumber("Wrist_FF_Output", feedforwardOutput);
-        // SmartDashboard.putNumber("Wrist_Move_PID_And_FF_Output", speed); 
+        SmartDashboard.putNumber("Wrist_Move_PID_And_FF_Output", speed); 
 
         this.wrist.setWristNormalizedVoltage(speed);
     }

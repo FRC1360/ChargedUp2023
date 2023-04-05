@@ -123,7 +123,7 @@ public class WristSubsystem extends SubsystemBase {
     // This return a GLOBAL angle. The global angle is the angle relative to the shoulder
     public double getTargetAngle() {  // Use getTargetAngle() when doing commands to move the wrist
         
-        return -this.shoulderWristMessenger.getShoulderAngle() + this.getWristOffset() + (manualOffsetEnable.getAsBoolean() ? manualOffset.getAsDouble() : 0.0);
+        return -this.shoulderWristMessenger.getShoulderAngle() + this.getWristOffset() + (manualOffsetEnable.getAsBoolean() ? -manualOffset.getAsDouble() : 0.0);
     }
  
     public void setWristOffset(double offset) {

@@ -90,6 +90,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
   private OrbitPID drivePID; 
 
+  public OrbitPID driveRotPID; 
+
   public DrivetrainSubsystem() {
     ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
 
@@ -145,6 +147,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
         bl_motor.setIdleMode(IdleMode.kCoast);
         CANSparkMax br_motor = new CANSparkMax(BACK_RIGHT_MODULE_DRIVE_MOTOR, MotorType.kBrushless);
         br_motor.setIdleMode(IdleMode.kCoast);*/
+
+        this.driveRotPID = new OrbitPID(0.1, 0.0, 0.0); 
   }
 
   /**
