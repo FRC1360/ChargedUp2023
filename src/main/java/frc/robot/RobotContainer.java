@@ -61,10 +61,10 @@ public class RobotContainer {
 
   // The robot's subsystems and commands are defined here...
   public final DrivetrainSubsystem m_drivetrainSubsystem = new DrivetrainSubsystem();
-  public final ShoulderSubsystem shoulderSubsystem = new ShoulderSubsystem(() -> operatorController.getRightY()*Constants.SHOULDER_MANUAL_OVERRIDE_RANGE, operatorController.leftBumper());
+  public final ShoulderSubsystem shoulderSubsystem = new ShoulderSubsystem(() -> operatorController.getRightY()*Constants.SHOULDER_MANUAL_OVERRIDE_RANGE, operatorController.rightBumper());
   private final ShoulderSubsystem.ShoulderWristMessenger shoulderMessenger = shoulderSubsystem.new ShoulderWristMessenger();
-  public final WristSubsystem wristSubsystem = new WristSubsystem(shoulderMessenger, () -> operatorController.getLeftY()*Constants.WRIST_MANUAL_OVERRIDE_RANGE, operatorController.leftBumper());
-  public final ArmSubsystem armSubsystem = new ArmSubsystem(/*() -> operatorController.getRightTriggerAxis()*Constants.ARM_MANUAL_OFFSET_RANGE, operatorController.leftBumper()*/);
+  public final WristSubsystem wristSubsystem = new WristSubsystem(shoulderMessenger, () -> operatorController.getLeftY()*Constants.WRIST_MANUAL_OVERRIDE_RANGE, () -> false);
+  public final ArmSubsystem armSubsystem = new ArmSubsystem(() -> operatorController.getLeftY()*Constants.ARM_MANUAL_OFFSET_RANGE, operatorController.rightBumper());
   private final ArmSubsystem.ArmShoulderMessenger armMessenger = armSubsystem.new ArmShoulderMessenger(); 
   private final Vision vision = new Vision(); 
   public final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();

@@ -1,5 +1,8 @@
 package frc.robot.subsystems;
 
+import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -31,10 +34,10 @@ public class ArmSubsystem extends SubsystemBase {
     private double lastTime; 
     private Double lastDistance; 
 
-    // private DoubleSupplier manualOffset; 
-    // private BooleanSupplier manualOffsetEnable; 
+    private DoubleSupplier manualOffset; 
+    private BooleanSupplier manualOffsetEnable; 
 
-    public ArmSubsystem(/*DoubleSupplier manualOffset, BooleanSupplier manualOffsetEnable*/) {
+    public ArmSubsystem(DoubleSupplier manualOffset, BooleanSupplier manualOffsetEnable) {
         this.armMotorMaster = new CANSparkMax(Constants.ARM_MOTOR_MASTER, MotorType.kBrushless);
         this.armMotorSlave = new CANSparkMax(Constants.ARM_MOTOR_SLAVE, MotorType.kBrushless);
 
@@ -73,8 +76,8 @@ public class ArmSubsystem extends SubsystemBase {
 
         this.targetDistance = Constants.HOME_POSITION_ARM; 
 
-        // this.manualOffset = manualOffset; 
-        // this.manualOffsetEnable = manualOffsetEnable; 
+        this.manualOffset = manualOffset; 
+        this.manualOffsetEnable = manualOffsetEnable; 
     }
 
     public double getMotorRotations() {
@@ -107,8 +110,35 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
     public double getTargetDistance() {
-        return this.targetDistance 
-                    /*+ (this.manualOffsetEnable.getAsBoolean() ? manualOffset.getAsDouble() : 0.0)*/;
+
+        /*double manualOffsetDistance;
+
+        if (this.manualOffsetEnable.getAsBoolean()) {
+            manualOffsetDistance = manualOffset.getAsDouble();
+
+            if(this.targetDistance + manualOffsetDistance < 0.0) {  // If manual offset is negative (retracting) and the new target distance < 0.0
+                manualOffsetDistance = 
+            }
+
+        } else {
+            manualOffsetDistance = 0.0;
+        }*/
+
+        if(this.manualOffsetEnable.getAsBoolean()) {
+            double newDistance = this.targetDistance + manualOffset.getAsDouble();
+
+            if(newDistance < 0.0) {
+                return 0.0;
+            } else {
+                return newDistance;
+            }
+        } else {
+            return this.targetDistance;
+        }
+
+
+        /*return this.targetDistance 
+                    + (this.manualOffsetEnable.getAsBoolean() ? manualOffset.getAsDouble() : 0.0);*/
     }
 
     // Distance in inches
