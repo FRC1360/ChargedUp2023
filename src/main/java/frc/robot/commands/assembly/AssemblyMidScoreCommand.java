@@ -1,5 +1,8 @@
 package frc.robot.commands.assembly;
 
+import java.util.function.BooleanSupplier;
+
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
@@ -18,11 +21,12 @@ import frc.robot.subsystems.ShoulderSubsystem.ShoulderWristMessenger;
 public class AssemblyMidScoreCommand extends SequentialCommandGroup {
     
     public AssemblyMidScoreCommand(ShoulderSubsystem shoulder, ShoulderWristMessenger shoulderWristMessenger, 
-                                                WristSubsystem wrist, ArmSubsystem arm, ArmShoulderMessenger armMessenger) { 
+                                                WristSubsystem wrist, ArmSubsystem arm, ArmShoulderMessenger armMessenger,
+                                                BooleanSupplier scoreCube) { 
         addCommands(
             new InstantCommand( () -> shoulder.setInIntakePosition(false)),
 
-            new ArmGoToPositionCommand(arm, shoulderWristMessenger, Constants.SCORE_MID_POSITION_ARM)
+            /*new ArmGoToPositionCommand(arm, shoulderWristMessenger, Constants.SCORE_MID_POSITION_ARM)
                 .raceWith(new ShoulderHoldCommand(shoulder, armMessenger, () -> 0.0))
                 .raceWith(new WristHoldCommand(wrist, () -> 0.0)),
             
@@ -32,7 +36,33 @@ public class AssemblyMidScoreCommand extends SequentialCommandGroup {
     
             new WristGoToPositionCommand(wrist, Constants.SCORE_MID_POSITION_WRIST)
                 .raceWith(new ShoulderHoldCommand(shoulder, armMessenger, () -> 0.0))
-                .raceWith(new ArmHoldCommand(arm))
+                .raceWith(new ArmHoldCommand(arm))*/
+
+                new ConditionalCommand(
+                    // Score Cube
+                    (new ArmGoToPositionCommand(arm, shoulderWristMessenger, Constants.SINGLE_SUBSTATION_POSITION_ARM)
+                        .raceWith(new ShoulderHoldCommand(shoulder, armMessenger, () -> 0.0))
+                        .raceWith(new WristHoldCommand(wrist, () -> 0.0)))
+                    .andThen(new ShoulderGoToPositionCommand(shoulder, Constants.SINGLE_SUBSTATION_POSITION_SHOULDER)
+                        .raceWith(new WristHoldCommand(wrist, () -> 0.0))
+                        .raceWith(new ArmHoldCommand(arm)))
+                    .andThen(new WristGoToPositionCommand(wrist, 170.0)
+                        .raceWith(new ShoulderHoldCommand(shoulder, armMessenger, () -> 0.0))
+                        .raceWith(new ArmHoldCommand(arm))),
+                    
+                    //Score Cone
+                    
+                    (new ArmGoToPositionCommand(arm, shoulderWristMessenger, Constants.SCORE_MID_POSITION_ARM)
+                        .raceWith(new ShoulderHoldCommand(shoulder, armMessenger, () -> 0.0))
+                        .raceWith(new WristHoldCommand(wrist, () -> 0.0)))
+                    .andThen(new ShoulderGoToPositionCommand(shoulder, Constants.SCORE_MID_POSITION_SHOULDER)
+                        .raceWith(new WristHoldCommand(wrist, () -> 0.0))
+                        .raceWith(new ArmHoldCommand(arm)))
+                    .andThen(new WristGoToPositionCommand(wrist, Constants.SCORE_MID_POSITION_WRIST)
+                        .raceWith(new ShoulderHoldCommand(shoulder, armMessenger, () -> 0.0))
+                        .raceWith(new ArmHoldCommand(arm))),
+                    
+                    scoreCube)
         ); 
 
     }
