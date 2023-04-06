@@ -156,6 +156,7 @@ public class RobotContainer {
      .whileTrue(new ManualPutdownCommand(intakeSubsystem, () -> operatorController.getRightTriggerAxis())); 
 
     left_controller.button(2).whileTrue(new StrafeAlign(m_drivetrainSubsystem, vision, left_controller::getX, left_controller::getY));
+    right_controller.button(1).whileTrue(new ManualPutdownCommand(intakeSubsystem, () -> 1.0)); 
   }
 
   
