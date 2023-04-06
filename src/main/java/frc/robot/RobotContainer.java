@@ -15,12 +15,10 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.autos.LeftSide2ConeAuto;
-import frc.robot.autos.RightSide2ConeAuto;
 import frc.robot.autos.AutoBalance;
-import frc.robot.autos.ConeHighAndBalanceAuto;
+import frc.robot.autos.CubeHighAndBalanceAuto;
 import frc.robot.autos.ConeHighAndDriveAuto;
-import frc.robot.autos.ConeScoreHighAuto;
+import frc.robot.autos.procedures.ConeScoreHighAuto;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.arm.ArmHoldCommand;
 import frc.robot.commands.arm.ArmHomeCommand;
@@ -73,16 +71,12 @@ public class RobotContainer {
 
   private final SendableChooser<Command> autoChooser = new SendableChooser<Command>(); 
 
-  // private final RightSide2ConeAuto rightConeAuto = new RightSide2ConeAuto(m_drivetrainSubsystem); 
-
-  private final LeftSide2ConeAuto leftConeAuto = new LeftSide2ConeAuto(m_drivetrainSubsystem);
-
-  private final ConeHighAndBalanceAuto highConeAndBalanceAuto = new ConeHighAndBalanceAuto(m_drivetrainSubsystem, shoulderSubsystem, shoulderMessenger, 
-                                                                                            wristSubsystem, armSubsystem, intakeSubsystem, armMessenger);
+  private final CubeHighAndBalanceAuto highConeAndBalanceAuto = new CubeHighAndBalanceAuto(m_drivetrainSubsystem, shoulderSubsystem, shoulderMessenger, 
+                                                                                            wristSubsystem, armSubsystem, intakeSubsystem, armMessenger, ledSubsystem);
   private final ConeHighAndDriveAuto highConeAndDriveAuto = new ConeHighAndDriveAuto(m_drivetrainSubsystem, shoulderSubsystem, shoulderMessenger, 
                                                                                       wristSubsystem, armSubsystem, intakeSubsystem, armMessenger, ledSubsystem); 
 
-  private final ConeScoreHighAuto highConeAuto = new ConeScoreHighAuto(shoulderSubsystem, shoulderMessenger, wristSubsystem, 
+  private final ConeScoreHighAuto highConeAuto = new ConeScoreHighAuto(m_drivetrainSubsystem, shoulderSubsystem, shoulderMessenger, wristSubsystem, 
                                                                           armSubsystem, intakeSubsystem, armMessenger, ledSubsystem); 
 
   private final Simulator sim = new Simulator(m_drivetrainSubsystem); 
@@ -121,7 +115,7 @@ public class RobotContainer {
   public void initializeRobot() { 
     //autoChooser.setDefaultOption("One side, two cargo, balance", leftConeAuto);
     autoChooser.setDefaultOption("No auto", new WaitCommand(15));
-    autoChooser.addOption("High cone and balance", highConeAndBalanceAuto);
+    autoChooser.addOption("High cube and balance", highConeAndBalanceAuto);
     autoChooser.addOption("High cone and drive straight", highConeAndDriveAuto);
     autoChooser.addOption("Only high cone score", highConeAuto);
     SmartDashboard.putData("Auto Chooser", autoChooser);
@@ -167,8 +161,6 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    //return rightConeAuto; 
-    // return leftConeAuto; 
     //return null; 
     return autoChooser.getSelected();  
     //return highConeAndBalanceAuto; 

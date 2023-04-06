@@ -6,7 +6,6 @@ import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
-import frc.robot.autos.LeftSide2ConeAuto;
 import frc.robot.commands.arm.ArmGoToPositionCommand;
 import frc.robot.commands.arm.ArmHoldCommand;
 import frc.robot.commands.shoulder.ShoulderGoToPositionCommand;

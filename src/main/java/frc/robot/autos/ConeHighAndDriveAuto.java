@@ -4,7 +4,8 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.autos.basic.Drive;
-import frc.robot.autos.basic.DriveSpeed;
+import frc.robot.autos.basic.LockWheels;
+import frc.robot.autos.procedures.ConeScoreHighAuto;
 import frc.robot.commands.arm.ArmHoldCommand;
 import frc.robot.commands.assembly.AssemblyHomePositionCommand;
 import frc.robot.commands.assembly.autoAssembly.AutoAssemblyConeHighScoreCommand;
@@ -26,7 +27,7 @@ public class ConeHighAndDriveAuto extends SequentialCommandGroup {
                                         ArmShoulderMessenger armMessenger,
                                         LEDSubsystem ledSubsystem) { 
         
-        addCommands(new ConeScoreHighAuto(shoulder, shoulderWristMessenger, wrist, arm, intake, armMessenger, ledSubsystem), 
+        addCommands(new ConeScoreHighAuto(dt, shoulder, shoulderWristMessenger, wrist, arm, intake, armMessenger, ledSubsystem), 
                     new Drive(dt, 8.0, 0.0)
                         .raceWith(new ShoulderHoldCommand(shoulder, armMessenger, () -> 0.0))
                         .raceWith(new WristHoldCommand(wrist, () -> 0.0))

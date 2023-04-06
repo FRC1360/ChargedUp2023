@@ -1,7 +1,10 @@
 package frc.robot.commands.assembly.autoAssembly;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
+import frc.robot.autos.basic.LockWheels;
 import frc.robot.commands.arm.ArmGoToPositionCommand;
 import frc.robot.commands.arm.ArmHoldCommand;
 import frc.robot.commands.assembly.AssemblyHighScoreCommand;
@@ -12,6 +15,7 @@ import frc.robot.commands.shoulder.ShoulderHoldCommand;
 import frc.robot.commands.wrist.WristGoToPositionCommand;
 import frc.robot.commands.wrist.WristHoldCommand;
 import frc.robot.subsystems.ArmSubsystem;
+import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.ShoulderSubsystem;
@@ -21,11 +25,14 @@ import frc.robot.subsystems.ShoulderSubsystem.ShoulderWristMessenger;
 
 public class AutoAssemblyConeHighScoreCommand extends SequentialCommandGroup {
     
-    public AutoAssemblyConeHighScoreCommand(ShoulderSubsystem shoulder, ShoulderWristMessenger shoulderWristMessenger, 
+    public AutoAssemblyConeHighScoreCommand(DrivetrainSubsystem dt, ShoulderSubsystem shoulder, ShoulderWristMessenger shoulderWristMessenger, 
                                                 WristSubsystem wrist, ArmSubsystem arm, IntakeSubsystem intake,
                                                     LEDSubsystem ledSubsystem, ArmShoulderMessenger armMessenger) { 
         addCommands(
-            new AssemblyHighScoreCommand(shoulder, shoulderWristMessenger, wrist, arm, armMessenger, () -> false, ledSubsystem), 
+            new AssemblyHighScoreCommand(shoulder, shoulderWristMessenger, wrist, arm, armMessenger, () -> false, ledSubsystem)
+                .raceWith(new LockWheels(dt, 0.0, 0.0005)), 
+
+            
 
             new AutoPutDownCommand(intake, 0.8)
                 .raceWith(new ShoulderHoldCommand(shoulder, armMessenger, () -> 0.0))

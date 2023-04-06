@@ -2,6 +2,7 @@ package frc.robot.autos;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.autos.basic.DriveEncoder;
+import frc.robot.autos.procedures.CubeScoreHighAuto;
 import frc.robot.commands.arm.ArmHoldCommand;
 import frc.robot.commands.shoulder.ShoulderHoldCommand;
 import frc.robot.commands.wrist.WristHoldCommand;
@@ -9,18 +10,19 @@ import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ArmSubsystem.ArmShoulderMessenger;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.ShoulderSubsystem;
 import frc.robot.subsystems.ShoulderSubsystem.ShoulderWristMessenger;
 import frc.robot.subsystems.WristSubsystem;
 
-public class ConeHighAndBalanceAuto extends SequentialCommandGroup {
+public class CubeHighAndBalanceAuto extends SequentialCommandGroup {
     
-    public ConeHighAndBalanceAuto(DrivetrainSubsystem dt, ShoulderSubsystem shoulder, ShoulderWristMessenger shoulderWristMessenger, 
+    public CubeHighAndBalanceAuto(DrivetrainSubsystem dt, ShoulderSubsystem shoulder, ShoulderWristMessenger shoulderWristMessenger, 
                                     WristSubsystem wrist, ArmSubsystem arm, IntakeSubsystem intake, 
-                                        ArmShoulderMessenger armMessenger) { 
+                                        ArmShoulderMessenger armMessenger, LEDSubsystem ledSubsystem) { 
         
-        addCommands(//new ConeScoreHighAuto(shoulder, shoulderWristMessenger, wrist, arm, intake, armMessenger), 
-                    new DriveEncoder(dt, 3.5, 0.0)
+        addCommands(//new CubeScoreHighAuto(dt, shoulder, shoulderWristMessenger, wrist, arm, intake, armMessenger, ledSubsystem), 
+                    new DriveEncoder(dt, 3.8, 0.0)
                         .raceWith(new ShoulderHoldCommand(shoulder, armMessenger, () -> 0.0))
                         .raceWith(new WristHoldCommand(wrist, () -> 0.0))
                         .raceWith(new ArmHoldCommand(arm)),
