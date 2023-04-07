@@ -18,6 +18,7 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.ShoulderSubsystem;
 import frc.robot.subsystems.ShoulderSubsystem.ShoulderWristMessenger;
+import frc.robot.util.StateMachine;
 import frc.robot.subsystems.WristSubsystem;
 
 public class ConeHighAndDriveAuto extends SequentialCommandGroup {
@@ -25,9 +26,10 @@ public class ConeHighAndDriveAuto extends SequentialCommandGroup {
     public ConeHighAndDriveAuto(DrivetrainSubsystem dt, ShoulderSubsystem shoulder, ShoulderWristMessenger shoulderWristMessenger, 
                                     WristSubsystem wrist, ArmSubsystem arm, IntakeSubsystem intake, 
                                         ArmShoulderMessenger armMessenger,
-                                        LEDSubsystem ledSubsystem) { 
+                                        LEDSubsystem ledSubsystem,
+                                        StateMachine sm) { 
         
-        addCommands(new ConeScoreHighAuto(dt, shoulder, shoulderWristMessenger, wrist, arm, intake, armMessenger, ledSubsystem), 
+        addCommands(new ConeScoreHighAuto(dt, shoulder, shoulderWristMessenger, wrist, arm, intake, armMessenger, ledSubsystem, sm), 
                     new Drive(dt, 8.0, 0.0)
                         .raceWith(new ShoulderHoldCommand(shoulder, armMessenger, () -> 0.0))
                         .raceWith(new WristHoldCommand(wrist, () -> 0.0))

@@ -14,19 +14,20 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.ShoulderSubsystem;
 import frc.robot.subsystems.ShoulderSubsystem.ShoulderWristMessenger;
+import frc.robot.util.StateMachine;
 import frc.robot.subsystems.WristSubsystem;
 
 public class ConeScoreHighAuto extends SequentialCommandGroup {
     
     public ConeScoreHighAuto(DrivetrainSubsystem dt, ShoulderSubsystem shoulder, ShoulderWristMessenger shoulderWristMessenger, 
                                 WristSubsystem wrist, ArmSubsystem arm, IntakeSubsystem intake, 
-                                    ArmShoulderMessenger armMessenger, LEDSubsystem ledSubsystem) 
+                                    ArmShoulderMessenger armMessenger, LEDSubsystem ledSubsystem, StateMachine sm) 
     {
         addCommands( 
             new AutoAssemblyConeHighScoreCommand(dt, shoulder, shoulderWristMessenger, wrist, 
-                                                    arm, intake, ledSubsystem, armMessenger), 
+                                                    arm, intake, ledSubsystem, armMessenger, sm), 
             new AssemblyHomePositionCommand(shoulder, shoulderWristMessenger, 
-                            wrist, arm, armMessenger, ledSubsystem)
+                            wrist, arm, armMessenger, ledSubsystem, sm)
             );
     }
 }

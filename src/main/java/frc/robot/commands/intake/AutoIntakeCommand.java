@@ -35,7 +35,7 @@ public class AutoIntakeCommand extends CommandBase{
 
     @Override
     public boolean isFinished() { 
-        return this.timer.getTimeDeltaSec() > 0.5;  
+        return this.timer.getTimeDeltaSec() > 0.25;  
     }
 
 }

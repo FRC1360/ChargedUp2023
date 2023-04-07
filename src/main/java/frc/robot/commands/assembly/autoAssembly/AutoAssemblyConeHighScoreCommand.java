@@ -22,15 +22,16 @@ import frc.robot.subsystems.ShoulderSubsystem;
 import frc.robot.subsystems.WristSubsystem;
 import frc.robot.subsystems.ArmSubsystem.ArmShoulderMessenger;
 import frc.robot.subsystems.ShoulderSubsystem.ShoulderWristMessenger;
+import frc.robot.util.StateMachine;
 
 public class AutoAssemblyConeHighScoreCommand extends SequentialCommandGroup {
     
     public AutoAssemblyConeHighScoreCommand(DrivetrainSubsystem dt, ShoulderSubsystem shoulder, ShoulderWristMessenger shoulderWristMessenger, 
                                                 WristSubsystem wrist, ArmSubsystem arm, IntakeSubsystem intake,
-                                                    LEDSubsystem ledSubsystem, ArmShoulderMessenger armMessenger) { 
+                                                    LEDSubsystem ledSubsystem, ArmShoulderMessenger armMessenger, StateMachine sm) { 
         addCommands(
-            new AssemblyHighScoreCommand(shoulder, shoulderWristMessenger, wrist, arm, armMessenger, () -> false, ledSubsystem)
-                .raceWith(new LockWheels(dt, 0.0, 0.0005)), 
+            new AssemblyHighScoreCommand(shoulder, shoulderWristMessenger, wrist, arm, armMessenger, () -> false, ledSubsystem, sm)
+                .raceWith(new LockWheels(dt)), 
 
             
 
