@@ -23,7 +23,7 @@ import frc.robot.util.pathfinding.Field;
 import frc.robot.util.pathfinding.Node;
 import frc.robot.util.pathfinding.constraints.RectangularFieldConstraint;
 
-public class DriveToPosition extends CommandBase{
+public class DriveToPosition extends CommandBase {
 
     Field field;
     TrajectoryConfig trajectoryConfig;
@@ -41,9 +41,11 @@ public class DriveToPosition extends CommandBase{
 
     Field2d simField;
 
+    Thread generationThread;
+
     public DriveToPosition(DrivetrainSubsystem dt) {
 
-        trajectoryConfig = new TrajectoryConfig(3.0,3.0);
+        trajectoryConfig = new TrajectoryConfig(3.0, 3.0);
 
         RectangularFieldConstraint constraint = new RectangularFieldConstraint(3.0, 3.0, 3.5, 3.5);
 
@@ -67,68 +69,94 @@ public class DriveToPosition extends CommandBase{
     @Override
     public void initialize() {
 
-        Node start = field.getClosestNode(dt.getPose().getX(), dt.getPose().getY());
-        Node end = field.getClosestNode(4.0, 4.0);
+        generationThread = new Thread() {
+            public void run() {
+                Node start = field.getClosestNode(dt.getPose().getX(), dt.getPose().getY());
+                Node end = field.getClosestNode(4.0, 4.0);
 
-        System.out.println("Begining Waypoint Generation");
+                System.out.println("Begining Waypoint Generation");
 
-        ArrayList<AStarNode> waypoints = field.generateWaypoints(start, end);
+                ArrayList<AStarNode> waypoints = field.generateWaypoints(start, end);
 
-        // ---------------------
-        // The following is for cubic splines
+                // ---------------------
+                // The following is for cubic splines
 
-        // Remove start and end waypoint from waypoints
-        /*waypoints.remove(0);
-        waypoints.remove(waypoints.size()-1);
+                // Remove start and end waypoint from waypoints
+                /*
+                 * waypoints.remove(0);
+                 * waypoints.remove(waypoints.size()-1);
+                 * 
+                 * Pose2d startPose = new Pose2d(start.getX(), start.getY(),
+                 * Rotation2d.fromDegrees(0.0));
+                 * System.out.println("Start Pose of (" + startPose.getX() + ", " +
+                 * startPose.getY() + ")");
+                 * Pose2d endPose = new Pose2d(end.getX(), end.getY(),
+                 * Rotation2d.fromDegrees(0.0));
+                 * 
+                 * 
+                 * ArrayList<Translation2d> translationWaypoints = new ArrayList<>();
+                 */
 
-        Pose2d startPose = new Pose2d(start.getX(), start.getY(), Rotation2d.fromDegrees(0.0));
-        System.out.println("Start Pose of (" + startPose.getX() + ", " + startPose.getY() + ")");
-        Pose2d endPose = new Pose2d(end.getX(), end.getY(), Rotation2d.fromDegrees(0.0));
+                /*
+                 * slation2d translation = new Translation2d(waypoint.getX(), waypoint.getY());
+                 * System.out.println("Waypoint at (" + translation.getX() + ", " +
+                 * translation.getY() + ")");
+                 * translationWaypoints.add(translation);
+                 * }
+                 */
 
+                /*
+                 * int smoothingFactor = 5;
+                 * for(int i = smoothingFactor-1; i < waypoints.size(); i+=smoothingFactor) {
+                 * Translation2d translation = new Translation2d(waypoints.get(i).getX(),
+                 * waypoints.get(i).getY());
+                 * System.out.println("Waypoint at (" + translation.getX() + ", " +
+                 * translation.getY() + ")");
+                 * translationWaypoints.add(translation);
+                 * }
+                 */
 
-        ArrayList<Translation2d> translationWaypoints = new ArrayList<>();*/
-        
-        /*slation2d translation = new Translation2d(waypoint.getX(), waypoint.getY());
-            System.out.println("Waypoint at (" + translation.getX() + ", " + translation.getY() + ")");
-            translationWaypoints.add(translation);
-        }*/
+                // trajectory = TrajectoryGenerator.generateTrajectory(startPose,
+                // translationWaypoints, endPose, trajectoryConfig);
+                // -------------------
+                // The following is for quintic splines
 
-        /*int smoothingFactor = 5;
-        for(int i = smoothingFactor-1; i < waypoints.size(); i+=smoothingFactor) {
-            Translation2d translation = new Translation2d(waypoints.get(i).getX(), waypoints.get(i).getY());
-            System.out.println("Waypoint at (" + translation.getX() + ", " + translation.getY() + ")");
-            translationWaypoints.add(translation);
-        }*/
+                ArrayList<Pose2d> positions = new ArrayList<>();
 
-        // trajectory = TrajectoryGenerator.generateTrajectory(startPose, translationWaypoints, endPose, trajectoryConfig);
-        // -------------------
-        // The following is for quintic splines
+                /*
+                 * for (AStarNode node : waypoints) {
+                 * Pose2d pose = new Pose2d(node.getX(), node.getY(),
+                 * Rotation2d.fromDegrees(0.0));
+                 * System.out.println("Waypoint at (" + node.getX() + ", " + node.getY() + ")");
+                 * positions.add(pose);
+                 * }
+                 */
 
-        ArrayList<Pose2d> positions = new ArrayList<>();
+                int smoothingFactor = 1;
+                for (int i = smoothingFactor - 1; i < waypoints.size(); i += smoothingFactor) {
+                    Pose2d pose = new Pose2d(waypoints.get(i).getX(), waypoints.get(i).getY(),
+                            Rotation2d.fromDegrees(0.0));
+                    System.out.println("Waypoint at (" + pose.getX() + ", " + pose.getY() + ")");
+                    positions.add(pose);
+                }
 
-        /*for (AStarNode node : waypoints) {
-            Pose2d pose = new Pose2d(node.getX(), node.getY(), Rotation2d.fromDegrees(0.0));
-            System.out.println("Waypoint at (" + node.getX() + ", " + node.getY() + ")");
-            positions.add(pose);
-        }*/
+                trajectory = TrajectoryGenerator.generateTrajectory(positions, trajectoryConfig);
+                // -------------------
 
-        int smoothingFactor = 5;
-        for(int i = smoothingFactor-1; i < waypoints.size(); i+=smoothingFactor) {
-            Pose2d pose = new Pose2d(waypoints.get(i).getX(), waypoints.get(i).getY(), Rotation2d.fromDegrees(0.0));
-            System.out.println("Waypoint at (" + pose.getX() + ", " + pose.getY() + ")");
-            positions.add(pose);
-        }
+                System.out.println("Ending Waypoint Generation");
+                timer.start();
+            }
+        };
 
-        trajectory = TrajectoryGenerator.generateTrajectory(positions, trajectoryConfig);
-        // -------------------
+        generationThread.start();
 
-        System.out.println("Ending Waypoint Generation");
-        timer.start();
-        
     }
 
     @Override
     public void execute() {
+        if(generationThread.isAlive())
+            return;
+
         Trajectory.State goal = trajectory.sample(timer.getTimeDeltaSec());
 
         ChassisSpeeds speeds = driveController.calculate(dt.getPose(), goal, Rotation2d.fromDegrees(0.0));
@@ -138,8 +166,8 @@ public class DriveToPosition extends CommandBase{
         SmartDashboard.putNumber("DT_X", dt.getPose().getX());
         SmartDashboard.putNumber("DT_Y", dt.getPose().getY());
 
-        SmartDashboard.putData(simField);
-        simField.getObject("traj").setTrajectory(trajectory);
+        //SmartDashboard.putData(simField);
+        //simField.getObject("traj").setTrajectory(trajectory);
 
         dt.drive(speeds);
     }
@@ -148,5 +176,5 @@ public class DriveToPosition extends CommandBase{
     public boolean isFinished() {
         return false;
     }
-    
+
 }

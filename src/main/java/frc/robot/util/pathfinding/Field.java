@@ -70,7 +70,7 @@ public class Field {
         return getClosestNode(node.getX(), node.getY());
     }
 
-    public ArrayList<Node> getAdjacentNodes(Node node) {
+    public ArrayList<Node> getAdjacentNodes(Node node) {  // Currently only returns up to 4 adjacent Nodes - Up/Down/Left/Right. Need to modify for digonals
         ArrayList<Node> adjacentNodes = new ArrayList<>();
 
         int x = node.getCantorX();
@@ -85,6 +85,18 @@ public class Field {
 
         if(!(y-1 < 0))
             adjacentNodes.add(nodes.get(Node.cantorPairFunction(x, y-1)));  // Need to guard as Cantor Pair only works for natural numbers
+
+        // Diagonals
+        adjacentNodes.add(nodes.get(Node.cantorPairFunction(x+1, y+1)));
+
+        if(!(x-1 < 0))
+            adjacentNodes.add(nodes.get(Node.cantorPairFunction(x-1, y+1)));
+
+        if(!(y-1 < 0))
+            adjacentNodes.add(nodes.get(Node.cantorPairFunction(x+1, y-1)));
+
+        if(!(x-1 < 0) && !(y-1 < 0))
+            adjacentNodes.add(nodes.get(Node.cantorPairFunction(x-1, y-1)));
 
         adjacentNodes.removeIf(Objects::isNull);
 
@@ -140,7 +152,7 @@ public class Field {
             ArrayList<Node> neighbours = getAdjacentValidNodes(current);
 
             for (Node neighbour : neighbours) {
-                double gScore = gScores.get(current) + resolution;  // Should probably change this to distance between points, but for now resolution works because waypoint distances are constant
+                double gScore = gScores.get(current) + getDistance(current, neighbour);
                 AStarNode aStarNeighbour = AStarNode.createFromNode(neighbour);
 
                 if(gScore < gScores.getOrDefault(aStarNeighbour, Double.POSITIVE_INFINITY)) {
@@ -162,6 +174,10 @@ public class Field {
     }
 
     private double getHScore(Node n1, Node n2) {
+        return Math.sqrt(Math.pow(n1.getX() - n2.getX(), 2) + Math.pow(n1.getY() - n2.getY(), 2));
+    }
+
+    private double getDistance(Node n1, Node n2) {
         return Math.sqrt(Math.pow(n1.getX() - n2.getX(), 2) + Math.pow(n1.getY() - n2.getY(), 2));
     }
     
