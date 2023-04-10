@@ -2,7 +2,6 @@ package frc.robot.commands.drive;
 
 import java.util.ArrayList;
 
-import edu.wpi.first.hal.SimDevice;
 import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -68,36 +67,62 @@ public class DriveToPosition extends CommandBase{
     @Override
     public void initialize() {
 
-        //Node start = new Node(dt.getPose().getX(), dt.getPose().getY()); 
-        //Node end = new Node(4.0, 4.0);  // TODO - Change Command to pass in new end node
-
         Node start = field.getClosestNode(dt.getPose().getX(), dt.getPose().getY());
         Node end = field.getClosestNode(4.0, 4.0);
 
+        System.out.println("Begining Waypoint Generation");
+
         ArrayList<AStarNode> waypoints = field.generateWaypoints(start, end);
 
+        // ---------------------
+        // The following is for cubic splines
+
         // Remove start and end waypoint from waypoints
-        waypoints.remove(0);
+        /*waypoints.remove(0);
         waypoints.remove(waypoints.size()-1);
 
         Pose2d startPose = new Pose2d(start.getX(), start.getY(), Rotation2d.fromDegrees(0.0));
         System.out.println("Start Pose of (" + startPose.getX() + ", " + startPose.getY() + ")");
         Pose2d endPose = new Pose2d(end.getX(), end.getY(), Rotation2d.fromDegrees(0.0));
 
-        ArrayList<Translation2d> translationWaypoints = new ArrayList<>();
 
-        for (AStarNode waypoint : waypoints) {
-            Translation2d translation = new Translation2d(waypoint.getX(), waypoint.getY());
+        ArrayList<Translation2d> translationWaypoints = new ArrayList<>();*/
+        
+        /*slation2d translation = new Translation2d(waypoint.getX(), waypoint.getY());
             System.out.println("Waypoint at (" + translation.getX() + ", " + translation.getY() + ")");
             translationWaypoints.add(translation);
+        }*/
+
+        /*int smoothingFactor = 5;
+        for(int i = smoothingFactor-1; i < waypoints.size(); i+=smoothingFactor) {
+            Translation2d translation = new Translation2d(waypoints.get(i).getX(), waypoints.get(i).getY());
+            System.out.println("Waypoint at (" + translation.getX() + ", " + translation.getY() + ")");
+            translationWaypoints.add(translation);
+        }*/
+
+        // trajectory = TrajectoryGenerator.generateTrajectory(startPose, translationWaypoints, endPose, trajectoryConfig);
+        // -------------------
+        // The following is for quintic splines
+
+        ArrayList<Pose2d> positions = new ArrayList<>();
+
+        /*for (AStarNode node : waypoints) {
+            Pose2d pose = new Pose2d(node.getX(), node.getY(), Rotation2d.fromDegrees(0.0));
+            System.out.println("Waypoint at (" + node.getX() + ", " + node.getY() + ")");
+            positions.add(pose);
+        }*/
+
+        int smoothingFactor = 5;
+        for(int i = smoothingFactor-1; i < waypoints.size(); i+=smoothingFactor) {
+            Pose2d pose = new Pose2d(waypoints.get(i).getX(), waypoints.get(i).getY(), Rotation2d.fromDegrees(0.0));
+            System.out.println("Waypoint at (" + pose.getX() + ", " + pose.getY() + ")");
+            positions.add(pose);
         }
 
-        /*int midWaypoint = waypoints.size() / 2;
-        Translation2d translation = new Translation2d(waypoints.get(midWaypoint).getX(), waypoints.get(midWaypoint).getY());
-        translationWaypoints.add(translation);*/
+        trajectory = TrajectoryGenerator.generateTrajectory(positions, trajectoryConfig);
+        // -------------------
 
-        trajectory = TrajectoryGenerator.generateTrajectory(startPose, translationWaypoints, endPose, trajectoryConfig);
-
+        System.out.println("Ending Waypoint Generation");
         timer.start();
         
     }
@@ -113,8 +138,8 @@ public class DriveToPosition extends CommandBase{
         SmartDashboard.putNumber("DT_X", dt.getPose().getX());
         SmartDashboard.putNumber("DT_Y", dt.getPose().getY());
 
-        //SmartDashboard.putData(simField);
-        //simField.getObject("traj").setTrajectory(trajectory);
+        SmartDashboard.putData(simField);
+        simField.getObject("traj").setTrajectory(trajectory);
 
         dt.drive(speeds);
     }
