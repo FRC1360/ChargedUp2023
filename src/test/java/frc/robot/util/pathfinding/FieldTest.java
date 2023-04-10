@@ -6,7 +6,6 @@ import java.util.ArrayList;
 
 import org.junit.jupiter.api.Test;
 
-import frc.robot.util.pathfinding.constraints.IFieldConstraintTest;
 import frc.robot.util.pathfinding.constraints.IFieldConstraints;
 import frc.robot.util.pathfinding.constraints.PointFieldConstraint;
 import frc.robot.util.pathfinding.constraints.RectangularFieldConstraint;
@@ -146,4 +145,6 @@ public class FieldTest {
 
         assertEquals(null, path);  
     }
+
+    // TODO - Add behaviour for starting in invalid node
 }

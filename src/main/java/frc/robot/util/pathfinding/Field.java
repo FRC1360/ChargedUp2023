@@ -28,7 +28,7 @@ public class Field {
         this(resolution, 8.1026, 16.4846, constraints);
     }
 
-    protected Field(double resolution, double FIELD_X_METERS, double FIELD_Y_METERS, IFieldConstraints... constraints) {
+    public Field(double resolution, double FIELD_X_METERS, double FIELD_Y_METERS, IFieldConstraints... constraints) {
         this.resolution = resolution;
         this.FIELD_X_METERS = FIELD_X_METERS;
         this.FIELD_Y_METERS = FIELD_Y_METERS;
@@ -118,11 +118,8 @@ public class Field {
         while(!openSet.isEmpty()) {
             AStarNode current = openSet.poll();
 
-            //System.out.println("Current is (" + current.getX() + ", " + current.getY() + ")");
-
             if(current.hashCode() == end.hashCode()) {
                 // DONE
-                //System.out.println("Found Path");
                 ArrayList<AStarNode> path = new ArrayList<>();
 
                 AStarNode currentPathNode = current;
@@ -131,7 +128,6 @@ public class Field {
 
                 while(cameFrom.containsKey(currentPathNode)) {
                     currentPathNode = cameFrom.get(currentPathNode);
-                    //System.out.println("Found current path node");
                     path.add(currentPathNode);
                 }
 
@@ -148,9 +144,6 @@ public class Field {
                 AStarNode aStarNeighbour = AStarNode.createFromNode(neighbour);
 
                 if(gScore < gScores.getOrDefault(aStarNeighbour, Double.POSITIVE_INFINITY)) {
-                    //System.out.println("Waypoint at (" + aStarNeighbour.getX() + ", " + aStarNeighbour.getY() + ") with gScore of " + gScores.getOrDefault(aStarNeighbour, Double.POSITIVE_INFINITY) 
-                    //+ " came from (" + current.getX() + ", " + current.getY() + ") with gScore of " + gScore);
-
                     cameFrom.put(aStarNeighbour, current);
                     gScores.put(aStarNeighbour, gScore);
 
@@ -162,14 +155,9 @@ public class Field {
                     }
                 }
             }
-
-            //System.out.println("-------------------");
-
-            //return null;
         }
 
         // Could not find path
-        //System.out.println("Path not found");
         return null;
     }
 

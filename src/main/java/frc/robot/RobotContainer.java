@@ -21,7 +21,6 @@ import frc.robot.autos.AutoBalance;
 import frc.robot.autos.ConeHighAndBalanceAuto;
 import frc.robot.autos.ConeHighAndDriveAuto;
 import frc.robot.autos.ConeScoreHighAuto;
-import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.arm.ArmHoldCommand;
 import frc.robot.commands.arm.ArmHomeCommand;
 import frc.robot.commands.assembly.AssemblyGoToConeIntakeCommand;
@@ -31,6 +30,8 @@ import frc.robot.commands.assembly.AssemblyHomePositionCommand;
 import frc.robot.commands.assembly.AssemblyMidScoreCommand;
 import frc.robot.commands.assembly.AssemblyPickUpSingleSubstationCommand;
 import frc.robot.commands.assembly.autoAssembly.AutoAssemblyConeHighScoreCommand;
+import frc.robot.commands.drive.DefaultDriveCommand;
+import frc.robot.commands.drive.DriveToPosition;
 import frc.robot.commands.intake.IntakeHoldCommand;
 import frc.robot.commands.intake.ManualIntakeCommand;
 import frc.robot.commands.intake.ManualPutdownCommand;
@@ -169,8 +170,9 @@ public class RobotContainer {
     //return rightConeAuto; 
     // return leftConeAuto; 
     //return null; 
-    return autoChooser.getSelected();  
+    //return autoChooser.getSelected();  
     //return highConeAndBalanceAuto; 
+    return new DriveToPosition(m_drivetrainSubsystem);
   }
 
   

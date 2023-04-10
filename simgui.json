@@ -44,7 +44,7 @@
     "Plot <0>": {
       "plots": [
         {
-          "height": 332,
+          "height": 267,
           "series": [
             {
               "color": [
@@ -108,6 +108,36 @@
                 1.0
               ],
               "id": "NT:/SmartDashboard/Arm_kG"
+            }
+          ]
+        }
+      ],
+      "window": {
+        "visible": false
+      }
+    },
+    "Plot <1>": {
+      "plots": [
+        {
+          "height": 332,
+          "series": [
+            {
+              "color": [
+                0.2980392277240753,
+                0.44705885648727417,
+                0.6901960968971252,
+                1.0
+              ],
+              "id": "NT:/SmartDashboard/Goal_X"
+            },
+            {
+              "color": [
+                0.8666667342185974,
+                0.5176470875740051,
+                0.32156863808631897,
+                1.0
+              ],
+              "id": "NT:/SmartDashboard/DT_X"
             }
           ]
         }
