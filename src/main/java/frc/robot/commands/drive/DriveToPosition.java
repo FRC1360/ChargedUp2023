@@ -7,6 +7,7 @@ import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.PathPoint;
 import com.pathplanner.lib.PathPlannerTrajectory.PathPlannerState;
+import com.pathplanner.lib.PathPlannerTrajectory.Waypoint;
 
 import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
@@ -32,9 +33,7 @@ import frc.robot.util.pathfinding.constraints.RectangularFieldConstraint;
 public class DriveToPosition extends CommandBase {
 
     Field field;
-    TrajectoryConfig trajectoryConfig;
     DrivetrainSubsystem dt;
-    Trajectory trajectory;
 
     HolonomicDriveController driveController;
 
@@ -51,13 +50,15 @@ public class DriveToPosition extends CommandBase {
 
     PathPlannerTrajectory pathPlannerTrajectory;
 
-    public DriveToPosition(DrivetrainSubsystem dt) {
+    double xTarget;
+    double yTarget;
 
-        trajectoryConfig = new TrajectoryConfig(3.0, 3.0);
+    public DriveToPosition(DrivetrainSubsystem dt, double xTarget, double yTarget) {
 
-        RectangularFieldConstraint constraint = new RectangularFieldConstraint(3.0, 1.0, 5.0, 3.5);
+        RectangularFieldConstraint constraint = new RectangularFieldConstraint(3.183-0.5, 1.935-0.5, 4.84+0.5, 4.08+0.5);
+        RectangularFieldConstraint constraint2 = new RectangularFieldConstraint(0.0, 0.0, 1.75, 5.25);
 
-        field = new Field(0.5, 10.0, 10.0, constraint);
+        field = new Field(0.25, constraint, constraint2);
 
         this.dt = dt;
 
@@ -71,6 +72,9 @@ public class DriveToPosition extends CommandBase {
 
         simField = new Field2d();
 
+        this.xTarget = xTarget;
+        this.yTarget = yTarget;
+
         addRequirements(dt);
     }
 
@@ -80,62 +84,38 @@ public class DriveToPosition extends CommandBase {
         generationThread = new Thread() {
             public void run() {
                 Node start = field.getClosestNode(dt.getPose().getX(), dt.getPose().getY());
-                Node end = field.getClosestNode(6.0, 1.5);
+                //Node end = field.getClosestNode(5.4, 3.1);
+                Node end = field.getClosestNode(xTarget, yTarget);
+
+                System.out.println(start.getIsValid());
 
                 System.out.println("Begining Waypoint Generation");
 
                 ArrayList<AStarNode> waypoints = field.generateWaypoints(start, end);
 
-                // The following is for cubic splines
-                // Remove start and end waypoint from waypoints
-                /*
-                 * waypoints.remove(0);
-                 * waypoints.remove(waypoints.size()-1);
-                 * 
-                 * Pose2d startPose = new Pose2d(start.getX(), start.getY(),
-                 * Rotation2d.fromDegrees(0.0));
-                 * System.out.println("Start Pose of (" + startPose.getX() + ", " +
-                 * startPose.getY() + ")");
-                 * Pose2d endPose = new Pose2d(end.getX(), end.getY(),
-                 * Rotation2d.fromDegrees(0.0));
-                 * 
-                 * 
-                 * ArrayList<Translation2d> translationWaypoints = new ArrayList<>();
-                 */
-
-                /*
-                 * slation2d translation = new Translation2d(waypoint.getX(), waypoint.getY());
-                 * System.out.println("Waypoint at (" + translation.getX() + ", " +
-                 * translation.getY() + ")");
-                 * translationWaypoints.add(translation);
-                 * }
-                 */
-
-                /*
-                 * int smoothingFactor = 5;
-                 * for(int i = smoothingFactor-1; i < waypoints.size(); i+=smoothingFactor) {
-                 * Translation2d translation = new Translation2d(waypoints.get(i).getX(),
-                 * waypoints.get(i).getY());
-                 * System.out.println("Waypoint at (" + translation.getX() + ", " +
-                 * translation.getY() + ")");
-                 * translationWaypoints.add(translation);
-                 * }
-                 */
-
-                // trajectory = TrajectoryGenerator.generateTrajectory(startPose,
-                // translationWaypoints, endPose, trajectoryConfig);
-
                 ArrayList<PathPoint> pathPoints = new ArrayList<>();
 
-                for (AStarNode node : waypoints) {
-                    Translation2d translation = new Translation2d(node.getX(), node.getY());
-                    Rotation2d heading = Rotation2d.fromDegrees(0.0);
+                int smoothFactor = 3;
+                for (int i = 0; i < waypoints.size(); i+=smoothFactor) {
+                    Translation2d translation = new Translation2d(waypoints.get(i).getX(), waypoints.get(i).getY());
+
+                    Rotation2d heading;
+                    if(i + smoothFactor > waypoints.size()) {
+                        heading = new Rotation2d(waypoints.get(i).getX()-waypoints.get(i-smoothFactor).getX(), waypoints.get(i).getY()-waypoints.get(i-smoothFactor).getY());
+                    } else {
+                        heading = new Rotation2d(waypoints.get(i+smoothFactor).getX()-waypoints.get(i).getX(), waypoints.get(i+smoothFactor).getY()-waypoints.get(i).getY());
+                    }
+
+                    //Rotation2d heading = Rotation2d.fromRadians(0.0);
+
+
                     Rotation2d rotation = Rotation2d.fromDegrees(0.0);
 
                     System.out.println("Waypoint at (" + translation.getX() + ", " +
-                    translation.getY() + ")");
+                    translation.getY() + ") and valid = " + waypoints.get(i).getIsValid());
 
                     PathPoint point = new PathPoint(translation, heading, rotation);
+                    //PathPoint point = new PathPoint(translation, rotation);
                     pathPoints.add(point);
                 }
 
@@ -175,7 +155,15 @@ public class DriveToPosition extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return false;
+        if(generationThread == null || generationThread.isAlive())
+            return false;
+
+        return pathPlannerTrajectory.getEndState() == (PathPlannerState)pathPlannerTrajectory.sample(timer.getTimeDeltaSec());
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        System.out.println("Command Ended");
     }
 
 }

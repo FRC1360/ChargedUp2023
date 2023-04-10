@@ -172,7 +172,7 @@ public class RobotContainer {
     //return null; 
     //return autoChooser.getSelected();  
     //return highConeAndBalanceAuto; 
-    return new DriveToPosition(m_drivetrainSubsystem);
+    return new DriveToPosition(m_drivetrainSubsystem, 5.4, 3.1);
   }
 
   

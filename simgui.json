@@ -15,6 +15,7 @@
     },
     "windows": {
       "/SmartDashboard/Field": {
+        "image": "C:\\Users\\micha\\Documents\\GitHub\\ChargedUp2023\\2023-field.png",
         "window": {
           "visible": true
         }

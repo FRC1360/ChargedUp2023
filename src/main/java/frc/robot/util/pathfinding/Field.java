@@ -25,7 +25,7 @@ public class Field {
      * @param constraints - Constraints for invalid nodes for pathfinding
      */
     public Field(double resolution, IFieldConstraints... constraints) {
-        this(resolution, 8.1026, 16.4846, constraints);
+        this(resolution, 16.4846, 8.1026, constraints);
     }
 
     public Field(double resolution, double FIELD_X_METERS, double FIELD_Y_METERS, IFieldConstraints... constraints) {
@@ -38,6 +38,8 @@ public class Field {
         int cantorX = 0;
         int cantorY = 0;
 
+        System.out.println(constraints.length);
+
         for(double i = 0; i <= this.FIELD_X_METERS; i += resolution) {
             cantorY = 0;
 
@@ -45,7 +47,8 @@ public class Field {
                 Node node = new Node(i, j);
 
                 for (IFieldConstraints iFieldConstraint : constraints) {
-                    node.setIsValid(!iFieldConstraint.nodeInFieldConstraint(node));
+                    if(node.getIsValid())  // Skip nodes that are already invalid
+                        node.setIsValid(!iFieldConstraint.nodeInFieldConstraint(node));
                 }
 
                 node.setCantorX(cantorX);
