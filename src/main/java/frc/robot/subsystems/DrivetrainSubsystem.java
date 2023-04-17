@@ -85,6 +85,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
   private ChassisSpeeds m_chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
 
+  public boolean lockWheels;
+
   //private SwerveDriveOdometry2022 odometry = new SwerveDriveOdometry2022(m_kinematics, getGyroscopeRotation(), new Pose2d(2.3, 4.5, Rotation2d.fromDegrees(0)));
   private SwerveDriveOdometry2022 odometry = new SwerveDriveOdometry2022(m_kinematics, getGyroscopeRotation(), new Pose2d(2.3, 1.5, Rotation2d.fromDegrees(0)));
 
@@ -93,6 +95,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
   public OrbitPID driveRotPID; 
 
   public DrivetrainSubsystem() {
+    lockWheels = false;
+
     ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
 
         m_frontLeftModule = Mk4iSwerveModuleHelper.createNeo(
@@ -203,6 +207,22 @@ public class DrivetrainSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     SwerveModuleState[] states = m_kinematics.toSwerveModuleStates(m_chassisSpeeds);
+
+    //SwerveModuleState[] xstates = new SwerveModuleState[4];
+    //xstates[0] = new SwerveModuleState
+
+    if(lockWheels) {
+        for(int i = 0; i < 4; i++) {
+                states[i].speedMetersPerSecond = 0.0;
+        }
+
+        states[0].angle = Rotation2d.fromDegrees(45.0);
+        states[1].angle = Rotation2d.fromDegrees(-45.0);
+        states[2].angle = Rotation2d.fromDegrees(-45.0);
+        states[3].angle = Rotation2d.fromDegrees(45.0);
+    }
+    
+
     SwerveDriveKinematics.desaturateWheelSpeeds(states, MAX_VELOCITY_METERS_PER_SECOND); // this was normalizeWheelSpeeds but WPILib doesn't like that
 
     m_frontLeftModule.set(states[0].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, states[0].angle.getRadians());

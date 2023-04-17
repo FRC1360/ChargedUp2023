@@ -16,13 +16,15 @@ import frc.robot.subsystems.ShoulderSubsystem;
 import frc.robot.subsystems.WristSubsystem;
 import frc.robot.subsystems.ArmSubsystem.ArmShoulderMessenger;
 import frc.robot.subsystems.ShoulderSubsystem.ShoulderWristMessenger;
+import frc.robot.util.StateMachine;
 
 public class AssemblyPickUpSingleSubstationCommand extends SequentialCommandGroup {
     
     public AssemblyPickUpSingleSubstationCommand(ShoulderSubsystem shoulder, WristSubsystem wrist, ArmSubsystem arm,
-        ShoulderWristMessenger shoulderWristMessenger, ArmShoulderMessenger armMessenger, IntakeSubsystem intake, LEDSubsystem ledSubsystem) { 
+        ShoulderWristMessenger shoulderWristMessenger, ArmShoulderMessenger armMessenger, IntakeSubsystem intake, LEDSubsystem ledSubsystem, StateMachine sm) { 
 
         addCommands(
+            new InstantCommand( () -> sm.setAtHome(false)),
             new InstantCommand( () -> shoulder.setInIntakePosition(false)),
             new InstantCommand( () -> intake.setAtSubstationState(true)),
             new InstantCommand(ledSubsystem::setLEDDisable),

@@ -42,7 +42,7 @@ public class AutoBalanceCommand extends CommandBase {
 
     @Override
     public void end(boolean interrupted) { 
-        this.speeds.vyMetersPerSecond = 0.01; 
+        this.speeds.omegaRadiansPerSecond = 0.0001; 
         dt.drive(this.speeds);
     }
 

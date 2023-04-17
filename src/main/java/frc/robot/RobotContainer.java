@@ -15,12 +15,11 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.autos.LeftSide2ConeAuto;
-import frc.robot.autos.RightSide2ConeAuto;
 import frc.robot.autos.AutoBalance;
-import frc.robot.autos.ConeHighAndBalanceAuto;
+import frc.robot.autos.CubeHighAndBalanceAuto;
+import frc.robot.autos.DriveStraightAuto;
 import frc.robot.autos.ConeHighAndDriveAuto;
-import frc.robot.autos.ConeScoreHighAuto;
+import frc.robot.autos.procedures.ConeScoreHighAuto;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.arm.ArmHoldCommand;
 import frc.robot.commands.arm.ArmHomeCommand;
@@ -44,6 +43,7 @@ import frc.robot.simulation.Simulator;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.vision.Vision;
+import frc.robot.util.StateMachine;
 import frc.robot.subsystems.ShoulderSubsystem;
 import frc.robot.subsystems.WristSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -70,22 +70,23 @@ public class RobotContainer {
   private final Vision vision = new Vision(); 
   public final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
   public final LEDSubsystem ledSubsystem = new LEDSubsystem();
+  private final StateMachine sm = new StateMachine();
 
-  private final SendableChooser<Command> autoChooser = new SendableChooser<Command>(); 
+  public final SendableChooser<Command> autoChooser = new SendableChooser<Command>(); 
 
-  // private final RightSide2ConeAuto rightConeAuto = new RightSide2ConeAuto(m_drivetrainSubsystem); 
-
-  private final LeftSide2ConeAuto leftConeAuto = new LeftSide2ConeAuto(m_drivetrainSubsystem);
-
-  private final ConeHighAndBalanceAuto highConeAndBalanceAuto = new ConeHighAndBalanceAuto(m_drivetrainSubsystem, shoulderSubsystem, shoulderMessenger, 
-                                                                                            wristSubsystem, armSubsystem, intakeSubsystem, armMessenger);
+  private final CubeHighAndBalanceAuto highConeAndBalanceAuto = new CubeHighAndBalanceAuto(m_drivetrainSubsystem, shoulderSubsystem, shoulderMessenger, 
+                                                                                            wristSubsystem, armSubsystem, intakeSubsystem, armMessenger, ledSubsystem, sm);
   private final ConeHighAndDriveAuto highConeAndDriveAuto = new ConeHighAndDriveAuto(m_drivetrainSubsystem, shoulderSubsystem, shoulderMessenger, 
-                                                                                      wristSubsystem, armSubsystem, intakeSubsystem, armMessenger, ledSubsystem); 
+                                                                                      wristSubsystem, armSubsystem, intakeSubsystem, armMessenger, ledSubsystem, sm); 
 
-  private final ConeScoreHighAuto highConeAuto = new ConeScoreHighAuto(shoulderSubsystem, shoulderMessenger, wristSubsystem, 
-                                                                          armSubsystem, intakeSubsystem, armMessenger, ledSubsystem); 
+  private final ConeScoreHighAuto highConeAuto = new ConeScoreHighAuto(m_drivetrainSubsystem, shoulderSubsystem, shoulderMessenger, wristSubsystem, 
+                                                                          armSubsystem, intakeSubsystem, armMessenger, ledSubsystem, sm); 
+
+  private final DriveStraightAuto driveStraightAuto = new DriveStraightAuto(m_drivetrainSubsystem); 
 
   private final Simulator sim = new Simulator(m_drivetrainSubsystem); 
+
+  
 
   // private final DriveStraightAuto driveStraightAuto = new DriveStraightAuto(m_drivetrainSubsystem, wristSubsystem); 
   // private final EngageStationAuto engageStationAuto = new EngageStationAuto(m_drivetrainSubsystem); 
@@ -121,9 +122,10 @@ public class RobotContainer {
   public void initializeRobot() { 
     //autoChooser.setDefaultOption("One side, two cargo, balance", leftConeAuto);
     autoChooser.setDefaultOption("No auto", new WaitCommand(15));
-    autoChooser.addOption("High cone and balance", highConeAndBalanceAuto);
+    autoChooser.addOption("High cube and balance", highConeAndBalanceAuto);
     autoChooser.addOption("High cone and drive straight", highConeAndDriveAuto);
     autoChooser.addOption("Only high cone score", highConeAuto);
+    autoChooser.addOption("Only drive straight", driveStraightAuto);
     SmartDashboard.putData("Auto Chooser", autoChooser);
   }
   
@@ -142,12 +144,12 @@ public class RobotContainer {
     
     left_controller.button(1).onTrue(new InstantCommand(m_drivetrainSubsystem::zeroGyroscope)); 
 
-    operatorController.a().onTrue((new AssemblyGoToCubeIntakeCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger, intakeSubsystem, ledSubsystem)));
-    operatorController.y().onTrue(new AssemblyGoToConeIntakeCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger, intakeSubsystem, ledSubsystem));
-    operatorController.b().onTrue(new AssemblyMidScoreCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger, ledSubsystem, () -> operatorController.leftBumper().getAsBoolean())); 
-    operatorController.x().onTrue(new AssemblyHomePositionCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger, ledSubsystem)); 
-    operatorController.povUp().onTrue(new AssemblyHighScoreCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger, () -> operatorController.leftBumper().getAsBoolean(), ledSubsystem)); 
-    operatorController.povDown().onTrue(new AssemblyPickUpSingleSubstationCommand(shoulderSubsystem, wristSubsystem, armSubsystem, shoulderMessenger, armMessenger, intakeSubsystem, ledSubsystem)); 
+    operatorController.a().and(() -> sm.getAtHome()).onTrue((new AssemblyGoToCubeIntakeCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger, intakeSubsystem, ledSubsystem, sm)));
+    operatorController.y().and(() -> sm.getAtHome()).onTrue(new AssemblyGoToConeIntakeCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger, intakeSubsystem, ledSubsystem, sm));
+    operatorController.b().and(() -> sm.getAtHome()).onTrue(new AssemblyMidScoreCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger, ledSubsystem, () -> operatorController.leftBumper().getAsBoolean(), sm)); 
+    operatorController.x().and(() -> !sm.getAtHome()).onTrue(new AssemblyHomePositionCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger, ledSubsystem, sm)); 
+    operatorController.povUp().and(() -> sm.getAtHome()).onTrue(new AssemblyHighScoreCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger, () -> operatorController.leftBumper().getAsBoolean(), ledSubsystem, sm)); 
+    operatorController.povDown().and(() -> sm.getAtHome()).onTrue(new AssemblyPickUpSingleSubstationCommand(shoulderSubsystem, wristSubsystem, armSubsystem, shoulderMessenger, armMessenger, intakeSubsystem, ledSubsystem, sm)); 
 
 
     new Trigger(() -> operatorController.getLeftTriggerAxis() > 0.05)
@@ -155,7 +157,9 @@ public class RobotContainer {
     new Trigger(() -> operatorController.getRightTriggerAxis() > 0.05)
      .whileTrue(new ManualPutdownCommand(intakeSubsystem, () -> operatorController.getRightTriggerAxis())); 
 
-    left_controller.button(2).whileTrue(new StrafeAlign(m_drivetrainSubsystem, vision, left_controller::getX, left_controller::getY));
+    //left_controller.button(2).whileTrue(new StrafeAlign(m_drivetrainSubsystem, vision, left_controller::getX, left_controller::getY));
+    right_controller.button(1).whileTrue(new ManualPutdownCommand(intakeSubsystem, () -> 1.0)); 
+    left_controller.button(3).whileTrue(new InstantCommand( () -> m_drivetrainSubsystem.lockWheels = true)).whileFalse( new InstantCommand( () -> m_drivetrainSubsystem.lockWheels = false));
   }
 
   
@@ -166,10 +170,8 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    //return rightConeAuto; 
-    // return leftConeAuto; 
     //return null; 
-    return autoChooser.getSelected();  
+    return autoChooser.getSelected(); 
     //return highConeAndBalanceAuto; 
   }
 
@@ -185,6 +187,14 @@ public class RobotContainer {
 
   public Command getGoToZeroWristCommand() { 
     return new WristGoToPositionCommand(wristSubsystem, Constants.HOME_POSITION_WRIST); 
+  }
+
+  public Command getIntakeHoldCommand() { 
+    return new IntakeHoldCommand(intakeSubsystem); 
+  }
+
+  public Command setSMHomeCommand() {
+    return new InstantCommand( () -> sm.setAtHome(true));
   }
 
   private static double deadband(double value, double deadband) {

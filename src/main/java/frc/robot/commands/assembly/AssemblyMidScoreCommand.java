@@ -6,7 +6,6 @@ import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
-import frc.robot.autos.LeftSide2ConeAuto;
 import frc.robot.commands.arm.ArmGoToPositionCommand;
 import frc.robot.commands.arm.ArmHoldCommand;
 import frc.robot.commands.shoulder.ShoulderGoToPositionCommand;
@@ -19,14 +18,18 @@ import frc.robot.subsystems.ShoulderSubsystem;
 import frc.robot.subsystems.WristSubsystem;
 import frc.robot.subsystems.ArmSubsystem.ArmShoulderMessenger;
 import frc.robot.subsystems.ShoulderSubsystem.ShoulderWristMessenger;
+import frc.robot.util.StateMachine;
 
 public class AssemblyMidScoreCommand extends SequentialCommandGroup {
 
     public AssemblyMidScoreCommand(ShoulderSubsystem shoulder, ShoulderWristMessenger shoulderWristMessenger,
             WristSubsystem wrist, ArmSubsystem arm, ArmShoulderMessenger armMessenger,
             LEDSubsystem ledSubsystem,
-            BooleanSupplier scoreCube) {
+            BooleanSupplier scoreCube,
+            StateMachine sm) {
+
         addCommands(
+                new InstantCommand( () -> sm.setAtHome(false)),
                 new InstantCommand(() -> shoulder.setInIntakePosition(false)),
                 new InstantCommand(ledSubsystem::setLEDDisable),
 

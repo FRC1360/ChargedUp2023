@@ -4,7 +4,8 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.autos.basic.Drive;
-import frc.robot.autos.basic.DriveSpeed;
+import frc.robot.autos.basic.LockWheels;
+import frc.robot.autos.procedures.ConeScoreHighAuto;
 import frc.robot.commands.arm.ArmHoldCommand;
 import frc.robot.commands.assembly.AssemblyHomePositionCommand;
 import frc.robot.commands.assembly.autoAssembly.AutoAssemblyConeHighScoreCommand;
@@ -17,6 +18,7 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.ShoulderSubsystem;
 import frc.robot.subsystems.ShoulderSubsystem.ShoulderWristMessenger;
+import frc.robot.util.StateMachine;
 import frc.robot.subsystems.WristSubsystem;
 
 public class ConeHighAndDriveAuto extends SequentialCommandGroup {
@@ -24,12 +26,11 @@ public class ConeHighAndDriveAuto extends SequentialCommandGroup {
     public ConeHighAndDriveAuto(DrivetrainSubsystem dt, ShoulderSubsystem shoulder, ShoulderWristMessenger shoulderWristMessenger, 
                                     WristSubsystem wrist, ArmSubsystem arm, IntakeSubsystem intake, 
                                         ArmShoulderMessenger armMessenger,
-                                        LEDSubsystem ledSubsystem) { 
+                                        LEDSubsystem ledSubsystem,
+                                        StateMachine sm) { 
         
-        addCommands(new AutoAssemblyConeHighScoreCommand(shoulder, shoulderWristMessenger, wrist, arm, intake, armMessenger),
-                       // .raceWith(new DriveSpeed(dt, -0.5, 0.0)),   // New - To be tested!!!!
-                    new AssemblyHomePositionCommand(shoulder, shoulderWristMessenger, wrist, arm, armMessenger, ledSubsystem), 
-                    new Drive(dt, 8.0, 0.0)
+        addCommands(new ConeScoreHighAuto(dt, shoulder, shoulderWristMessenger, wrist, arm, intake, armMessenger, ledSubsystem, sm), 
+                    new Drive(dt, 8.2, 0.0)
                         .raceWith(new ShoulderHoldCommand(shoulder, armMessenger, () -> 0.0))
                         .raceWith(new WristHoldCommand(wrist, () -> 0.0))
                         .raceWith(new ArmHoldCommand(arm))

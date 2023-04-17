@@ -9,6 +9,8 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.commands.intake.IntakeHoldCommand;
+import frc.robot.subsystems.IntakeSubsystem;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -80,17 +82,19 @@ public class Robot extends TimedRobot {
     m_robotContainer.getShoulderZeroCommand().schedule();*/
 
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
-      (m_robotContainer.getArmHomeCommand()
+      (((m_robotContainer.getArmHomeCommand()
       .andThen(m_robotContainer.getGoToZeroWristCommand())
-      .andThen(m_robotContainer.getShoulderZeroCommand()))
+      .andThen(m_robotContainer.getShoulderZeroCommand())))
+        .raceWith(m_robotContainer.getIntakeHoldCommand()))
+      .andThen(m_robotContainer.setSMHomeCommand())
       .andThen(m_autonomousCommand).schedule();
     } else {
       (m_robotContainer.getArmHomeCommand()
       .andThen(m_robotContainer.getGoToZeroWristCommand())
-      .andThen(m_robotContainer.getShoulderZeroCommand())).schedule(); 
+      .andThen(m_robotContainer.getShoulderZeroCommand()))
+      .andThen(m_robotContainer.setSMHomeCommand()).schedule(); 
     }
 
    // m_robotContainer.getArmHomeCommand().schedule(); 
@@ -125,7 +129,8 @@ public class Robot extends TimedRobot {
 
       (m_robotContainer.getArmHomeCommand()
         .andThen(m_robotContainer.getGoToZeroWristCommand())
-        .andThen(m_robotContainer.getShoulderZeroCommand())).schedule(); 
+        .andThen(m_robotContainer.getShoulderZeroCommand())
+        .andThen(m_robotContainer.setSMHomeCommand())).schedule(); 
     }
 
     

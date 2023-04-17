@@ -65,7 +65,7 @@ public final class Constants {
     public static final int SHOULDER_MOTOR_SLAVE = 51;
     public static final int SHOULDER_ENCODER = 0;
     //public static final double SHOULDER_ENCODER_OFFSET = 0.542;
-    public static final double SHOULDER_ENCODER_OFFSET = 0.194;
+    public static final double SHOULDER_ENCODER_OFFSET = 0.095;
     public static final double SHOULDER_GEAR_RATIO = (11.0 / 52.0) * (30.0 / 68.0) * (12.0 / 60.0);
     public static final double SHOULDER_MANUAL_OVERRIDE_RANGE = 20.0;
     public static final double MAX_SHOULDER_ANGLE = 90.0; 
@@ -105,7 +105,7 @@ public final class Constants {
 
 
     // CONE_INTAKE_POSITION
-    public static final double CONE_INTAKE_POSITION_WRIST = 48.0;
+    public static final double CONE_INTAKE_POSITION_WRIST = 53.0;
     public static final double CONE_INTAKE_POSITION_ARM = 5.8;
     public static final double CONE_INTAKE_POSITION_SHOULDER = -48.0;
 
@@ -116,8 +116,8 @@ public final class Constants {
 
     // CONE_SCORE_HIGH_POSITION
     public static final double CONE_SCORE_HIGH_POSITION_WRIST = -40.0;
-    public static final double CONE_SCORE_HIGH_POSITION_ARM = 19.0;
-    public static final double CONE_SCORE_HIGH_POSITION_SHOULDER = 44.0;
+    public static final double CONE_SCORE_HIGH_POSITION_ARM = 20.0;
+    public static final double CONE_SCORE_HIGH_POSITION_SHOULDER = 37.0;
 
     // CUBE_SCORE_HIGH_POSITION
     public static final double CUBE_SCORE_HIGH_POSITION_WRIST = 130.0;

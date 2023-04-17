@@ -15,11 +15,13 @@ import frc.robot.subsystems.ShoulderSubsystem;
 import frc.robot.subsystems.WristSubsystem;
 import frc.robot.subsystems.ArmSubsystem.ArmShoulderMessenger;
 import frc.robot.subsystems.ShoulderSubsystem.ShoulderWristMessenger;
+import frc.robot.util.StateMachine;
 
 public class AssemblyHomePositionCommand extends SequentialCommandGroup {
     
     public AssemblyHomePositionCommand(ShoulderSubsystem shoulder, ShoulderWristMessenger shoulderWristMessenger, 
-                                        WristSubsystem wrist, ArmSubsystem arm, ArmShoulderMessenger armMessenger, LEDSubsystem ledSubsystem) { 
+                                        WristSubsystem wrist, ArmSubsystem arm, ArmShoulderMessenger armMessenger, LEDSubsystem ledSubsystem,
+                                        StateMachine sm) { 
         addCommands(
             new InstantCommand( () -> shoulder.setInIntakePosition(false)),
             new InstantCommand(ledSubsystem::setLEDDisable),
@@ -34,7 +36,8 @@ public class AssemblyHomePositionCommand extends SequentialCommandGroup {
                 .raceWith(new WristHoldCommand(wrist, () -> 0.0))
                 .raceWith(new ArmHoldCommand(arm)),
 
-            new InstantCommand(ledSubsystem::setLEDEnable)
+            new InstantCommand(ledSubsystem::setLEDEnable),
+            new InstantCommand( () -> sm.setAtHome(true))
             );
         
 
