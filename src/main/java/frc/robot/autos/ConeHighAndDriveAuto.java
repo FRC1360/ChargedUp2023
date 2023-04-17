@@ -30,7 +30,7 @@ public class ConeHighAndDriveAuto extends SequentialCommandGroup {
                                         StateMachine sm) { 
         
         addCommands(new ConeScoreHighAuto(dt, shoulder, shoulderWristMessenger, wrist, arm, intake, armMessenger, ledSubsystem, sm), 
-                    new Drive(dt, 8.0, 0.0)
+                    new Drive(dt, 8.2, 0.0)
                         .raceWith(new ShoulderHoldCommand(shoulder, armMessenger, () -> 0.0))
                         .raceWith(new WristHoldCommand(wrist, () -> 0.0))
                         .raceWith(new ArmHoldCommand(arm))

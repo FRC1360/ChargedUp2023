@@ -34,7 +34,7 @@ public class AutoPutDownCommand extends CommandBase{
 
     @Override
     public boolean isFinished() { 
-        return this.timer.getTimeDeltaSec() > 1.0; 
+        return this.timer.getTimeDeltaSec() > 0.3; 
     }
 
     
