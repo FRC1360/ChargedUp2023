@@ -24,6 +24,10 @@ public class LEDSubsystem extends SubsystemBase{
         this.enableLED = false;
     }
 
+    public double setLEDCode(double value) {
+        this.LEDColour = value;
+    }
+
     @Override
     public void periodic() {
         if(this.enableLED) {
