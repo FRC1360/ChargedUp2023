@@ -19,7 +19,7 @@ public class LedError extends CommandBase {
     @Override
     public void execute() {
         // TODO Auto-generated method stub
-        led.setLEDCode(-0.35);
+        led.setLEDCode(-0.11);
     }
 
     @Override
