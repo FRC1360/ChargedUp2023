@@ -12,6 +12,7 @@ public class NodeSelectorNTClient extends SubsystemBase {
     
     public NodeSelectorNTClient() { 
         NetworkTableInstance inst = NetworkTableInstance.getDefault(); 
+        inst.startClient4("10.13.60.9:0");
         this.nodeSubscriber = inst.getStringTopic("Selected Node").subscribe(""); 
         this.curSelectedNode = ""; 
     }

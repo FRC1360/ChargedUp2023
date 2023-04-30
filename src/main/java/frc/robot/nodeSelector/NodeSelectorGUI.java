@@ -178,21 +178,22 @@ public class NodeSelectorGUI {
 
         NodeSelectorGUI gui = new NodeSelectorGUI();
 
-        Thread serverThread = new Thread() { 
-            
-            NodeSelectorNTServer server = new NodeSelectorNTServer(gui); 
+        // Thread serverThread = new Thread() { 
 
-            @Override
-            public void run() { 
-                try {
-                    server.run();
-                } catch (IOException ex) { 
-                    this.interrupt();
-                }
-            }
-        }; 
+        //     // try {
+        //     NodeSelectorNTServer server = new NodeSelectorNTServer(gui); 
+        //     // }
+        //     // catch (IOException ex) { 
+        //     // //     this.interrupt();
+        //     // }
 
-        serverThread.start(); 
+        //     @Override
+        //     public void run() { 
+        //         server.run();
+        //     }
+        // }; 
+
+        // serverThread.start(); 
 
     }
 }
