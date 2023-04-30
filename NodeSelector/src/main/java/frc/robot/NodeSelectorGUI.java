@@ -1,4 +1,4 @@
-package frc.robot.nodeSelector;
+package frc.robot;
 
 import javax.swing.JFrame; 
 import javax.swing.JPanel;
@@ -178,22 +178,22 @@ public class NodeSelectorGUI {
 
         NodeSelectorGUI gui = new NodeSelectorGUI();
 
-        // Thread serverThread = new Thread() { 
+        Thread serverThread = new Thread() { 
 
-        //     // try {
-        //     NodeSelectorNTServer server = new NodeSelectorNTServer(gui); 
-        //     // }
-        //     // catch (IOException ex) { 
-        //     // //     this.interrupt();
-        //     // }
+            // try {
+            NodeSelectorNTClient server = new NodeSelectorNTClient(gui); 
+            // }
+            // catch (IOException ex) { 
+            // //     this.interrupt();
+            // }
 
-        //     @Override
-        //     public void run() { 
-        //         server.run();
-        //     }
-        // }; 
+            @Override
+            public void run() { 
+                server.run();
+            }
+        }; 
 
-        // serverThread.start(); 
+        serverThread.start(); 
 
     }
 }
