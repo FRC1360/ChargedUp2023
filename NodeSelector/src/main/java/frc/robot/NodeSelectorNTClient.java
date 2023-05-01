@@ -45,6 +45,7 @@ public class NodeSelectorNTClient extends SubsystemBase {
 
         this.nodePublisher = inst.getStringTopic("Selected Node").publish(); 
         this.gui = gui; 
+        System.out.println("Node Selector GUI NT Driver Station side Initialized"); 
     }
 
     public void run() {

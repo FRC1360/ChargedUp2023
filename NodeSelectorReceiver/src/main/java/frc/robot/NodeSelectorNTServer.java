@@ -18,23 +18,24 @@ public class NodeSelectorNTServer extends SubsystemBase {
         this.inst.startServer();
         this.nodeSubscriber = inst.getStringTopic("Selected Node").subscribe(""); 
         this.curSelectedNode = ""; 
+        System.out.println("Node Selector Robot-Side NT Program Initialized"); 
     }
 
     @Override
     public void periodic() { 
         this.curSelectedNode = this.nodeSubscriber.get(); 
-        System.out.println("Cur Node: " + this.curSelectedNode); 
-        //System.out.println("Connection: " + this.inst.getConnections()); 
+        //System.out.println("Cur Node: " + this.curSelectedNode); 
+        System.out.println("Connection established: " + this.inst.isConnected()); 
     }
 
     public String getGUISelectedNode() { 
         return this.curSelectedNode; 
     }
 
-    public static void main(String[] args) { 
-        NodeSelectorNTServer client = new NodeSelectorNTServer(); 
-        while (true) {
-            System.out.println("Cur Node: " + client.getGUISelectedNode());
-        }
-    }
+    // public static void main(String[] args) { 
+    //     NodeSelectorNTServer server = new NodeSelectorNTServer(); 
+    //     while (true) {
+    //         System.out.println("Cur Node: " + server.getGUISelectedNode());
+    //     }
+    // }
 }
