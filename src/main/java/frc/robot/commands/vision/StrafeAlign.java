@@ -5,7 +5,7 @@ import java.util.function.DoubleSupplier;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.DrivetrainSubsystem;
+import frc.robot.subsystems.SwerveDrive.DrivetrainSubsystem;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.util.OrbitPID;
 
@@ -43,7 +43,7 @@ public class StrafeAlign extends CommandBase {
             ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(xstr, ystr, rot, dt.getGyroscopeRotation()); // field-relatives
             // ChassisSpeeds speeds = ChassisSpeeds(0, str, rot); // robot-relative
 
-            dt.drive(speeds);
+            dt.drive(speeds, false);
         }
     }
 

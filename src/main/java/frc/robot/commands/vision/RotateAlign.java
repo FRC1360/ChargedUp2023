@@ -3,7 +3,7 @@ package frc.robot.commands.vision;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.DrivetrainSubsystem;
+import frc.robot.subsystems.SwerveDrive.DrivetrainSubsystem;
 import frc.robot.subsystems.vision.Vision;
 
 public class RotateAlign extends CommandBase {
@@ -34,7 +34,7 @@ public class RotateAlign extends CommandBase {
             
             speeds.omegaRadiansPerSecond = Math.toRadians(xOffset * 2.5);
 
-            dt.drive(speeds); 
+            dt.drive(speeds, false); 
         }
     }
 

@@ -4,7 +4,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
-import frc.robot.subsystems.DrivetrainSubsystem;
+import frc.robot.subsystems.SwerveDrive.DrivetrainSubsystem;
 import frc.robot.util.OrbitPID;
 
 import java.util.function.DoubleSupplier;
@@ -69,13 +69,13 @@ public class DefaultDriveCommand extends CommandBase {
         //System.out.println(speeds.toString());
 
         m_drivetrainSubsystem.drive(
-                speeds
+                speeds, true
         );
     }
 
     @Override
     public void end(boolean interrupted) {
-        m_drivetrainSubsystem.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
+        m_drivetrainSubsystem.drive(new ChassisSpeeds(0.0, 0.0, 0.0), true);
     }
 
     private double getDirection(double target, double current) {
