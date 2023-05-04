@@ -1,7 +1,7 @@
 package frc.robot.util;
 
 public class OrbitPID {
-	private Double kP, kI, kD;
+	public Double kP, kI, kD;
 	private double integral;
 	private double lastError;
 	private long lastTime;
@@ -60,6 +60,7 @@ public class OrbitPID {
 		// Resets PID values back to zero since last use
 		this.integral = 0.0; 
 		this.lastTime = -1; 
+		this.lastError = Double.NaN;
 		
 		this.pTerm = 0.0;
 		this.iTerm = 0.0;

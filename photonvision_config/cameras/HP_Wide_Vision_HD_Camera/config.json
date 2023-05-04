@@ -1,0 +1,11 @@
+{
+  "baseName" : "HP Wide Vision HD Camera",
+  "uniqueName" : "HP_Wide_Vision_HD_Camera",
+  "nickname" : "HP_Wide_Vision_HD_Camera",
+  "FOV" : 70.0,
+  "path" : "\\\\?\\usb#vid_04f2&pid_b6b6&mi_00#7&12293a26&1&0000#{e5323777-f976-4f5b-9b55-b94699c46e44}\\global",
+  "cameraType" : "UsbCamera",
+  "currentPipelineIndex" : 0,
+  "calibrations" : [ ],
+  "streamIndex" : 0
+}

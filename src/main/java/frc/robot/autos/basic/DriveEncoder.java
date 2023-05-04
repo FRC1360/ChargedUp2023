@@ -1,4 +1,4 @@
-package frc.robot.autos; 
+package frc.robot.autos.basic; 
 
 import frc.robot.subsystems.DrivetrainSubsystem;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -6,7 +6,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
  
-public class Drive extends CommandBase {
+public class DriveEncoder extends CommandBase {
 
     private final DrivetrainSubsystem dt; 
 
@@ -14,11 +14,11 @@ public class Drive extends CommandBase {
 
     // To scale down the meters for speed (m/sec)
     // Aka how much secs it takes to complete 
-    private double scaleFactor = 6; 
+    private double scaleFactor = 2; 
 
     private Translation2d targetPose; 
 
-    public Drive(DrivetrainSubsystem dt, double xMeters, double yMeters) { 
+    public DriveEncoder(DrivetrainSubsystem dt, double xMeters, double yMeters) { 
         // Note: positive xMeters means to upwards, positive yMeters is left 
         this.dt = dt;
         
@@ -26,18 +26,6 @@ public class Drive extends CommandBase {
         
         //TODO: Check if Translation2d measures in meters
         this.targetPose = dt.getTranslation().plus(new Translation2d(xMeters, yMeters)); 
-
-        addRequirements(dt); 
-    }
-
-    public Drive(DrivetrainSubsystem dt, Translation2d targetPose) { 
-        this.dt = dt; 
-        this.targetPose = targetPose; 
-
-        // Calculate x and y speeds 
-        Translation2d disToTravel = targetPose.minus(dt.getTranslation()); 
-
-        this.speeds = new ChassisSpeeds(disToTravel.getX()/scaleFactor, disToTravel.getY()/scaleFactor, 0); // 0 Rotation
 
         addRequirements(dt); 
     }

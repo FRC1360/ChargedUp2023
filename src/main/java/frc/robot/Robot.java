@@ -4,13 +4,13 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.DutyCycle;
+import com.revrobotics.CANSparkMax.IdleMode;
+
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.commands.intake.IntakeHoldCommand;
+import frc.robot.subsystems.IntakeSubsystem;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -32,6 +32,10 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+
+    m_robotContainer.shoulderSubsystem.resetMotorRotations();
+    m_robotContainer.wristSubsystem.resetMotorRotations();
+
   }
 
   /**
@@ -55,7 +59,9 @@ public class Robot extends TimedRobot {
 
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+    m_robotContainer.wristSubsystem.setIdleMode(IdleMode.kBrake);
+  }
 
   @Override
   public void disabledPeriodic() {
@@ -67,17 +73,40 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    m_robotContainer.wristSubsystem.setIdleMode(IdleMode.kCoast);
+    m_robotContainer.shoulderSubsystem.resetMotorRotations();
+    m_robotContainer.wristSubsystem.resetMotorRotations();
+    
+    /*m_robotContainer.getArmHomeCommand().schedule(); 
+    m_robotContainer.getGoToZeroWristCommand().schedule(); 
+    m_robotContainer.getShoulderZeroCommand().schedule();*/
 
+    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
-      m_autonomousCommand.schedule();
+      (((m_robotContainer.getArmHomeCommand()
+      .andThen(m_robotContainer.getGoToZeroWristCommand())
+      .andThen(m_robotContainer.getShoulderZeroCommand())))
+        .raceWith(m_robotContainer.getIntakeHoldCommand()))
+      .andThen(m_robotContainer.setSMHomeCommand())
+      .andThen(m_autonomousCommand).schedule();
+    } else {
+      (m_robotContainer.getArmHomeCommand()
+      .andThen(m_robotContainer.getGoToZeroWristCommand())
+      .andThen(m_robotContainer.getShoulderZeroCommand()))
+      .andThen(m_robotContainer.setSMHomeCommand()).schedule(); 
     }
+
+   // m_robotContainer.getArmHomeCommand().schedule(); 
   }
 
   /** This function is called periodically during autonomous. */
   @Override
-  public void autonomousPeriodic() {}
+  public void autonomousPeriodic() {
+    // m_robotContainer.shoulderSubsystem.updateSmartDashboard();
+    // m_robotContainer.wristSubsystem.updateSmartDashboard();
+    // m_robotContainer.armSubsystem.updateSmartDashboard();
+  }
 
   @Override
   public void teleopInit() {
@@ -87,22 +116,36 @@ public class Robot extends TimedRobot {
     // this line or comment it out.
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
+
+      m_robotContainer.wristSubsystem.setIdleMode(IdleMode.kCoast);
+      m_robotContainer.shoulderSubsystem.resetMotorRotations();
+      m_robotContainer.wristSubsystem.resetMotorRotations();
+      m_robotContainer.wristSubsystem.holdPIDController.reset();
+    } else {
+      m_robotContainer.wristSubsystem.setIdleMode(IdleMode.kCoast);
+      m_robotContainer.shoulderSubsystem.resetMotorRotations();
+      m_robotContainer.wristSubsystem.resetMotorRotations();
+      m_robotContainer.wristSubsystem.holdPIDController.reset();
+
+      (m_robotContainer.getArmHomeCommand()
+        .andThen(m_robotContainer.getGoToZeroWristCommand())
+        .andThen(m_robotContainer.getShoulderZeroCommand())
+        .andThen(m_robotContainer.setSMHomeCommand())).schedule(); 
     }
 
-    m_robotContainer.shoulderSubsystem.resetMotorRotations();
-    m_robotContainer.wristSubsystem.resetMotorRotations();
-    // m_robotContainer.wristSubsystem.holdPIDController.reset();
+    
     // m_robotContainer.shoulderSubsystem.holdPIDController.reset();
-
-    m_robotContainer.getRetractArmCommand().schedule(); 
+    
+    /*m_robotContainer.getGoToZeroWristCommand().schedule(); 
+    m_robotContainer.getShoulderZeroCommand().schedule();*/
   }
 
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
     m_robotContainer.shoulderSubsystem.updateSmartDashboard();
-    m_robotContainer.wristSubsystem.updateSmartDashboard();
-    m_robotContainer.armSubsystem.updateSmartDashboard();
+    // m_robotContainer.wristSubsystem.updateSmartDashboard();
+    // m_robotContainer.armSubsystem.updateSmartDashboard();
 
   }
 

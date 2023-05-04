@@ -8,6 +8,7 @@ import com.revrobotics.REVLibError;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.AnalogEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -23,7 +24,9 @@ public class ShoulderSubsystem extends SubsystemBase {
 
     public OrbitPID holdPIDController;  // PID Controller for HoldToTarget
     public OrbitPID movePIDController;  // PID Controller for following Trapazoid Motion Profile
-    public TrapezoidProfile.Constraints shoulderMotionProfileConstraints;
+    public TrapezoidProfile.Constraints shoulderUpMotionProfileConstraints;
+    public TrapezoidProfile.Constraints shoulderDownMotionProfileConstraints;
+
 
     private double angularVelocity;  // angular velocity in deg / second
     private double lastAngle;
@@ -37,17 +40,25 @@ public class ShoulderSubsystem extends SubsystemBase {
 
     private AnalogEncoder absoluteEncoder;
 
+    public ArmFeedforward shoulderFeedForward;  
+    
+    private boolean inIntakePosition;
+
+    private boolean isSafe; 
+
     public ShoulderSubsystem(DoubleSupplier manualOffset, BooleanSupplier manualOffsetEnable) {
-        this.holdPIDController = new OrbitPID(0.045, 0.0, 0.0);
-        this.movePIDController = new OrbitPID(0.01, 0.0, 0.0);  // TODO - Tune
+        this.holdPIDController = new OrbitPID(0.035, 0.0000075, 0.0); //kP = 0.045
+        this.movePIDController = new OrbitPID(0.0632, 0.0, 0.0);  // kP = 0.02
 
         // This units are deg / second for velocity and deg / sec^2 for acceleration
-        this.shoulderMotionProfileConstraints = new TrapezoidProfile.Constraints(500, 250/2.0);  // TODO - Tune.
-        this.targetAngle = 0.0;  // Make sure this is 0.0 for copetition, only 90 for testing
+        this.shoulderUpMotionProfileConstraints = new TrapezoidProfile.Constraints(200.0, 500.0);  // TODO - Tune.
+        this.shoulderDownMotionProfileConstraints = new TrapezoidProfile.Constraints(100.0, 250.0); 
+        this.targetAngle = Constants.HOME_POSITION_SHOULDER;
 
         this.shoulderMotorMaster = new CANSparkMax(Constants.SHOULDER_MOTOR_MASTER, MotorType.kBrushless);
-        this.shoulderMotorSlave = new CANSparkMax(Constants.SHOULDER_MOTOR_SLAVE, MotorType.kBrushless);
+        this.shoulderMotorSlave = new CANSparkMax(Constants.SHOULDER_MOTOR_SLAVE, MotorType.kBrushless); 
 
+        this.shoulderFeedForward = new ArmFeedforward(0.0, 0.0005, 0.0); //kG = 0.001
 
         this.shoulderMotorMaster.restoreFactoryDefaults();
         this.shoulderMotorSlave.restoreFactoryDefaults();
@@ -68,8 +79,15 @@ public class ShoulderSubsystem extends SubsystemBase {
 
         this.absoluteEncoder = new AnalogEncoder(Constants.SHOULDER_ENCODER);
 
+        this.inIntakePosition = false;
+        this.isSafe = true; 
+
         resetMotorRotations();
         
+    }
+
+    public void checkSafety() { 
+        this.isSafe = true; 
     }
 
     public double getMotorRotations() {
@@ -81,6 +99,10 @@ public class ShoulderSubsystem extends SubsystemBase {
     }
 
     public void setShoulderSpeed(double speed) {
+        if (this.getShoulderAngle() > Constants.MAX_SHOULDER_ANGLE
+             || this.getShoulderAngle() < Constants.MIN_SHOULDER_ANGLE) 
+                speed = 0.0; 
+        
         this.shoulderMotorMaster.set(-speed);
         this.shoulderMotorSlave.set(-speed);
     }
@@ -105,8 +127,12 @@ public class ShoulderSubsystem extends SubsystemBase {
      * Sets arm voltage based off 0.0 - 12.0
      */
     public void setShoulderVoltage(double voltage) {
-        this.shoulderMotorMaster.setVoltage(-voltage);
-        this.shoulderMotorSlave.setVoltage(-voltage);
+        if (this.getShoulderAngle() > Constants.MAX_SHOULDER_ANGLE
+             || this.getShoulderAngle() < Constants.MIN_SHOULDER_ANGLE) 
+                voltage = 0.0;
+        
+        this.shoulderMotorMaster.setVoltage(voltage);
+        this.shoulderMotorSlave.setVoltage(voltage);
     }
 
     /*
@@ -168,6 +194,14 @@ public class ShoulderSubsystem extends SubsystemBase {
         transitioning = !(Math.abs(this.getShoulderAngle()) < 2) && (this.getScheduledAngle() > 0.0 && this.getShoulderAngle() < 0.0) || (this.getScheduledAngle() < 0.0 && this.getShoulderAngle() > 0.0);
     }
 
+    public boolean getInIntakePosition() {
+        return this.inIntakePosition;
+    }
+
+    public void setInIntakePosition(boolean inIntakePosition) {
+        this.inIntakePosition = inIntakePosition;
+    }
+
     @Override
     public void periodic() {
         updateAngularVelocity();
@@ -188,16 +222,16 @@ public class ShoulderSubsystem extends SubsystemBase {
 
         SmartDashboard.putNumber("Shoulder_Target_Angle", this.getTargetAngle());
         SmartDashboard.putNumber("Shoulder_Angle", this.getShoulderAngle());
-        SmartDashboard.putNumber("Shoulder_Manual_Offset", this.manualOffset.getAsDouble());
-        SmartDashboard.putNumber("Shoulder_Scheduled_Angle", this.getScheduledAngle());
+        // SmartDashboard.putNumber("Shoulder_Manual_Offset", this.manualOffset.getAsDouble());
+        // SmartDashboard.putNumber("Shoulder_Scheduled_Angle", this.getScheduledAngle());
 
         SmartDashboard.putNumber("Shoulder_Angular_Velocity", this.getAngluarVelocity());
 
-        SmartDashboard.putNumber("Shoulder_Move_P_Gain", this.movePIDController.getPTerm());
-        SmartDashboard.putNumber("Shoulder_Move_I_Gain", this.movePIDController.getITerm());
-        SmartDashboard.putNumber("Shoulder_Move_D_Gain", this.movePIDController.getDTerm());
+        // SmartDashboard.putNumber("Shoulder_Move_P_Gain", this.movePIDController.getPTerm());
+        // SmartDashboard.putNumber("Shoulder_Move_I_Gain", this.movePIDController.getITerm());
+        // SmartDashboard.putNumber("Shoulder_Move_D_Gain", this.movePIDController.getDTerm());
 
-        SmartDashboard.putBoolean("Shoulder_Transition_State", transitioning);
+        // SmartDashboard.putBoolean("Shoulder_Transition_State", transitioning);
 
         SmartDashboard.putNumber("Shoulder_Absolute_Encoder_Get", this.absoluteEncoder.get());
         SmartDashboard.putNumber("Shoulder_Absolute_Encoder_Absolute", this.absoluteEncoder.getAbsolutePosition());
