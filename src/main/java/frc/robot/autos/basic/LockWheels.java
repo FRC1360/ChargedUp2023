@@ -2,7 +2,7 @@ package frc.robot.autos.basic;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.DrivetrainSubsystem;
+import frc.robot.subsystems.SwerveDrive.DrivetrainSubsystem;
 
 public class LockWheels extends CommandBase {
 
@@ -19,7 +19,7 @@ public class LockWheels extends CommandBase {
     @Override
     public void execute() { 
         this.speeds.omegaRadiansPerSecond = 0.0001; 
-        dt.drive(speeds); 
+        dt.drive(speeds, true); 
     }
 
     @Override

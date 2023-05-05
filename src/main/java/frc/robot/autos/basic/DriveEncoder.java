@@ -1,10 +1,10 @@
 package frc.robot.autos.basic; 
 
-import frc.robot.subsystems.DrivetrainSubsystem;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.SwerveDrive.DrivetrainSubsystem;
  
 public class DriveEncoder extends CommandBase {
 
@@ -37,7 +37,7 @@ public class DriveEncoder extends CommandBase {
 
     @Override
     public void execute() { 
-        dt.drive(speeds);
+        dt.drive(speeds, true);
     }
     
     @Override

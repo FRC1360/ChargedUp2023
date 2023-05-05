@@ -3,7 +3,7 @@ package frc.robot.autos;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.BuiltInAccelerometer;
-import frc.robot.subsystems.DrivetrainSubsystem;
+import frc.robot.subsystems.SwerveDrive.DrivetrainSubsystem;
 
 public class AutoBalance {
     public BuiltInAccelerometer mRioAccel;
@@ -19,10 +19,11 @@ public class AutoBalance {
     private double singleTapTime;
     private double scoringBackUpTime;
     private double doubleTapTime;
+    private DrivetrainSubsystem dt; 
 
     public AutoBalance(DrivetrainSubsystem dt) {
         mRioAccel = new BuiltInAccelerometer();
-        this.mNavx = dt.getNavx(); 
+        this.dt = dt;  
         state = 2;
         debounceCount = 0;
         wobbleCount = 0; 
@@ -88,7 +89,7 @@ public class AutoBalance {
             return -Math.sqrt(pitch * pitch + roll * roll);
         }*/
         System.out.println("NavX Pitch " + this.mNavx.getRoll());
-        return this.mNavx.getRoll();
+        return this.dt.getRollDeg(); 
     }
 
     public int secondsToTicks(double time) {

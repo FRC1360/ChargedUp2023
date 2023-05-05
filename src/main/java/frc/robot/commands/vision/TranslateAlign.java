@@ -3,7 +3,7 @@ package frc.robot.commands.vision;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.DrivetrainSubsystem;
+import frc.robot.subsystems.SwerveDrive.DrivetrainSubsystem;
 import frc.robot.subsystems.vision.Vision;
 
 // aligns crosshair to vision tape
@@ -37,7 +37,7 @@ public class TranslateAlign extends CommandBase {
             SmartDashboard.putNumber("Y-Offset:", yOffset);
             // SmartDashboard.putNumber("Distance:", distance);
 
-            dt.drive(new ChassisSpeeds(yOffset/25, -xOffset/25, 0)); 
+            dt.drive(new ChassisSpeeds(yOffset/25, -xOffset/25, 0), false); 
         }
     }
 

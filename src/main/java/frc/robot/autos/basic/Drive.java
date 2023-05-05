@@ -1,7 +1,7 @@
 package frc.robot.autos.basic; 
 
 import frc.robot.Constants;
-import frc.robot.subsystems.DrivetrainSubsystem;
+import frc.robot.subsystems.SwerveDrive.DrivetrainSubsystem;
 import frc.robot.util.OrbitPID;
 import frc.robot.util.OrbitTimer;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -111,7 +111,7 @@ public class Drive extends CommandBase {
         speeds.vxMetersPerSecond = xSpeed; 
         speeds.vyMetersPerSecond = ySpeed;
 
-        dt.drive(speeds);
+        dt.drive(speeds, true);
     }
     
     @Override

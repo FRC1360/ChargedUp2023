@@ -3,7 +3,7 @@ package frc.robot.simulation;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.DrivetrainSubsystem;
+import frc.robot.subsystems.SwerveDrive.DrivetrainSubsystem;
 
 public class Simulator extends SubsystemBase {
 
