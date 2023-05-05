@@ -45,7 +45,7 @@ public class DIOAbsoluteEncoderSwerve extends SwerveAbsoluteEncoder {
         if (angle < 0.0) {
             angle += 360.0;
         }
-
+        
         return angle;
     }
 

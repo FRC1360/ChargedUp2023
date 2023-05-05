@@ -41,8 +41,8 @@ public final class Constants {
     public static final double SWERVE_WHEEL_DIAMETER = 0.10033; // in meters
     public static final double SWERVE_DRIVE_GEAR_RATIO = (14.0 / 50.0) * (27.0 / 17.0) * (15.0 / 45.0); 
     public static final double SWERVE_STEER_GEAR_RATIO = (14.0 / 50.0) * (10.0 / 60.0); 
-    public static final double SWERVE_DRIVE_MOTOR_RAMP_RATE = 0.0; 
-    public static final double SWERVE_STEER_MOTOR_RAMP_RATE = 0.0; 
+    public static final double SWERVE_DRIVE_MOTOR_RAMP_RATE = 1.0; // Time is seconds for acceleration from 0 to full speed
+    public static final double SWERVE_STEER_MOTOR_RAMP_RATE = 1.0; 
     public static final int SWERVE_ENCODER_PULSE_PER_REV = 42; // TODO Verify
 
     public static final int FRONT_LEFT_MODULE_DRIVE_MOTOR = 10; // FIXME Set front left module drive motor ID

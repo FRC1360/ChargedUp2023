@@ -113,6 +113,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("NavX pitch", this.swerveDrive.getPitch().getDegrees()); 
     SmartDashboard.putNumber("NavX roll", this.getRollDeg()); 
     SmartDashboard.putNumber("Drivetrain_Speed_X", m_chassisSpeeds.vxMetersPerSecond); 
-    SmartDashboard.putNumber("Drivetrain_Speed_Y", m_chassisSpeeds.vyMetersPerSecond); 
+    SmartDashboard.putNumber("Drivetrain_Speed_Y", m_chassisSpeeds.vyMetersPerSecond);
+    
+    this.swerveDrive.updateOdometry();
   } 
 }

@@ -269,7 +269,7 @@ public class SwerveModule
     double angle;
     if (absoluteEncoder != null)
     {
-      angle = absoluteEncoder.getAbsolutePosition() - angleOffset;
+      angle = absoluteEncoder.getAbsolutePosition() + angleOffset; // Previously -
       if (absoluteEncoder.readingError)
       {
         angle = getRelativePosition();
@@ -284,6 +284,7 @@ public class SwerveModule
       angle += 360;
     }
 
+    System.out.println(configuration.name + String.format(": %s", angle)); 
     return angle;
   }
 
