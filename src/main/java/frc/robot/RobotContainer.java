@@ -56,6 +56,23 @@ import frc.robot.subsystems.LEDSubsystem;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
+  enum OuttakeLevels { // the set points that can be set by operator
+    MEDIUMCONE,
+    MEDIUMCUBE,
+    HIGHCONE,
+    HIGHCUBE
+  }
+
+  OuttakeLevels level = OuttakeLevels.MEDIUMCONE;
+
+  public void getOuttakeLevel(OuttakeLevels level) {
+    if (level == OuttakeLevels.MEDIUMCONE){
+      new AssemblyMidScoreCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger, ledSubsystem, () -> operatorController.leftBumper().getAsBoolean(), sm);
+    } else if (level == OuttakeLevels.HIGHCONE) {
+      new AssemblyHighScoreCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger, () -> operatorController.leftBumper().getAsBoolean(), ledSubsystem, sm);
+    }
+  }
+
   private final CommandJoystick left_controller = new CommandJoystick(0);
   private final CommandJoystick right_controller = new CommandJoystick(1);
   private final CommandXboxController operatorController = new CommandXboxController(2);
@@ -142,7 +159,8 @@ public class RobotContainer {
             // No requirements because we don't need to interrupt anything
             .onTrue(new InstantCommand(m_drivetrainSubsystem::zeroGyroscope));*/
     
-    left_controller.button(1).onTrue(new InstantCommand(m_drivetrainSubsystem::zeroGyroscope)); 
+    left_controller.button(6).onTrue(new InstantCommand(m_drivetrainSubsystem::zeroGyroscope));
+
 
     operatorController.a().and(() -> sm.getAtHome()).onTrue((new AssemblyGoToCubeIntakeCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger, intakeSubsystem, ledSubsystem, sm)));
     operatorController.y().and(() -> sm.getAtHome()).onTrue(new AssemblyGoToConeIntakeCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger, intakeSubsystem, ledSubsystem, sm));
@@ -155,11 +173,15 @@ public class RobotContainer {
     new Trigger(() -> operatorController.getLeftTriggerAxis() > 0.05)
      .whileTrue(new ManualIntakeCommand(intakeSubsystem, () -> operatorController.getLeftTriggerAxis()));
     new Trigger(() -> operatorController.getRightTriggerAxis() > 0.05)
-     .whileTrue(new ManualPutdownCommand(intakeSubsystem, () -> operatorController.getRightTriggerAxis())); 
+     .whileTrue(new ManualPutdownCommand(intakeSubsystem, () -> operatorController.getRightTriggerAxis()));
 
     //left_controller.button(2).whileTrue(new StrafeAlign(m_drivetrainSubsystem, vision, left_controller::getX, left_controller::getY));
+    left_controller.button(1).whileTrue(new ManualIntakeCommand(intakeSubsystem, () -> 1.0));
     right_controller.button(1).whileTrue(new ManualPutdownCommand(intakeSubsystem, () -> 1.0)); 
-    left_controller.button(3).whileTrue(new InstantCommand( () -> m_drivetrainSubsystem.lockWheels = true)).whileFalse( new InstantCommand( () -> m_drivetrainSubsystem.lockWheels = false));
+    left_controller.button(7).whileTrue(new InstantCommand( () -> m_drivetrainSubsystem.lockWheels = true)).whileFalse( new InstantCommand( () -> m_drivetrainSubsystem.lockWheels = false));
+    
+    
+    
   }
 
   
