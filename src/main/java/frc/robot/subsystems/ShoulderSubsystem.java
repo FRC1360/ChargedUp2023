@@ -8,8 +8,10 @@ import com.revrobotics.REVLibError;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.hal.SimDouble;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.AnalogEncoder;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -35,7 +37,7 @@ public class ShoulderSubsystem extends SubsystemBase {
     private DoubleSupplier manualOffset;
     private BooleanSupplier manualOffsetEnable;
 
-    private AnalogEncoder absoluteEncoder;
+    private AnalogEncoder analogInput;
 
     public ShoulderSubsystem(DoubleSupplier manualOffset, BooleanSupplier manualOffsetEnable) {
         this.holdPIDController = new OrbitPID(0.045, 0.0, 0.0);
@@ -66,7 +68,7 @@ public class ShoulderSubsystem extends SubsystemBase {
         this.manualOffset = manualOffset;
         this.manualOffsetEnable = manualOffsetEnable;
 
-        this.absoluteEncoder = new AnalogEncoder(Constants.SHOULDER_ENCODER);
+        this.analogInput = new AnalogEncoder(Constants.SHOULDER_ENCODER);
 
         resetMotorRotations();
         
@@ -85,9 +87,10 @@ public class ShoulderSubsystem extends SubsystemBase {
         this.shoulderMotorSlave.set(-speed);
     }
 
+
     public void resetMotorRotations() {
         // 
-        double newPos = -((absoluteEncoder.getAbsolutePosition() - Constants.SHOULDER_ENCODER_OFFSET) / Constants.SHOULDER_GEAR_RATIO);  
+        double newPos = -((analogInput.getAbsolutePosition() - Constants.SHOULDER_ENCODER_OFFSET) / Constants.SHOULDER_GEAR_RATIO);  
         
         SmartDashboard.putNumber("New_Pos", newPos);
 
@@ -199,8 +202,8 @@ public class ShoulderSubsystem extends SubsystemBase {
 
         SmartDashboard.putBoolean("Shoulder_Transition_State", transitioning);
 
-        SmartDashboard.putNumber("Shoulder_Absolute_Encoder_Get", this.absoluteEncoder.get());
-        SmartDashboard.putNumber("Shoulder_Absolute_Encoder_Absolute", this.absoluteEncoder.getAbsolutePosition());
+        SmartDashboard.putNumber("Shoulder_Absolute_Encoder_Get", this.analogInput.get());
+        SmartDashboard.putNumber("Shoulder_Absolute_Encoder_Absolute", this.analogInput.getAbsolutePosition());
         SmartDashboard.putNumber("Shoulder_Motor_Encoder", this.shoulderMotorMaster.getEncoder().getPosition());
 
         SmartDashboard.putNumber("Shoulder_Master_Current", this.shoulderMotorMaster.getOutputCurrent());
