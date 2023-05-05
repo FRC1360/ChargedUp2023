@@ -65,13 +65,7 @@ public class RobotContainer {
 
   OuttakeLevels level = OuttakeLevels.MEDIUMCONE;
 
-  public void getOuttakeLevel(OuttakeLevels level) {
-    if (level == OuttakeLevels.MEDIUMCONE){
-      new AssemblyMidScoreCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger, ledSubsystem, () -> operatorController.leftBumper().getAsBoolean(), sm);
-    } else if (level == OuttakeLevels.HIGHCONE) {
-      new AssemblyHighScoreCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger, () -> operatorController.leftBumper().getAsBoolean(), ledSubsystem, sm);
-    }
-  }
+  
 
   private final CommandJoystick left_controller = new CommandJoystick(0);
   private final CommandJoystick right_controller = new CommandJoystick(1);
@@ -161,14 +155,19 @@ public class RobotContainer {
     
     left_controller.button(6).onTrue(new InstantCommand(m_drivetrainSubsystem::zeroGyroscope));
 
+    left_controller.button(4).whileTrue((new AssemblyGoToCubeIntakeCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger, intakeSubsystem, ledSubsystem, sm)));
+    left_controller.button(5).whileTrue(new AssemblyGoToConeIntakeCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger, intakeSubsystem, ledSubsystem, sm));
+    left_controller.button(5).and(left_controller.button(3)).and(left_controller.button(4)).whileFalse(new AssemblyHomePositionCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger, ledSubsystem, sm)); 
+    left_controller.button(3).whileTrue(new AssemblyPickUpSingleSubstationCommand(shoulderSubsystem, wristSubsystem, armSubsystem, shoulderMessenger, armMessenger, intakeSubsystem, ledSubsystem, sm)); 
 
-    operatorController.a().and(() -> sm.getAtHome()).onTrue((new AssemblyGoToCubeIntakeCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger, intakeSubsystem, ledSubsystem, sm)));
+
+    /*operatorController.a().and(() -> sm.getAtHome()).onTrue((new AssemblyGoToCubeIntakeCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger, intakeSubsystem, ledSubsystem, sm)));
     operatorController.y().and(() -> sm.getAtHome()).onTrue(new AssemblyGoToConeIntakeCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger, intakeSubsystem, ledSubsystem, sm));
     operatorController.b().and(() -> sm.getAtHome()).onTrue(new AssemblyMidScoreCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger, ledSubsystem, () -> operatorController.leftBumper().getAsBoolean(), sm)); 
     operatorController.x().and(() -> !sm.getAtHome()).onTrue(new AssemblyHomePositionCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger, ledSubsystem, sm)); 
     operatorController.povUp().and(() -> sm.getAtHome()).onTrue(new AssemblyHighScoreCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger, () -> operatorController.leftBumper().getAsBoolean(), ledSubsystem, sm)); 
     operatorController.povDown().and(() -> sm.getAtHome()).onTrue(new AssemblyPickUpSingleSubstationCommand(shoulderSubsystem, wristSubsystem, armSubsystem, shoulderMessenger, armMessenger, intakeSubsystem, ledSubsystem, sm)); 
-
+    */
 
     new Trigger(() -> operatorController.getLeftTriggerAxis() > 0.05)
      .whileTrue(new ManualIntakeCommand(intakeSubsystem, () -> operatorController.getLeftTriggerAxis()));
@@ -180,7 +179,13 @@ public class RobotContainer {
     right_controller.button(1).whileTrue(new ManualPutdownCommand(intakeSubsystem, () -> 1.0)); 
     left_controller.button(7).whileTrue(new InstantCommand( () -> m_drivetrainSubsystem.lockWheels = true)).whileFalse( new InstantCommand( () -> m_drivetrainSubsystem.lockWheels = false));
     
-    
+    operatorController.a().onTrue(setOuttakeLevel(OuttakeLevels.HIGHCONE));
+    operatorController.b().onTrue(setOuttakeLevel(OuttakeLevels.HIGHCUBE));
+
+    operatorController.x().onTrue(setOuttakeLevel(OuttakeLevels.HIGHCONE));
+    operatorController.y().onTrue(setOuttakeLevel(OuttakeLevels.MEDIUMCUBE));
+
+    left_controller.button(2).onTrue(getOuttakeLevel(level));
     
   }
 
@@ -197,7 +202,24 @@ public class RobotContainer {
     //return highConeAndBalanceAuto; 
   }
 
+  public Command setOuttakeLevel(OuttakeLevels height){
+    level = height;
+    return null;
+  }
   
+  public Command getOuttakeLevel(OuttakeLevels level) {
+    if (level == OuttakeLevels.MEDIUMCONE){
+      return new AssemblyMidScoreCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger, ledSubsystem, () -> false, sm);
+    } else if (level == OuttakeLevels.MEDIUMCUBE) {
+      return new AssemblyMidScoreCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger, ledSubsystem, () -> true, sm);
+    }  else if (level == OuttakeLevels.HIGHCONE) {
+      return new AssemblyHighScoreCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger, () -> false, ledSubsystem, sm);
+    } else if (level == OuttakeLevels.HIGHCUBE) {
+      return new AssemblyHighScoreCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger, () -> true, ledSubsystem, sm);
+    } else {
+      return null;
+    }
+  }
 
   public Command getArmHomeCommand() { 
     return new ArmHomeCommand(armSubsystem); 
