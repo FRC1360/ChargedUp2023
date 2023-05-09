@@ -5,6 +5,7 @@ import java.util.function.DoubleSupplier;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.REVLibError;
+import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
@@ -22,8 +23,10 @@ public class WristSubsystem extends SubsystemBase {
     private CANSparkMax wristMotor;
     private double wristOffset;  // Angle offset for the shoulder, should really be called angle 
 
-    public OrbitPID holdPIDController;
-    public OrbitPID movePIDController;
+    public SparkMaxPIDController pid;
+    public int moveSlot = 0;
+    public int holdSlot = 1;
+
     public ArmFeedforward wristFeedForward;
     public TrapezoidProfile.Constraints wristMotionProfileConstraints;
 
@@ -44,10 +47,14 @@ public class WristSubsystem extends SubsystemBase {
         this.wristMotor = new CANSparkMax(Constants.WRIST_MOTOR, MotorType.kBrushless);
         
         this.wristOffset = 0.0;
-        // kP = 0.0125
-        this.holdPIDController = new OrbitPID(0.04, 0.00005, 0.0); // kI - 0.000005
-        this.movePIDController = new OrbitPID(0.025, 0.000000, 0.4);  // TODO - Tune
 
+        this.pid = wristMotor.getPIDController();
+        setPIDValues(holdSlot, 0, 0, 0, 0, 0, 0); // retune both of these
+        setPIDValues(moveSlot, 0, 0, 0, 0, 0, 0);
+        setSmartMotionValues(holdSlot, 0, 0); // and these!
+        setSmartMotionValues(moveSlot, 0, 0);
+
+        // SparkMAX can't do complex FF so we keep this bit
         this.wristFeedForward = new ArmFeedforward(0.0, 0.125, 0.0); // ks, kg, kv
         this.wristMotionProfileConstraints = new TrapezoidProfile.Constraints(200.0, 600.0);  // TODO - Tune
         this.shoulderWristMessenger = shoulderWristMessenger;
@@ -155,6 +162,19 @@ public class WristSubsystem extends SubsystemBase {
      */
     public double encoderToAngleConversion(double encoderPosition) {
         return (encoderPosition * 360.0 * 2.0 * Constants.WRIST_GEAR_RATIO);
+    }
+
+    public void setPIDValues(int slot, double kP, double kI, double kD, double kFF, double kMax, double kMin) {
+        pid.setP(kP, slot);
+        pid.setI(kI, slot);
+        pid.setD(kD, slot);
+        pid.setFF(kFF, slot);
+        pid.setOutputRange(kMin, kMax);
+    }
+
+    public void setSmartMotionValues(int slot, double maxVel, double maxAccel) {
+        pid.setSmartMotionMaxVelocity(maxVel, slot);
+        pid.setSmartMotionMaxAccel(maxAccel, slot);
     }
 
     public void updateSmartDashboard() {
