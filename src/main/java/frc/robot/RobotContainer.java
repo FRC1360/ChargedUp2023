@@ -171,8 +171,9 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
     //return null; 
-    return autoChooser.getSelected(); 
-    //return highConeAndBalanceAuto; 
+    //return autoChooser.getSelected(); 
+    //return highConeAndBalanceAuto;
+    return driveStraightAuto; 
   }
 
   

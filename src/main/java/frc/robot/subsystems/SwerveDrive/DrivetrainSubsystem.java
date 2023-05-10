@@ -13,6 +13,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.util.OrbitPID;
 import swervelib.SwerveDrive;
 import swervelib.math.SwerveModuleState2;
+import swervelib.telemetry.SwerveDriveTelemetry;
+import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 
 public class DrivetrainSubsystem extends SubsystemBase {
 
@@ -30,6 +32,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
   public DrivetrainSubsystem() {
     lockWheels = false;
+
+    SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
 
     this.swerveDrive = new SwerveDrive(SwerveConfig.DRIVE_CONFIGURATION, SwerveConfig.CONTROLLER_CONFIGURATION); 
 
