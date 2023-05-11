@@ -24,14 +24,19 @@ public class WristGoToPositionCommand extends CommandBase {
     public void initialize() {
         this.wrist.setWristOffset(angle);
         this.timer.start();
+
         // TODO: calculate and store profile ETA
+        double accel = this.wrist.pid.getSmartMotionMaxAccel(this.wrist.moveSlot);
+        double vel = this.wrist.pid.getSmartMotionMaxVelocity(this.wrist.moveSlot);
+        double accelTime = (vel - this.wrist.getAngularVelocity()) / accel; // time to reach top speed
+        double stopTime = vel / accel; // time to stop
+        double travelTime = 0; // TODO: finish trapezoid travel time calcs    
+
         System.out.println("Set Wrist Offset = " + this.angle);
     }
 
     @Override
     public void execute() {
-        double input = this.wrist.getWristAngle();
-
         // FF needs to be done by RoboRIO
         double feedforwardOutput = 0.0;
         if (!this.wrist.getAngularVelocity().isNaN()) { 
@@ -40,7 +45,7 @@ public class WristGoToPositionCommand extends CommandBase {
                 Math.toRadians(this.wrist.getAngularVelocity())); 
         }
 
-        this.wrist.updateSmartMotion(wrist.moveSlot, this.wrist.getTargetAngle(), feedforwardOutput);
+        this.wrist.updateSmartMotion(this.wrist.moveSlot, this.wrist.getTargetAngle(), feedforwardOutput);
     }
 
     @Override

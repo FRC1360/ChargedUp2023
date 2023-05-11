@@ -21,31 +21,20 @@ public class WristHoldCommand  extends CommandBase{
 
     @Override
     public void initialize() { 
-        this.wrist.holdPIDController.reset(); 
+        // no longer need to reset PID
     }
     
     @Override
     public void execute() {
-        double target = this.wrist.getWristOffset(); // Originally targetAngle()
-        double input = this.wrist.getWristAngle();
-
-        double pidOutput = this.wrist.holdPIDController.calculate(target, input);
-
+        // FF needs to be done by RoboRIO
         double feedforwardOutput = 0.0;
-        
         if (!this.wrist.getAngularVelocity().isNaN()) { 
-            feedforwardOutput = this.wrist.wristFeedForward.calculate(Math.toRadians(this.wrist.getWristOffset()), 
-                                                                        Math.toRadians(this.wrist.getAngularVelocity())); 
-        } 
+            feedforwardOutput = this.wrist.wristFeedForward.calculate(
+                Math.toRadians(this.wrist.getWristAngleLocal()),
+                Math.toRadians(this.wrist.getAngularVelocity())); 
+        }
 
-       
-        // SmartDashboard.putNumber("Wrist_Hold_FF", feedforwardOutput); 
-        double speed = pidOutput + feedforwardOutput; 
-
-        // SmartDashboard.putNumber("Wrist_Hold_PID_Output", speed); 
-
-        //if (this.intakeSpeed.getAsDouble() > 0.5) speed = -0.1; 
-        this.wrist.setWristNormalizedVoltage(speed);         
+        this.wrist.updateSmartMotion(wrist.holdSlot, this.wrist.getTargetAngle(), feedforwardOutput);
     }
 
     @Override
