@@ -6,8 +6,10 @@ import java.util.function.DoubleSupplier;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.REVLibError;
 import com.revrobotics.SparkMaxPIDController;
+import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.SparkMaxPIDController.ArbFFUnits;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -16,7 +18,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.ShoulderSubsystem.ShoulderWristMessenger;
-import frc.robot.util.OrbitPID;
 
 public class WristSubsystem extends SubsystemBase {
 
@@ -28,7 +29,6 @@ public class WristSubsystem extends SubsystemBase {
     public int holdSlot = 1;
 
     public ArmFeedforward wristFeedForward;
-    public TrapezoidProfile.Constraints wristMotionProfileConstraints;
 
     private ShoulderWristMessenger shoulderWristMessenger;
 
@@ -49,14 +49,13 @@ public class WristSubsystem extends SubsystemBase {
         this.wristOffset = 0.0;
 
         this.pid = wristMotor.getPIDController();
-        setPIDValues(holdSlot, 0, 0, 0, 0, 0, 0); // retune both of these
+        setPIDValues(holdSlot, 0, 0, 0, 0, 0, 0); // SparkMAX needs much smaller constants than we had before, retune both of these
         setPIDValues(moveSlot, 0, 0, 0, 0, 0, 0);
-        setSmartMotionValues(holdSlot, 0, 0); // and these!
-        setSmartMotionValues(moveSlot, 0, 0);
+        setSmartMotionValues(moveSlot, 0, 0); // and this!
 
-        // SparkMAX can't do complex FF so we keep this bit
-        this.wristFeedForward = new ArmFeedforward(0.0, 0.125, 0.0); // ks, kg, kv
-        this.wristMotionProfileConstraints = new TrapezoidProfile.Constraints(200.0, 600.0);  // TODO - Tune
+        // SparkMAX can't do complex FF (gravity, etc.) so we keep this bit
+        this.wristFeedForward = new ArmFeedforward(0.0, 0.125, 0.0);
+
         this.shoulderWristMessenger = shoulderWristMessenger;
 
         this.wristMotor.restoreFactoryDefaults();
@@ -103,6 +102,8 @@ public class WristSubsystem extends SubsystemBase {
         return this.encoderToAngleConversion(this.getMotorRotations());
     }
 
+    // deprecated as we offload to SparkMAX
+    @Deprecated
     public void setWristSpeed(double speed) {
         if (this.getWristAngle() > Constants.WRIST_MAX_ANGLE
              || this.getWristAngle() < Constants.WRIST_MIN_ANGLE)
@@ -113,6 +114,7 @@ public class WristSubsystem extends SubsystemBase {
     /*
      * Sets arm voltage based off 0.0 - 12.0
      */
+    @Deprecated
     public void setWristVoltage(double voltage) {
         if (this.getWristAngle() > Constants.WRIST_MAX_ANGLE
             || this.getWristAngle() < Constants.WRIST_MIN_ANGLE)
@@ -123,14 +125,18 @@ public class WristSubsystem extends SubsystemBase {
     /*
      * Sets arm voltage based off 0.0 - 1.0 
      */
+    @Deprecated
     public void setWristNormalizedVoltage(double voltage) {
         this.setWristVoltage(voltage * 12.0);  // Should probably change this to a constant somewhere for ARM_VOLTAGE
     }
 
     // This return a GLOBAL angle. The global angle is the angle relative to the shoulder
     public double getTargetAngle() {  // Use getTargetAngle() when doing commands to move the wrist
-        
         return -this.shoulderWristMessenger.getShoulderAngle() + this.getWristOffset() + (manualOffsetEnable.getAsBoolean() ? -manualOffset.getAsDouble() : 0.0);
+    }
+
+    public double getWristAngleLocal() {
+        return this.shoulderWristMessenger.getShoulderAngle() + this.getWristAngle();
     }
  
     public void setWristOffset(double offset) {
@@ -169,12 +175,20 @@ public class WristSubsystem extends SubsystemBase {
         pid.setI(kI, slot);
         pid.setD(kD, slot);
         pid.setFF(kFF, slot);
+        // handles speed limits, very important to prevent smokeys
         pid.setOutputRange(kMin, kMax);
     }
 
     public void setSmartMotionValues(int slot, double maxVel, double maxAccel) {
         pid.setSmartMotionMaxVelocity(maxVel, slot);
         pid.setSmartMotionMaxAccel(maxAccel, slot);
+    }
+
+    // Updates SmartMotion inputs
+    // target should be encoder position 
+    // FF is in % output, like before
+    public void updateSmartMotion(int slot, double target, double ff) {
+        pid.setReference(target, ControlType.kSmartMotion, slot, ff, ArbFFUnits.kPercentOut);
     }
 
     public void updateSmartDashboard() {

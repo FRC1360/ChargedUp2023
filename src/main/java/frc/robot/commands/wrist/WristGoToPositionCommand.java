@@ -11,10 +11,6 @@ public class WristGoToPositionCommand extends CommandBase {
     private WristSubsystem wrist;
     private double angle;
 
-    private TrapezoidProfile motionProfile;
-    private TrapezoidProfile.State startState;
-    private TrapezoidProfile.State endState;
-
     private OrbitTimer timer;
 
     public WristGoToPositionCommand(WristSubsystem wrist, double angle) {
@@ -26,65 +22,29 @@ public class WristGoToPositionCommand extends CommandBase {
 
     @Override
     public void initialize() {
-        this.wrist.movePIDController.reset();
         this.wrist.setWristOffset(angle);
-
-        double startVelocity = 0.0;
-
-        if (!this.wrist.getAngularVelocity().isNaN()) { 
-            startVelocity = this.wrist.getAngularVelocity().doubleValue(); 
-        } 
-
-        this.startState = new TrapezoidProfile.State(this.wrist.getWristAngle(), startVelocity);
-        //this.endState = new TrapezoidProfile.State(this.wrist.getTargetAngle(), 0.0);
-        this.endState = new TrapezoidProfile.State(this.wrist.getWristOffset(), 0.0);
-
-        this.motionProfile = new TrapezoidProfile(this.wrist.wristMotionProfileConstraints, 
-            this.endState,
-            this.startState);
-        
         this.timer.start();
-
+        // TODO: calculate and store profile ETA
         System.out.println("Set Wrist Offset = " + this.angle);
     }
 
     @Override
     public void execute() {
-        TrapezoidProfile.State profileTarget = this.motionProfile.calculate(this.timer.getTimeDeltaSec());
-
-        double target = profileTarget.position;
         double input = this.wrist.getWristAngle();
 
-        SmartDashboard.putNumber("Wrist_Move_Profile_Position", profileTarget.position);
-        SmartDashboard.putNumber("Wrist_Move_Profile_Velocity", profileTarget.velocity);
-
-        double pidOutput = this.wrist.movePIDController.calculate(target, input);
-        //SmartDashboard.putNumber("Wrist_Motion_Profile_Ouput", pidOutput);
-
-        //if (Math.abs(speed) > 0.50) speed =  Math.copySign(0.5, speed); 
+        // FF needs to be done by RoboRIO
         double feedforwardOutput = 0.0;
-        
         if (!this.wrist.getAngularVelocity().isNaN()) { 
-            feedforwardOutput = this.wrist.wristFeedForward.calculate(Math.toRadians(profileTarget.position), 
-                                                                        Math.toRadians(this.wrist.getAngularVelocity())); 
-        } 
-
-        double speed = pidOutput + feedforwardOutput; 
-
-        if(Math.abs(speed) > 0.4) {
-            speed = Math.copySign(0.4, speed);  // Clamping speed to prevent motor stall
+            feedforwardOutput = this.wrist.wristFeedForward.calculate(
+                Math.toRadians(this.wrist.getWristAngleLocal()),
+                Math.toRadians(this.wrist.getAngularVelocity())); 
         }
 
-        // SmartDashboard.putNumber("Wrist_Move_PID_Output", pidOutput);
-        // SmartDashboard.putNumber("Wrist_FF_Output", feedforwardOutput);
-        SmartDashboard.putNumber("Wrist_Move_PID_And_FF_Output", speed); 
-
-        this.wrist.setWristNormalizedVoltage(speed);
+        this.wrist.updateSmartMotion(wrist.moveSlot, this.wrist.getTargetAngle(), feedforwardOutput);
     }
 
     @Override
     public boolean isFinished() {
-        return this.motionProfile.isFinished(this.timer.getTimeDeltaSec())  
-            /*&& Math.abs(this.wrist.getWristAngle() - this.wrist.getTargetAngle()) < 3.0*/;
+        return Math.abs(this.wrist.getWristAngle() - this.wrist.getTargetAngle()) < 3.0; // TODO: calculate profile ETA and use that here
     }
 }
