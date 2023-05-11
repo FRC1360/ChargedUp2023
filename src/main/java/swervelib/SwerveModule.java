@@ -169,6 +169,8 @@ public class SwerveModule
       SwerveMath.antiJitter(desiredState, lastState, Math.min(configuration.maxSpeed, 4));
     }
 
+    SmartDashboard.putNumber("Module[" + configuration.name + "] Angle Setpoint:", desiredState.angle.getDegrees());
+
     if (SwerveDriveTelemetry.verbosity == TelemetryVerbosity.HIGH)
     {
       SmartDashboard.putNumber("Module[" + configuration.name + "] Speed Setpoint:", desiredState.speedMetersPerSecond);

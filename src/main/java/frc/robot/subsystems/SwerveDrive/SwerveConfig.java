@@ -27,7 +27,7 @@ public final class SwerveConfig {
     public static CANSparkMax backRightTurnMotor = new CANSparkMax(BACK_RIGHT_MODULE_STEER_MOTOR, MotorType.kBrushless); 
 
     public static final PIDFConfig VELOCITY_PIDF = new PIDFConfig(0.0020645, 0.0, 0.0, 0.0); 
-    public static final PIDFConfig ANGLE_PIDF = new PIDFConfig(0.01, 0.0, 0.0, 0.0); 
+    public static final PIDFConfig ANGLE_PIDF = new PIDFConfig(0.00025, 0.0, 0.00000, 0.0); // double precision 15 digits after decimal
 
     public static final SwerveModuleConfiguration[] moduleConfigs 
         = new SwerveModuleConfiguration[] {
@@ -73,6 +73,6 @@ public final class SwerveConfig {
 
     public static final SwerveControllerConfiguration CONTROLLER_CONFIGURATION 
         = new SwerveControllerConfiguration(
-            DRIVE_CONFIGURATION, new PIDFConfig(0.4, 0.0, 0.01, 0.0)
+            DRIVE_CONFIGURATION, new PIDFConfig(0.6, 0.0, 0.01, 0.0)
             ); 
 }

@@ -33,7 +33,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
   public DrivetrainSubsystem() {
     lockWheels = false;
 
-    SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
+    //SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
 
     this.swerveDrive = new SwerveDrive(SwerveConfig.DRIVE_CONFIGURATION, SwerveConfig.CONTROLLER_CONFIGURATION); 
 
