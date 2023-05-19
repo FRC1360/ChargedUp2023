@@ -66,7 +66,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
         = new Translation2d(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond); 
     
     this.swerveDrive.drive(xAndYVelocity, chassisSpeeds.omegaRadiansPerSecond, 
-                              isFieldRelative, true); 
+                              isFieldRelative, true);
   }
 
   public void stop() { 

@@ -734,6 +734,8 @@ public class SwerveDrive
         SmartDashboard.putNumber(
             "Module[" + module.configuration.name + "] Absolute Encoder", module.getAbsolutePosition());
       }
+      SmartDashboard.putNumber(
+            "Module[" + module.configuration.name + "] Absolute Encoder", module.getAbsolutePosition());
       if (SwerveDriveTelemetry.verbosity.ordinal() >= TelemetryVerbosity.HIGH.ordinal())
       {
         SwerveDriveTelemetry.measuredStates[module.moduleNumber * 2] = moduleState.angle.getDegrees();

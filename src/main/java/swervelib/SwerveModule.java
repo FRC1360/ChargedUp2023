@@ -152,6 +152,7 @@ public class SwerveModule
     if (isOpenLoop)
     {
       double percentOutput = desiredState.speedMetersPerSecond / configuration.maxSpeed;
+      SmartDashboard.putNumber("Velocity Output", percentOutput); 
       driveMotor.set(percentOutput);
     } else
     {
@@ -170,6 +171,7 @@ public class SwerveModule
     }
 
     SmartDashboard.putNumber("Module[" + configuration.name + "] Angle Setpoint:", desiredState.angle.getDegrees());
+    SmartDashboard.putNumber("Module[" + configuration.name + "] Speed Setpoint:", desiredState.speedMetersPerSecond);
 
     if (SwerveDriveTelemetry.verbosity == TelemetryVerbosity.HIGH)
     {
@@ -286,7 +288,7 @@ public class SwerveModule
       angle += 360;
     }
 
-    System.out.println(configuration.name + String.format(": %s", angle)); 
+    //System.out.println(configuration.name + String.format(": %s", angle)); 
     return angle;
   }
 
