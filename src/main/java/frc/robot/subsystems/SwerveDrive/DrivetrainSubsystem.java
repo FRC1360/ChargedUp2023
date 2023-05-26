@@ -11,6 +11,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.util.OrbitPID;
+import swervelib.SwerveController;
 import swervelib.SwerveDrive;
 import swervelib.math.SwerveModuleState2;
 import swervelib.telemetry.SwerveDriveTelemetry;
@@ -48,6 +49,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
     this.swerveDrive.zeroGyro();
   }
 
+  public SwerveController getSwerveController() { 
+    return this.swerveDrive.swerveController; 
+  }
+
   public Rotation2d getGyroscopeRotation() {
     // Inversion has been done in the config
     return this.swerveDrive.getYaw(); 
@@ -66,7 +71,13 @@ public class DrivetrainSubsystem extends SubsystemBase {
         = new Translation2d(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond); 
     
     this.swerveDrive.drive(xAndYVelocity, chassisSpeeds.omegaRadiansPerSecond, 
-                              isFieldRelative, true);
+                              isFieldRelative, false);
+  }
+
+  public void drive(Translation2d xAndYVelocity, double rotation, boolean isFieldRelative, boolean isOpenLoop) { 
+    this.swerveDrive.drive(xAndYVelocity,
+                   rotation,
+                   isFieldRelative, isOpenLoop);
   }
 
   public void stop() { 

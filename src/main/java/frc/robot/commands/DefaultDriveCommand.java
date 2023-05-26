@@ -1,11 +1,13 @@
 package frc.robot.commands;
 
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import frc.robot.subsystems.SwerveDrive.DrivetrainSubsystem;
 import frc.robot.util.OrbitPID;
+import swervelib.SwerveController;
 
 import java.util.function.DoubleSupplier;
 
@@ -16,6 +18,7 @@ public class DefaultDriveCommand extends CommandBase {
     private final DoubleSupplier m_translationYSupplier;
     private final DoubleSupplier m_rotationSupplier;
     private final CommandJoystick rotationJoystick;  
+    private SwerveController swerveController; 
 
     public DefaultDriveCommand(DrivetrainSubsystem drivetrainSubsystem,
                                DoubleSupplier translationXSupplier,
@@ -27,6 +30,7 @@ public class DefaultDriveCommand extends CommandBase {
         this.m_translationYSupplier = translationYSupplier;
         this.m_rotationSupplier = rotationSupplier;
         this.rotationJoystick = rotationJoystick; 
+        this.swerveController = this.m_drivetrainSubsystem.getSwerveController(); 
 
         addRequirements(drivetrainSubsystem);
     }
@@ -35,7 +39,7 @@ public class DefaultDriveCommand extends CommandBase {
     public void execute() {
         // You can use `new ChassisSpeeds(...)` for robot-oriented movement instead of field-oriented movement
 
-        double rotSpeed = m_rotationSupplier.getAsDouble(); 
+        double rotSpeed = m_rotationSupplier.getAsDouble() * this.swerveController.config.maxAngularVelocity; 
 
         double curAngle = m_drivetrainSubsystem.getGyroscopeRotation().getDegrees() % 360.0;
         
@@ -68,9 +72,12 @@ public class DefaultDriveCommand extends CommandBase {
 
         //System.out.println(speeds.toString());
 
-        m_drivetrainSubsystem.drive(
-                speeds, true
-        );
+        // m_drivetrainSubsystem.drive(
+        //         speeds, true
+        // );
+        m_drivetrainSubsystem.drive(new Translation2d(m_translationXSupplier.getAsDouble() * this.swerveController.config.maxSpeed, m_translationYSupplier.getAsDouble() * this.swerveController.config.maxSpeed),
+                   rotSpeed,
+                   true, true);
     }
 
     @Override
