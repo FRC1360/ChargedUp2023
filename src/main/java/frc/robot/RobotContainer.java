@@ -48,6 +48,7 @@ import frc.robot.subsystems.ShoulderSubsystem;
 import frc.robot.subsystems.WristSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LEDSubsystem;
+import frc.robot.commands.ledstrip.LedBlueAlliance; 
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -86,6 +87,7 @@ public class RobotContainer {
 
   private final Simulator sim = new Simulator(m_drivetrainSubsystem); 
 
+  public final LedBlueAlliance BlueAlliance = new LedBlueAlliance(ledSubsystem);
   
 
   // private final DriveStraightAuto driveStraightAuto = new DriveStraightAuto(m_drivetrainSubsystem, wristSubsystem); 
@@ -180,7 +182,7 @@ public class RobotContainer {
   public Command getArmHomeCommand() { 
     return new ArmHomeCommand(armSubsystem); 
   }
-
+  
   public Command getShoulderZeroCommand() { 
     return new ShoulderGoToPositionCommand(shoulderSubsystem, Constants.HOME_POSITION_SHOULDER); 
   }

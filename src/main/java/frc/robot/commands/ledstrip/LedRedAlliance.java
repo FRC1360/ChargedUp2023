@@ -1,4 +1,4 @@
-package frc.robot.commands.shoulder;
+package frc.robot.commands.ledstrip;
 
 import java.util.function.DoubleSupplier;
 
@@ -6,14 +6,19 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.LEDSubsystem;
 
-public class LedBlueAlliance extends CommandBase {
+public class LedRedAlliance extends CommandBase {
 
-    LEDSubsystem led;
+    private LEDSubsystem led;
 
-    public LedBlueAlliance(LEDSubsystem led) {
+    public LedRedAlliance(LEDSubsystem led) {
         this.led = led;
 
         addRequirements(led);
+    }
+
+    @Override
+    public void initialize() {
+        led.setLEDEnable();
     }
 
     @Override

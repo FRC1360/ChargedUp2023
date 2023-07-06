@@ -1,4 +1,4 @@
-package frc.robot.commands.shoulder;
+package frc.robot.commands.ledstrip;
 
 import java.util.function.DoubleSupplier;
 
