@@ -4,10 +4,14 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+import java.io.File;
+
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -61,7 +65,8 @@ public class RobotContainer {
   private final CommandXboxController operatorController = new CommandXboxController(2);
 
   // The robot's subsystems and commands are defined here...
-  public final DrivetrainSubsystem m_drivetrainSubsystem = new DrivetrainSubsystem();
+  //public final DrivetrainSubsystem m_drivetrainSubsystem = new DrivetrainSubsystem();
+  public final DrivetrainSubsystem m_drivetrainSubsystem = new DrivetrainSubsystem(new File(Filesystem.getDeployDirectory(), "swerve/neo"));
   public final ShoulderSubsystem shoulderSubsystem = new ShoulderSubsystem(() -> operatorController.getRightY()*Constants.SHOULDER_MANUAL_OVERRIDE_RANGE, operatorController.rightBumper());
   private final ShoulderSubsystem.ShoulderWristMessenger shoulderMessenger = shoulderSubsystem.new ShoulderWristMessenger();
   public final WristSubsystem wristSubsystem = new WristSubsystem(shoulderMessenger, () -> operatorController.getLeftY()*Constants.WRIST_MANUAL_OVERRIDE_RANGE, () -> false);

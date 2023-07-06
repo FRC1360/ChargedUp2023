@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems.SwerveDrive;
 
+import java.io.File;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -14,6 +16,7 @@ import frc.robot.util.OrbitPID;
 import swervelib.SwerveController;
 import swervelib.SwerveDrive;
 import swervelib.math.SwerveModuleState2;
+import swervelib.parser.SwerveParser;
 import swervelib.telemetry.SwerveDriveTelemetry;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 
@@ -39,6 +42,19 @@ public class DrivetrainSubsystem extends SubsystemBase {
     this.swerveDrive = new SwerveDrive(SwerveConfig.DRIVE_CONFIGURATION, SwerveConfig.CONTROLLER_CONFIGURATION); 
 
     this.driveRotPID = new OrbitPID(0.1, 0.0, 0.0); 
+  }
+
+  public DrivetrainSubsystem(File directory)
+  {
+    // Configure the Telemetry before creating the SwerveDrive to avoid unnecessary objects being created.
+    SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
+    try
+    {
+      this.swerveDrive = new SwerveParser(directory).createSwerveDrive();
+    } catch (Exception e)
+    {
+      throw new RuntimeException(e);
+    }
   }
 
   /**
