@@ -15,7 +15,7 @@
     "canbus": null
   },
   "encoder": {
-    "type": "none",
+    "type": "dio",
     "id": 3,
     "canbus": null
   },
