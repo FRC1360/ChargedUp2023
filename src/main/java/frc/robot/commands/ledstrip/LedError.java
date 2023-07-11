@@ -24,7 +24,7 @@ public class LedError extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return false;
+        return true;
     }
     
 }

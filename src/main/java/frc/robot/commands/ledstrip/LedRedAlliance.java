@@ -29,7 +29,7 @@ public class LedRedAlliance extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return false;
+        return true;
     }
     
 }

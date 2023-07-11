@@ -24,7 +24,7 @@ public class LedCone extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return false;
+        return true;
     }
     
 }
