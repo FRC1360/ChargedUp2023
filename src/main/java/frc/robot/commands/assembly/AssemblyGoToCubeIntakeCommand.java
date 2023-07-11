@@ -17,6 +17,7 @@ import frc.robot.subsystems.WristSubsystem;
 import frc.robot.subsystems.ArmSubsystem.ArmShoulderMessenger;
 import frc.robot.subsystems.ShoulderSubsystem.ShoulderWristMessenger;
 import frc.robot.util.StateMachine;
+import frc.robot.commands.ledstrip.LedCube; 
 
 public class AssemblyGoToCubeIntakeCommand extends SequentialCommandGroup {
     
@@ -32,6 +33,8 @@ public class AssemblyGoToCubeIntakeCommand extends SequentialCommandGroup {
                 new InstantCommand( () -> intake.setAtSubstationState(false)), 
                 new InstantCommand(ledSubsystem::setLEDDisable),
                 
+                new LedCube(ledSubsystem), 
+
                 new ShoulderGoToPositionCommand(shoulder, Constants.CUBE_INTAKE_POSITION_SHOULDER)
                         .raceWith(new WristHoldCommand(wrist, () -> 0.0))
                         .raceWith(new ArmHoldCommand(arm)), 
