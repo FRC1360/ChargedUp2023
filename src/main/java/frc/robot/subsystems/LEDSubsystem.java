@@ -12,7 +12,7 @@ public class LEDSubsystem extends SubsystemBase{
     
     public LEDSubsystem() {
         this.LEDController = new Spark(0);  // TODO - Change PWM port
-        this.LEDColour = 0.0;
+        this.LEDColour = 0.95;
         this.enableLED = true;
     }
 
@@ -30,13 +30,12 @@ public class LEDSubsystem extends SubsystemBase{
 
     @Override
     public void periodic() {
-        /*if(this.enableLED) {
+        if(this.enableLED) {
             this.LEDColour = 0.95;
         } else {
-            this.LEDColour = 0.61;
-        }*/
+            this.LEDController.set(this.LEDColour);
+        }
 
-        this.LEDController.set(this.LEDColour);
     }
 
 }
