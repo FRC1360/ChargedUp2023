@@ -30,7 +30,7 @@ public class SwerveModuleCustom {
     /* Encoders and their values */
     private RelativeEncoder driveEncoder;
     private RelativeEncoder integratedAngleEncoder;
-    private MagEncoder angleEncoder;
+    public MagEncoder angleEncoder;
     private double lastAngle;
     private double angleOffset;
 
@@ -70,7 +70,7 @@ public class SwerveModuleCustom {
         SmartDashboard.putNumber(Constants.Swerve.MODULE_NAMES[this.moduleNumber] + " Integrated Encoder",
                 this.getState().angle.getDegrees());
         SmartDashboard.putNumber(Constants.Swerve.MODULE_NAMES[this.moduleNumber] + " Mag Encoder",
-                this.getCanCoder().getDegrees());
+                this.getMagEncoder().getDegrees());
         SmartDashboard.putNumber(Constants.Swerve.MODULE_NAMES[this.moduleNumber] + " Set Point", this.lastAngle);
         SmartDashboard.putNumber(Constants.Swerve.MODULE_NAMES[this.moduleNumber] + " Drive Encoder Velocity",
                 this.driveEncoder.getVelocity());
@@ -93,10 +93,7 @@ public class SwerveModuleCustom {
     }
 
     public void resetToAbsolute() {
-        double integratedAngleEncoderPosition = this.integratedAngleEncoder.getPosition();
-        double absolutePosition = integratedAngleEncoderPosition - integratedAngleEncoderPosition % 360
-                + (getCanCoder().getDegrees() - angleOffset);
-        integratedAngleEncoder.setPosition(absolutePosition);
+        integratedAngleEncoder.setPosition(this.getMagEncoder().getDegrees());
     }
 
     private void configAngleMotor() {
@@ -125,6 +122,10 @@ public class SwerveModuleCustom {
         this.feedforward = driveSVA;
         driveMotor.enableVoltageCompensation(12.0);
         driveEncoder.setPosition(0.0);
+
+        if (this.moduleNumber == 0 || this.moduleNumber == 2) {
+            this.driveMotor.setInverted(true);
+        }
     }
 
     private void setSpeed(SwerveModuleState desiredState, boolean isOpenLoop) {
@@ -161,8 +162,8 @@ public class SwerveModuleCustom {
         lastAngle = angle.getDegrees() - angle.getDegrees() % 360;
     }
 
-    public Rotation2d getCanCoder() {
-        return Rotation2d.fromDegrees(this.angleEncoder.getAbsoluteAngle());
+    public Rotation2d getMagEncoder() {
+        return Rotation2d.fromRadians(this.angleEncoder.getAbsoluteAngle());
     }
 
     private Rotation2d getAngle() {

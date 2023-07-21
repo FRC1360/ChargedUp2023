@@ -1,11 +1,12 @@
 package frc.lib.util;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycle;
 
 public class MagEncoder {
   private DigitalInput dio;
-  private final DutyCycle encoder;
+  public final DutyCycle encoder;
   private double offset;
 
   public MagEncoder(int channel, double offset) {
@@ -15,10 +16,9 @@ public class MagEncoder {
   }
 
   public double getAbsoluteAngle() {
-    double angle = Math.toRadians(360.0 * encoder.getOutput()) + this.offset;
-    angle %= 2.0 * Math.PI;
-    if (angle < 0.0) {
-      angle += 2.0 * Math.PI;
+    double angle = Math.toRadians(360.0 * encoder.getOutput() + this.offset);
+    if (angle < 0) {
+      angle = Math.PI * 2 + angle;
     }
     return angle;
   }

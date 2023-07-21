@@ -46,7 +46,7 @@ public final class Constants {
         public static int PEAK_CURRENT_LIMIT = 50;
         public static int CONTINUOUS_CURRENT_LIMIT = 40;
         public static boolean ANGLE_INVERT = true;
-        public static boolean DRIVE_INVERT = true;
+        public static boolean DRIVE_INVERT = false;
         public static IdleMode IDLE_MODE = IdleMode.kBrake;
 
         /* Drivetrain Constants */
@@ -67,7 +67,8 @@ public final class Constants {
         public static final double DRIVE_CONVERSION_POSITION_FACTOR = (WHEEL_DIAMETER * Math.PI) / DRIVE_GEAR_RATIO;
         public static final double DRIVE_CONVERSION_VELOCITY_FACTOR = DRIVE_CONVERSION_POSITION_FACTOR / 60.0;
         public static final double ANGLE_CONVERSION_FACTOR = 360.0 / ANGLE_GEAR_RATIO;
-        public static final double MAX_SPEED = 14.5 / 3.28084;
+        // public static final double MAX_SPEED = 14.5 / 3.28084;
+        public static final double MAX_SPEED = 0.4;
 
         /*
          * Ideally these should be independent but for getting started same pid/ff
@@ -85,7 +86,7 @@ public final class Constants {
             public static final int driveMotorID = 10;
             public static final int angleMotorID = 11;
             public static final int magEncoderID = 0;
-            public static final double angleOffset = -(218.4075 + 90.0);
+            public static final double angleOffset = -130;
             public static final SwerveModuleConstants constants = new SwerveModuleConstants(driveMotorID, angleMotorID,
                     magEncoderID, angleOffset, anglePID, drivePID, driveSVA);
         }
@@ -95,7 +96,7 @@ public final class Constants {
             public static final int driveMotorID = 20;
             public static final int angleMotorID = 21;
             public static final int magEncoderID = 1;
-            public static final double angleOffset = -(310.588 + 90.0);
+            public static final double angleOffset = -40;
             public static final SwerveModuleConstants constants = new SwerveModuleConstants(driveMotorID, angleMotorID,
                     magEncoderID, angleOffset, anglePID, drivePID, driveSVA);
         }
@@ -105,7 +106,7 @@ public final class Constants {
             public static final int driveMotorID = 30;
             public static final int angleMotorID = 31;
             public static final int magEncoderID = 2;
-            public static final double angleOffset = -(342.0 + 90.0);
+            public static final double angleOffset = -252;
             public static final SwerveModuleConstants constants = new SwerveModuleConstants(driveMotorID, angleMotorID,
                     magEncoderID, angleOffset, anglePID, drivePID, driveSVA);
         }
@@ -115,7 +116,7 @@ public final class Constants {
             public static final int driveMotorID = 40;
             public static final int angleMotorID = 41;
             public static final int magEncoderID = 3;
-            public static final double angleOffset = -(54.767 + 180.0 + 90.0);
+            public static final double angleOffset = -326;
             public static final SwerveModuleConstants constants = new SwerveModuleConstants(driveMotorID, angleMotorID,
                     magEncoderID, angleOffset, anglePID, drivePID, driveSVA);
         }

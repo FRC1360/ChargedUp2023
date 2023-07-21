@@ -39,7 +39,7 @@ public class DefaultDriveCommand extends CommandBase {
         // You can use `new ChassisSpeeds(...)` for robot-oriented movement instead of
         // field-oriented movement
 
-        double rotSpeed = m_rotationSupplier.getAsDouble() * Constants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
+        double rotSpeed = -m_rotationSupplier.getAsDouble() * Constants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
 
         double curAngle = m_drivetrainSubsystem.navX.getYaw().getDegrees() % 360.0;
 

@@ -19,152 +19,156 @@ import frc.robot.Constants;
 import swervelib.math.SwerveModuleState2;
 
 public class SwerveSubsystem extends SubsystemBase {
-    public final NavX navX;
-    private SwerveModuleCustom[] swerveModules;
-    private Translation2d centerOfRotation = new Translation2d();
-    private final SwerveDrivePoseEstimator swerveDrivePoseEstimator;
+  public final NavX navX;
+  private SwerveModuleCustom[] swerveModules;
+  private Translation2d centerOfRotation = new Translation2d();
+  private final SwerveDrivePoseEstimator swerveDrivePoseEstimator;
 
-    public SwerveSubsystem() {
-        // Gyro setup
-        navX = new NavX();
-        navX.resetGyro();
+  public SwerveSubsystem() {
+    // Gyro setup
+    navX = new NavX();
+    navX.resetGyro();
 
-        // Swerve module setup
-        swerveModules = new SwerveModuleCustom[] {
-                new SwerveModuleCustom(0, Constants.Swerve.Mod0.constants),
-                new SwerveModuleCustom(1, Constants.Swerve.Mod1.constants),
-                new SwerveModuleCustom(2, Constants.Swerve.Mod2.constants),
-                new SwerveModuleCustom(3, Constants.Swerve.Mod3.constants),
-        };
+    // Swerve module setup
+    swerveModules = new SwerveModuleCustom[] {
+        new SwerveModuleCustom(0, Constants.Swerve.Mod0.constants),
+        new SwerveModuleCustom(1, Constants.Swerve.Mod1.constants),
+        new SwerveModuleCustom(2, Constants.Swerve.Mod2.constants),
+        new SwerveModuleCustom(3, Constants.Swerve.Mod3.constants),
+    };
 
-        // Pose estimator
-        swerveDrivePoseEstimator = new SwerveDrivePoseEstimator(Constants.Swerve.swerveKinematics, navX.getYaw(),
-                getPositions(), new Pose2d());
+    // Pose estimator
+    swerveDrivePoseEstimator = new SwerveDrivePoseEstimator(Constants.Swerve.swerveKinematics, navX.getYaw(),
+        getPositions(), new Pose2d());
+  }
+
+  public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop) {
+
+    SwerveModuleState[] swerveModuleStates = Constants.Swerve.swerveKinematics.toSwerveModuleStates(
+        fieldRelative
+            ? ChassisSpeeds.fromFieldRelativeSpeeds(
+                translation.getX(), translation.getY(),
+                rotation,
+                navX.getYaw())
+            : new ChassisSpeeds(translation.getX(), translation.getY(), rotation),
+        this.centerOfRotation);
+
+    // Get rid of tiny tiny movements in the wheels to have more consistent driving
+    // experience
+    SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.Swerve.MAX_SPEED);
+
+    // set the states for each module
+    for (SwerveModuleCustom mod : swerveModules) {
+      mod.setDesiredState(swerveModuleStates[mod.moduleNumber], isOpenLoop);
+    }
+  }
+
+  public void setModuleStates(SwerveModuleState[] desiredStates) {
+    SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, Constants.Swerve.MAX_SPEED);
+
+    for (SwerveModuleCustom mod : swerveModules) {
+      mod.setDesiredState(desiredStates[mod.moduleNumber], false);
+    }
+  }
+
+  public void setModuleStates(SwerveModuleState2[] desiredStates) {
+    SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, Constants.Swerve.MAX_SPEED);
+
+    for (SwerveModuleCustom mod : swerveModules) {
+      mod.setDesiredState(desiredStates[mod.moduleNumber], false);
+    }
+  }
+
+  public void resetModuleZeros() {
+    for (SwerveModuleCustom mod : swerveModules) {
+      mod.resetToAbsolute();
+    }
+  }
+
+  public SwerveModuleState[] getStates() {
+    SwerveModuleState[] states = new SwerveModuleState[4];
+    for (SwerveModuleCustom mod : swerveModules) {
+      states[mod.moduleNumber] = mod.getState();
+    }
+    return states;
+  }
+
+  public SwerveModulePosition[] getPositions() {
+    SwerveModulePosition[] positions = new SwerveModulePosition[4];
+
+    for (SwerveModuleCustom mod : swerveModules) {
+      positions[mod.moduleNumber] = mod.getPosition();
     }
 
-    public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop) {
+    return positions;
+  }
 
-        SwerveModuleState[] swerveModuleStates = Constants.Swerve.swerveKinematics.toSwerveModuleStates(
-                fieldRelative
-                        ? ChassisSpeeds.fromFieldRelativeSpeeds(
-                                translation.getX(), translation.getY(),
-                                rotation,
-                                navX.getYaw())
-                        : new ChassisSpeeds(translation.getX(), translation.getY(), rotation),
-                this.centerOfRotation);
+  public void brake() {
+    SwerveModuleState2[] states = new SwerveModuleState2[4];
 
-        // Get rid of tiny tiny movements in the wheels to have more consistent driving
-        // experience
-        SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.Swerve.MAX_SPEED);
-
-        // set the states for each module
-        for (SwerveModuleCustom mod : swerveModules) {
-            mod.setDesiredState(swerveModuleStates[mod.moduleNumber], isOpenLoop);
-        }
+    for (int i = 0; i < 4; i++) {
+      states[i] = new SwerveModuleState2();
+      states[i].speedMetersPerSecond = 0.0;
+      states[i].omegaRadPerSecond = 0.0;
     }
 
-    public void setModuleStates(SwerveModuleState[] desiredStates) {
-        SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, Constants.Swerve.MAX_SPEED);
+    states[0].angle = Rotation2d.fromDegrees(45.0);
+    states[1].angle = Rotation2d.fromDegrees(-45.0);
+    states[2].angle = Rotation2d.fromDegrees(-45.0);
+    states[3].angle = Rotation2d.fromDegrees(45.0);
 
-        for (SwerveModuleCustom mod : swerveModules) {
-            mod.setDesiredState(desiredStates[mod.moduleNumber], false);
-        }
+    setModuleStates(states);
+  }
+
+  public void setCoR(Translation2d centerOfRotation) {
+    this.centerOfRotation = centerOfRotation;
+  }
+
+  public void resetCoR() {
+    setCoR(new Translation2d());
+  }
+
+  public Pose2d currentPose() {
+    return swerveDrivePoseEstimator.getEstimatedPosition();
+  }
+
+  public Translation2d currentTranslation() {
+    return currentPose().getTranslation();
+  }
+
+  public void setCurrentPose(Pose2d newPose) {
+    swerveDrivePoseEstimator.resetPosition(
+        navX.getYaw(),
+        getPositions(),
+        newPose);
+  }
+
+  public void resetFieldPosition() {
+    setCurrentPose(new Pose2d());
+  }
+
+  public String getFormattedPose() {
+    var pose = currentPose();
+    return String.format("(%.2f, %.2f) %.2f degrees",
+        pose.getX(),
+        pose.getY(),
+        pose.getRotation().getDegrees());
+  }
+
+  @Override
+  public void periodic() {
+    // Data
+    SmartDashboard.putNumber("NavX Yaw", navX.getYaw().getDegrees());
+    SmartDashboard.putNumber("NavX pitch", navX.getPitch().getDegrees());
+    SmartDashboard.putNumber("NavX roll", navX.getRoll().getDegrees());
+
+    for (SwerveModuleCustom module : swerveModules) {
+      SmartDashboard.putNumber("Swerve Module #" + module.moduleNumber + " angle", module.getMagEncoder().getDegrees());
     }
 
-    public void setModuleStates(SwerveModuleState2[] desiredStates) {
-        SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, Constants.Swerve.MAX_SPEED);
-
-        for (SwerveModuleCustom mod : swerveModules) {
-            mod.setDesiredState(desiredStates[mod.moduleNumber], false);
-        }
-    }
-
-    public void resetModuleZeros() {
-        for (SwerveModuleCustom mod : swerveModules) {
-            mod.resetToAbsolute();
-        }
-    }
-
-    public SwerveModuleState[] getStates() {
-        SwerveModuleState[] states = new SwerveModuleState[4];
-        for (SwerveModuleCustom mod : swerveModules) {
-            states[mod.moduleNumber] = mod.getState();
-        }
-        return states;
-    }
-
-    public SwerveModulePosition[] getPositions() {
-        SwerveModulePosition[] positions = new SwerveModulePosition[4];
-
-        for (SwerveModuleCustom mod : swerveModules) {
-            positions[mod.moduleNumber] = mod.getPosition();
-        }
-
-        return positions;
-    }
-
-    public void brake() {
-        SwerveModuleState2[] states = new SwerveModuleState2[4];
-
-        for (int i = 0; i < 4; i++) {
-            states[i] = new SwerveModuleState2();
-            states[i].speedMetersPerSecond = 0.0;
-            states[i].omegaRadPerSecond = 0.0;
-        }
-
-        states[0].angle = Rotation2d.fromDegrees(45.0);
-        states[1].angle = Rotation2d.fromDegrees(-45.0);
-        states[2].angle = Rotation2d.fromDegrees(-45.0);
-        states[3].angle = Rotation2d.fromDegrees(45.0);
-
-        setModuleStates(states);
-    }
-
-    public void setCoR(Translation2d centerOfRotation) {
-        this.centerOfRotation = centerOfRotation;
-    }
-
-    public void resetCoR() {
-        setCoR(new Translation2d());
-    }
-
-    public Pose2d currentPose() {
-        return swerveDrivePoseEstimator.getEstimatedPosition();
-    }
-
-    public Translation2d currentTranslation() {
-        return currentPose().getTranslation();
-    }
-
-    public void setCurrentPose(Pose2d newPose) {
-        swerveDrivePoseEstimator.resetPosition(
-                navX.getYaw(),
-                getPositions(),
-                newPose);
-    }
-
-    public void resetFieldPosition() {
-        setCurrentPose(new Pose2d());
-    }
-
-    public String getFormattedPose() {
-        var pose = currentPose();
-        return String.format("(%.2f, %.2f) %.2f degrees",
-                pose.getX(),
-                pose.getY(),
-                pose.getRotation().getDegrees());
-    }
-
-    @Override
-    public void periodic() {
-        // Data
-        SmartDashboard.putNumber("NavX Yaw", navX.getYaw().getDegrees());
-        SmartDashboard.putNumber("NavX pitch", navX.getPitch().getDegrees());
-        SmartDashboard.putNumber("NavX roll", navX.getRoll().getDegrees());
-
-        // Estimator update
-        swerveDrivePoseEstimator.update(navX.getYaw(), getPositions());
-        SmartDashboard.putString("Estimated Pose", this.getFormattedPose());
-    }
+    // Estimator update
+    swerveDrivePoseEstimator.update(navX.getYaw(), getPositions());
+    SmartDashboard.putString("Estimated Pose", this.getFormattedPose());
+  }
 
 }
