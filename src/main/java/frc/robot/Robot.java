@@ -145,8 +145,8 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
     m_robotContainer.shoulderSubsystem.updateSmartDashboard();
     m_robotContainer.LEDChooser.getSelected();
-    // m_robotContainer.wristSubsystem.updateSmartDashboard();
-    // m_robotContainer.armSubsystem.updateSmartDashboard();
+    m_robotContainer.wristSubsystem.updateSmartDashboard();
+    m_robotContainer.armSubsystem.updateSmartDashboard();
 
   }
 
