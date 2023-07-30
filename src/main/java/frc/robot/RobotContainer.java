@@ -21,6 +21,7 @@ import frc.robot.autos.DriveStraightAuto;
 import frc.robot.autos.ConeHighAndDriveAuto;
 import frc.robot.autos.procedures.ConeScoreHighAuto;
 import frc.robot.commands.DefaultDriveCommand;
+import frc.robot.commands.arm.ArmGoToPositionCommand;
 import frc.robot.commands.arm.ArmHoldCommand;
 import frc.robot.commands.arm.ArmHomeCommand;
 import frc.robot.commands.assembly.AssemblyGoToConeIntakeCommand;
@@ -109,9 +110,9 @@ public class RobotContainer {
     // Right stick X axis -> rotation
     m_drivetrainSubsystem.setDefaultCommand(new DefaultDriveCommand(
             m_drivetrainSubsystem,
-            () -> -modifyAxis(left_controller.getY()) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-            () -> -modifyAxis(left_controller.getX()) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-            () -> modifyAxis(right_controller.getX()) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND, 
+            () -> -modifyAxis(left_controller.getY()) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND * 0.1,
+            () -> -modifyAxis(left_controller.getX()) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND * 0.1,
+            () -> modifyAxis(right_controller.getX()) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND * 0.1, 
             right_controller
      ));
 
@@ -175,6 +176,12 @@ public class RobotContainer {
     //left_controller.button(2).whileTrue(new StrafeAlign(m_drivetrainSubsystem, vision, left_controller::getX, left_controller::getY));
     right_controller.button(1).whileTrue(new ManualPutdownCommand(intakeSubsystem, () -> 1.0)); 
     left_controller.button(3).whileTrue(new InstantCommand( () -> m_drivetrainSubsystem.lockWheels = true)).whileFalse( new InstantCommand( () -> m_drivetrainSubsystem.lockWheels = false));
+
+    //operatorController.a().onTrue(new ArmGoToPositionCommand(armSubsystem, shoulderMessenger, 0.5));
+    //operatorController.b().onTrue(new ArmGoToPositionCommand(armSubsystem, shoulderMessenger, 10.0));
+
+    /*operatorController.a().onTrue(new ShoulderGoToPositionCommand(shoulderSubsystem, -90.0));
+    operatorController.b().onTrue(new ShoulderGoToPositionCommand(shoulderSubsystem,0.0));*/
   }
 
   
