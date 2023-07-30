@@ -139,7 +139,7 @@ public class ShoulderSubsystem extends SubsystemBase {
      * Sets arm voltage based off 0.0 - 1.0 
      */
     public void setShoulderNormalizedVoltage(double voltage) {
-        this.setShoulderVoltage(voltage * 12.0);  // Should probably change this to a constant somewhere for ARM_VOLTAGE
+        //this.setShoulderVoltage(voltage * 12.0);  // Should probably change this to a constant somewhere for ARM_VOLTAGE
     }
 
     public void setTargetAngle(double targetAngle) {

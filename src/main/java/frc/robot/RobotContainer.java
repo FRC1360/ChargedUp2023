@@ -49,6 +49,7 @@ import frc.robot.subsystems.ShoulderSubsystem;
 import frc.robot.subsystems.WristSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LEDSubsystem;
+import frc.robot.commands.ledstrip.*; 
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -74,6 +75,7 @@ public class RobotContainer {
   private final StateMachine sm = new StateMachine();
 
   public final SendableChooser<Command> autoChooser = new SendableChooser<Command>(); 
+  public final SendableChooser<Command> LEDChooser = new SendableChooser<Command>(); 
 
   private final CubeHighAndBalanceAuto highConeAndBalanceAuto = new CubeHighAndBalanceAuto(m_drivetrainSubsystem, shoulderSubsystem, shoulderMessenger, 
                                                                                             wristSubsystem, armSubsystem, intakeSubsystem, armMessenger, ledSubsystem, sm);
@@ -87,6 +89,11 @@ public class RobotContainer {
 
   private final Simulator sim = new Simulator(m_drivetrainSubsystem); 
 
+  private final LedBlueAlliance BlueAlliance = new LedBlueAlliance(ledSubsystem);
+  private final LedRedAlliance RedAlliance = new LedRedAlliance(ledSubsystem);
+  private final LedCone LedConeCmd = new LedCone(ledSubsystem);
+  private final LedCube LedCubeCmd = new LedCube(ledSubsystem);
+  private final LedError LedErrorCmd = new LedError(ledSubsystem);
   
 
   // private final DriveStraightAuto driveStraightAuto = new DriveStraightAuto(m_drivetrainSubsystem, wristSubsystem); 
@@ -128,6 +135,14 @@ public class RobotContainer {
     autoChooser.addOption("Only high cone score", highConeAuto);
     autoChooser.addOption("Only drive straight", driveStraightAuto);
     SmartDashboard.putData("Auto Chooser", autoChooser);
+
+    LEDChooser.setDefaultOption("Default LED", new WaitCommand(15));
+    LEDChooser.addOption("Red Alliance", RedAlliance);
+    LEDChooser.addOption("Blue Alliance", BlueAlliance);
+    LEDChooser.addOption("Cones", LedConeCmd);
+    LEDChooser.addOption("Cubes", LedCubeCmd);
+    LEDChooser.addOption("Error", LedErrorCmd);
+    SmartDashboard.putData("LED Menu", LEDChooser);
   }
   
 
@@ -187,7 +202,7 @@ public class RobotContainer {
   public Command getArmHomeCommand() { 
     return new ArmHomeCommand(armSubsystem); 
   }
-
+  
   public Command getShoulderZeroCommand() { 
     return new ShoulderGoToPositionCommand(shoulderSubsystem, Constants.HOME_POSITION_SHOULDER); 
   }
