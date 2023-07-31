@@ -51,9 +51,12 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LEDSubsystem;
 
 /**
- * This class is where the bulk of the robot should be declared. Since Command-based is a
- * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
- * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
+ * This class is where the bulk of the robot should be declared. Since
+ * Command-based is a
+ * "declarative" paradigm, very little robot logic should actually be handled in
+ * the {@link Robot}
+ * periodic methods (other than the scheduler calls). Instead, the structure of
+ * the robot (including
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
@@ -63,35 +66,42 @@ public class RobotContainer {
 
   // The robot's subsystems and commands are defined here...
   public final DrivetrainSubsystem m_drivetrainSubsystem = new DrivetrainSubsystem();
-  public final ShoulderSubsystem shoulderSubsystem = new ShoulderSubsystem(() -> operatorController.getRightY()*Constants.SHOULDER_MANUAL_OVERRIDE_RANGE, operatorController.rightBumper());
+  public final ShoulderSubsystem shoulderSubsystem = new ShoulderSubsystem(
+      () -> operatorController.getRightY() * Constants.SHOULDER_MANUAL_OVERRIDE_RANGE,
+      operatorController.rightBumper());
   private final ShoulderSubsystem.ShoulderWristMessenger shoulderMessenger = shoulderSubsystem.new ShoulderWristMessenger();
-  public final WristSubsystem wristSubsystem = new WristSubsystem(shoulderMessenger, () -> operatorController.getLeftY()*Constants.WRIST_MANUAL_OVERRIDE_RANGE, () -> false);
-  public final ArmSubsystem armSubsystem = new ArmSubsystem(() -> operatorController.getLeftY()*Constants.ARM_MANUAL_OFFSET_RANGE, operatorController.rightBumper());
-  private final ArmSubsystem.ArmShoulderMessenger armMessenger = armSubsystem.new ArmShoulderMessenger(); 
-  private final Vision vision = new Vision(); 
+  public final WristSubsystem wristSubsystem = new WristSubsystem(shoulderMessenger,
+      () -> operatorController.getLeftY() * Constants.WRIST_MANUAL_OVERRIDE_RANGE, () -> false);
+  public final ArmSubsystem armSubsystem = new ArmSubsystem(
+      () -> operatorController.getLeftY() * Constants.ARM_MANUAL_OFFSET_RANGE, operatorController.rightBumper());
+  private final ArmSubsystem.ArmShoulderMessenger armMessenger = armSubsystem.new ArmShoulderMessenger();
+  private final Vision vision = new Vision();
   public final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
   public final LEDSubsystem ledSubsystem = new LEDSubsystem();
   private final StateMachine sm = new StateMachine();
 
-  public final SendableChooser<Command> autoChooser = new SendableChooser<Command>(); 
+  public final SendableChooser<Command> autoChooser = new SendableChooser<Command>();
 
-  private final CubeHighAndBalanceAuto highConeAndBalanceAuto = new CubeHighAndBalanceAuto(m_drivetrainSubsystem, shoulderSubsystem, shoulderMessenger, 
-                                                                                            wristSubsystem, armSubsystem, intakeSubsystem, armMessenger, ledSubsystem, sm);
-  private final ConeHighAndDriveAuto highConeAndDriveAuto = new ConeHighAndDriveAuto(m_drivetrainSubsystem, shoulderSubsystem, shoulderMessenger, 
-                                                                                      wristSubsystem, armSubsystem, intakeSubsystem, armMessenger, ledSubsystem, sm); 
+  private final CubeHighAndBalanceAuto highConeAndBalanceAuto = new CubeHighAndBalanceAuto(m_drivetrainSubsystem,
+      shoulderSubsystem, shoulderMessenger,
+      wristSubsystem, armSubsystem, intakeSubsystem, armMessenger, ledSubsystem, sm);
+  private final ConeHighAndDriveAuto highConeAndDriveAuto = new ConeHighAndDriveAuto(m_drivetrainSubsystem,
+      shoulderSubsystem, shoulderMessenger,
+      wristSubsystem, armSubsystem, intakeSubsystem, armMessenger, ledSubsystem, sm);
 
-  private final ConeScoreHighAuto highConeAuto = new ConeScoreHighAuto(m_drivetrainSubsystem, shoulderSubsystem, shoulderMessenger, wristSubsystem, 
-                                                                          armSubsystem, intakeSubsystem, armMessenger, ledSubsystem, sm); 
+  private final ConeScoreHighAuto highConeAuto = new ConeScoreHighAuto(m_drivetrainSubsystem, shoulderSubsystem,
+      shoulderMessenger, wristSubsystem,
+      armSubsystem, intakeSubsystem, armMessenger, ledSubsystem, sm);
 
-  private final DriveStraightAuto driveStraightAuto = new DriveStraightAuto(m_drivetrainSubsystem); 
+  private final DriveStraightAuto driveStraightAuto = new DriveStraightAuto(m_drivetrainSubsystem);
 
-  private final Simulator sim = new Simulator(m_drivetrainSubsystem); 
+  private final Simulator sim = new Simulator(m_drivetrainSubsystem);
 
-  
-
-  // private final DriveStraightAuto driveStraightAuto = new DriveStraightAuto(m_drivetrainSubsystem, wristSubsystem); 
-  // private final EngageStationAuto engageStationAuto = new EngageStationAuto(m_drivetrainSubsystem); 
-  //private final Simulator sim = new Simulator(m_drivetrainSubsystem); 
+  // private final DriveStraightAuto driveStraightAuto = new
+  // DriveStraightAuto(m_drivetrainSubsystem, wristSubsystem);
+  // private final EngageStationAuto engageStationAuto = new
+  // EngageStationAuto(m_drivetrainSubsystem);
+  // private final Simulator sim = new Simulator(m_drivetrainSubsystem);
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -102,16 +112,18 @@ public class RobotContainer {
     // Left stick X axis -> left and right movement
     // Right stick X axis -> rotation
     m_drivetrainSubsystem.setDefaultCommand(new DefaultDriveCommand(
-            m_drivetrainSubsystem,
-            () -> -modifyAxis(left_controller.getY()) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND * 0.1,
-            () -> -modifyAxis(left_controller.getX()) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND * 0.1,
-            () -> modifyAxis(right_controller.getX()) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND * 0.1, 
-            right_controller
-     ));
+        m_drivetrainSubsystem,
+        () -> -modifyAxis(left_controller.getY()) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+        () -> -modifyAxis(left_controller.getX()) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
+        () -> modifyAxis(right_controller.getX()) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND,
+        right_controller));
 
-    shoulderSubsystem.setDefaultCommand(new ShoulderHoldCommand(shoulderSubsystem, armMessenger, () -> this.operatorController.getLeftTriggerAxis()));
-    //shoulderSubsystem.setDefaultCommand(new ShoulderMoveManual(shoulderSubsystem, () -> this.operatorController.getLeftY()));
-    wristSubsystem.setDefaultCommand(new WristHoldCommand(wristSubsystem, () -> this.operatorController.getLeftTriggerAxis()));
+    shoulderSubsystem.setDefaultCommand(
+        new ShoulderHoldCommand(shoulderSubsystem, armMessenger, () -> this.operatorController.getLeftTriggerAxis()));
+    // shoulderSubsystem.setDefaultCommand(new ShoulderMoveManual(shoulderSubsystem,
+    // () -> this.operatorController.getLeftY()));
+    wristSubsystem
+        .setDefaultCommand(new WristHoldCommand(wristSubsystem, () -> this.operatorController.getLeftTriggerAxis()));
     armSubsystem.setDefaultCommand(new ArmHoldCommand(this.armSubsystem));
     intakeSubsystem.setDefaultCommand(new IntakeHoldCommand(this.intakeSubsystem));
 
@@ -120,8 +132,8 @@ public class RobotContainer {
     configureButtonBindings();
   }
 
-  public void initializeRobot() { 
-    //autoChooser.setDefaultOption("One side, two cargo, balance", leftConeAuto);
+  public void initializeRobot() {
+    // autoChooser.setDefaultOption("One side, two cargo, balance", leftConeAuto);
     autoChooser.setDefaultOption("No auto", new WaitCommand(15));
     autoChooser.addOption("High cube and balance", highConeAndBalanceAuto);
     autoChooser.addOption("High cone and drive straight", highConeAndDriveAuto);
@@ -129,47 +141,65 @@ public class RobotContainer {
     autoChooser.addOption("Only drive straight", driveStraightAuto);
     SmartDashboard.putData("Auto Chooser", autoChooser);
   }
-  
 
   /**
-   * Use this method to define your button->command mappings. Buttons can be created by
+   * Use this method to define your button->command mappings. Buttons can be
+   * created by
    * instantiating a {@link GenericHID} or one of its subclasses ({@link
-   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
+   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing
+   * it to a {@link
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
     // Back button zeros the gyroscope
-    /*new Trigger(m_controller::getBackButton)
-            // No requirements because we don't need to interrupt anything
-            .onTrue(new InstantCommand(m_drivetrainSubsystem::zeroGyroscope));*/
-    
-    left_controller.button(1).onTrue(new InstantCommand(m_drivetrainSubsystem::zeroGyroscope)); 
+    /*
+     * new Trigger(m_controller::getBackButton)
+     * // No requirements because we don't need to interrupt anything
+     * .onTrue(new InstantCommand(m_drivetrainSubsystem::zeroGyroscope));
+     */
 
-    operatorController.a().and(() -> sm.getAtHome()).onTrue((new AssemblyGoToCubeIntakeCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger, intakeSubsystem, ledSubsystem, sm)));
-    operatorController.y().and(() -> sm.getAtHome()).onTrue(new AssemblyGoToConeIntakeCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger, intakeSubsystem, ledSubsystem, sm));
-    operatorController.b().and(() -> sm.getAtHome()).onTrue(new AssemblyMidScoreCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger, ledSubsystem, () -> operatorController.leftBumper().getAsBoolean(), sm)); 
-    operatorController.x().and(() -> !sm.getAtHome()).onTrue(new AssemblyHomePositionCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger, ledSubsystem, sm)); 
-    operatorController.povUp().and(() -> sm.getAtHome()).onTrue(new AssemblyHighScoreCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger, () -> operatorController.leftBumper().getAsBoolean(), ledSubsystem, sm)); 
-    operatorController.povDown().and(() -> sm.getAtHome()).onTrue(new AssemblyPickUpSingleSubstationCommand(shoulderSubsystem, wristSubsystem, armSubsystem, shoulderMessenger, armMessenger, intakeSubsystem, ledSubsystem, sm)); 
+    left_controller.button(1).onTrue(new InstantCommand(m_drivetrainSubsystem::zeroGyroscope));
 
+    operatorController.a().and(() -> sm.getAtHome()).onTrue((new AssemblyGoToCubeIntakeCommand(shoulderSubsystem,
+        shoulderMessenger, wristSubsystem, armSubsystem, armMessenger, intakeSubsystem, ledSubsystem, sm)));
+    operatorController.y().and(() -> sm.getAtHome()).onTrue(new AssemblyGoToConeIntakeCommand(shoulderSubsystem,
+        shoulderMessenger, wristSubsystem, armSubsystem, armMessenger, intakeSubsystem, ledSubsystem, sm));
+    operatorController.b().and(() -> sm.getAtHome())
+        .onTrue(new AssemblyMidScoreCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem,
+            armMessenger, ledSubsystem, () -> operatorController.leftBumper().getAsBoolean(), sm));
+    operatorController.x().and(() -> !sm.getAtHome()).onTrue(new AssemblyHomePositionCommand(shoulderSubsystem,
+        shoulderMessenger, wristSubsystem, armSubsystem, armMessenger, ledSubsystem, sm));
+    operatorController.povUp().and(() -> sm.getAtHome())
+        .onTrue(new AssemblyHighScoreCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem,
+            armMessenger, () -> operatorController.leftBumper().getAsBoolean(), ledSubsystem, sm));
+    operatorController.povDown().and(() -> sm.getAtHome())
+        .onTrue(new AssemblyPickUpSingleSubstationCommand(shoulderSubsystem, wristSubsystem, armSubsystem,
+            shoulderMessenger, armMessenger, intakeSubsystem, ledSubsystem, sm));
 
     new Trigger(() -> operatorController.getLeftTriggerAxis() > 0.05)
-     .whileTrue(new ManualIntakeCommand(intakeSubsystem, () -> operatorController.getLeftTriggerAxis()));
+        .whileTrue(new ManualIntakeCommand(intakeSubsystem, () -> operatorController.getLeftTriggerAxis()));
     new Trigger(() -> operatorController.getRightTriggerAxis() > 0.05)
-     .whileTrue(new ManualPutdownCommand(intakeSubsystem, () -> operatorController.getRightTriggerAxis())); 
+        .whileTrue(new ManualPutdownCommand(intakeSubsystem, () -> operatorController.getRightTriggerAxis()));
 
-    //left_controller.button(2).whileTrue(new StrafeAlign(m_drivetrainSubsystem, vision, left_controller::getX, left_controller::getY));
-    right_controller.button(1).whileTrue(new ManualPutdownCommand(intakeSubsystem, () -> 1.0)); 
-    left_controller.button(3).whileTrue(new InstantCommand( () -> m_drivetrainSubsystem.lockWheels = true)).whileFalse( new InstantCommand( () -> m_drivetrainSubsystem.lockWheels = false));
+    // left_controller.button(2).whileTrue(new StrafeAlign(m_drivetrainSubsystem,
+    // vision, left_controller::getX, left_controller::getY));
+    right_controller.button(1).whileTrue(new ManualPutdownCommand(intakeSubsystem, () -> 1.0));
+    left_controller.button(3).whileTrue(new InstantCommand(() -> m_drivetrainSubsystem.lockWheels = true))
+        .whileFalse(new InstantCommand(() -> m_drivetrainSubsystem.lockWheels = false));
 
-    //operatorController.a().onTrue(new ArmGoToPositionCommand(armSubsystem, shoulderMessenger, 0.5));
-    //operatorController.b().onTrue(new ArmGoToPositionCommand(armSubsystem, shoulderMessenger, 10.0));
+    // operatorController.a().onTrue(new ArmGoToPositionCommand(armSubsystem,
+    // shoulderMessenger, 0.5));
+    // operatorController.b().onTrue(new ArmGoToPositionCommand(armSubsystem,
+    // shoulderMessenger, 10.0));
 
-    /*operatorController.a().onTrue(new ShoulderGoToPositionCommand(shoulderSubsystem, -90.0));
-    operatorController.b().onTrue(new ShoulderGoToPositionCommand(shoulderSubsystem,0.0));*/
+    /*
+     * operatorController.a().onTrue(new
+     * ShoulderGoToPositionCommand(shoulderSubsystem, -90.0));
+     * operatorController.b().onTrue(new
+     * ShoulderGoToPositionCommand(shoulderSubsystem,0.0));
+     */
   }
 
-  
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
@@ -177,31 +207,29 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    //return null; 
-    return autoChooser.getSelected(); 
-    //return highConeAndBalanceAuto; 
+    // return null;
+    return autoChooser.getSelected();
+    // return highConeAndBalanceAuto;
   }
 
-  
-
-  public Command getArmHomeCommand() { 
-    return new ArmHomeCommand(armSubsystem); 
+  public Command getArmHomeCommand() {
+    return new ArmHomeCommand(armSubsystem);
   }
 
-  public Command getShoulderZeroCommand() { 
-    return new ShoulderGoToPositionCommand(shoulderSubsystem, Constants.HOME_POSITION_SHOULDER); 
+  public Command getShoulderZeroCommand() {
+    return new ShoulderGoToPositionCommand(shoulderSubsystem, Constants.HOME_POSITION_SHOULDER);
   }
 
-  public Command getGoToZeroWristCommand() { 
-    return new WristGoToPositionCommand(wristSubsystem, Constants.HOME_POSITION_WRIST); 
+  public Command getGoToZeroWristCommand() {
+    return new WristGoToPositionCommand(wristSubsystem, Constants.HOME_POSITION_WRIST);
   }
 
-  public Command getIntakeHoldCommand() { 
-    return new IntakeHoldCommand(intakeSubsystem); 
+  public Command getIntakeHoldCommand() {
+    return new IntakeHoldCommand(intakeSubsystem);
   }
 
   public Command setSMHomeCommand() {
-    return new InstantCommand( () -> sm.setAtHome(true));
+    return new InstantCommand(() -> sm.setAtHome(true));
   }
 
   private static double deadband(double value, double deadband) {
@@ -226,4 +254,3 @@ public class RobotContainer {
     return value;
   }
 }
-
