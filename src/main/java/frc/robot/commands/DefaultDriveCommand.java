@@ -39,7 +39,7 @@ public class DefaultDriveCommand extends CommandBase {
         // You can use `new ChassisSpeeds(...)` for robot-oriented movement instead of
         // field-oriented movement
 
-        double rotSpeed = -m_rotationSupplier.getAsDouble() * Constants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
+        double rotSpeed = -m_rotationSupplier.getAsDouble();
 
         double curAngle = m_drivetrainSubsystem.navX.getYaw().getDegrees() % 360.0;
 
@@ -62,20 +62,9 @@ public class DefaultDriveCommand extends CommandBase {
                     curAngle + (Math.abs(270 - curAngle) > 180 ? 360 : 0));
         }
 
-        ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-                m_translationXSupplier.getAsDouble(),
-                m_translationYSupplier.getAsDouble(),
-                rotSpeed,
-                m_drivetrainSubsystem.navX.getYaw());
-
-        // System.out.println(speeds.toString());
-
-        // m_drivetrainSubsystem.drive(
-        // speeds, true
-        // );
         m_drivetrainSubsystem.drive(
-                new Translation2d(m_translationXSupplier.getAsDouble() * Constants.Swerve.MAX_SPEED,
-                        m_translationYSupplier.getAsDouble() * Constants.Swerve.MAX_SPEED),
+                new Translation2d(m_translationXSupplier.getAsDouble(),
+                        m_translationYSupplier.getAsDouble()),
                 rotSpeed,
                 true, true);
     }
