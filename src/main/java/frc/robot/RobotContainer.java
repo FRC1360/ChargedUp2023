@@ -25,6 +25,7 @@ import frc.robot.autos.DriveStraightAuto;
 import frc.robot.autos.ConeHighAndDriveAuto;
 import frc.robot.autos.procedures.ConeScoreHighAuto;
 import frc.robot.commands.DefaultDriveCommand;
+import frc.robot.commands.arm.ArmGoToPositionCommand;
 import frc.robot.commands.arm.ArmHoldCommand;
 import frc.robot.commands.arm.ArmHomeCommand;
 import frc.robot.commands.assembly.AssemblyGoToConeIntakeCommand;
