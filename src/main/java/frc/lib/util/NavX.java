@@ -33,8 +33,8 @@ public class NavX {
     public Rotation2d getYaw() {
         return Rotation2d.fromDegrees(
                 inverted
-                        ? 360 - (gyro.getYaw() - yawOffset)
-                        : gyro.getYaw() - yawOffset);
+                        ? 360 - (gyro.getFusedHeading() - yawOffset)
+                        : gyro.getFusedHeading() - yawOffset);
     }
 
     public Rotation2d getPitch() {
@@ -46,7 +46,7 @@ public class NavX {
     }
 
     public void resetGyro() {
-        yawOffset = gyro.getYaw();
+        yawOffset = gyro.getFusedHeading();
         pitchOffset = gyro.getPitch();
         rollOffset = gyro.getRoll();
     }

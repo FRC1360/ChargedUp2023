@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.autos.AutoBalance;
 import frc.robot.autos.CubeHighAndBalanceAuto;
 import frc.robot.autos.DriveStraightAuto;
+import frc.robot.autos.pathplanner_autos.DriveForwardAuto;
 import frc.robot.autos.ConeHighAndDriveAuto;
 import frc.robot.autos.procedures.ConeScoreHighAuto;
 import frc.robot.commands.DefaultDriveCommand;
@@ -207,7 +208,9 @@ public class RobotContainer {
     // return null;
     // return autoChooser.getSelected();
     // return highConeAndBalanceAuto;
-    return driveStraightAuto;
+
+    // return driveStraightAuto;
+    return new DriveForwardAuto(swerveSubsystem).getCommand();
   }
 
   public Command getArmHomeCommand() {

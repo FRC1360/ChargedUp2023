@@ -66,7 +66,7 @@ public class DefaultDriveCommand extends CommandBase {
                 new Translation2d(m_translationXSupplier.getAsDouble(),
                         m_translationYSupplier.getAsDouble()),
                 rotSpeed,
-                true, true);
+                true, false);
     }
 
     @Override

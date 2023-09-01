@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.swerve.SwerveModuleCustom;
 import frc.lib.util.NavX;
+import frc.lib.util.PIDConstants;
 import frc.robot.Constants;
 import swervelib.math.SwerveModuleState2;
 
@@ -23,10 +24,17 @@ public class SwerveSubsystem extends SubsystemBase {
   private SwerveModuleCustom[] swerveModules;
   private Translation2d centerOfRotation = new Translation2d();
   private final SwerveDrivePoseEstimator swerveDrivePoseEstimator;
+  private final Field2d field = new Field2d();
+
+  private Pose2d lastPose = new Pose2d(0, 0, new Rotation2d());
+  private long lastPoseTimestamp = System.currentTimeMillis();
+  public Translation2d currentSpeed = new Translation2d(0, 0);
+  private PIDConstants anglePID = Constants.Swerve.anglePID;
 
   public SwerveSubsystem() {
     // Gyro setup
     navX = new NavX();
+    navX.setInverted(Constants.Swerve.isGyroInverted);
     navX.resetGyro();
 
     // Swerve module setup
@@ -40,6 +48,8 @@ public class SwerveSubsystem extends SubsystemBase {
     // Pose estimator
     swerveDrivePoseEstimator = new SwerveDrivePoseEstimator(Constants.Swerve.swerveKinematics, navX.getYaw(),
         getPositions(), new Pose2d());
+
+    this.anglePID.sendDashboard("angle pid");
   }
 
   public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop) {
@@ -52,7 +62,6 @@ public class SwerveSubsystem extends SubsystemBase {
                 navX.getYaw())
             : new ChassisSpeeds(translation.getX(), translation.getY(), rotation),
         this.centerOfRotation);
-
     // Get rid of tiny tiny movements in the wheels to have more consistent driving
     // experience
     SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.Swerve.MAX_SPEED);
@@ -65,6 +74,14 @@ public class SwerveSubsystem extends SubsystemBase {
 
   public void setModuleStates(SwerveModuleState[] desiredStates) {
     SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, Constants.Swerve.MAX_SPEED);
+
+    for (SwerveModuleCustom mod : swerveModules) {
+      mod.setDesiredState(desiredStates[mod.moduleNumber], false);
+    }
+  }
+
+  public void setModuleStatesDuringAuto(SwerveModuleState[] desiredStates) {
+    SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, Constants.Swerve.AutoConstants.maxSpeed);
 
     for (SwerveModuleCustom mod : swerveModules) {
       mod.setDesiredState(desiredStates[mod.moduleNumber], false);
@@ -164,10 +181,26 @@ public class SwerveSubsystem extends SubsystemBase {
 
     for (SwerveModuleCustom module : swerveModules) {
       SmartDashboard.putNumber("Swerve Module #" + module.moduleNumber + " angle", module.getMagEncoder().getDegrees());
+      SmartDashboard.putNumber("Swerve Module #" + module.moduleNumber + " target  ", module.targetAngle);
+      SmartDashboard.putNumber("Swerve Module #" + module.moduleNumber + "speed", module.getSpeed());
+      SmartDashboard.putNumber("Swerve Module #" + module.moduleNumber + "target speed", module.targetSpeed);
     }
 
     // Estimator update
     swerveDrivePoseEstimator.update(navX.getYaw(), getPositions());
+    field.setRobotPose(swerveDrivePoseEstimator.getEstimatedPosition());
+
+    // get speed
+    long currentTime = System.currentTimeMillis();
+    long deltaTime = currentTime - lastPoseTimestamp;
+    currentSpeed = new Translation2d((currentPose().getX() - lastPose.getX()) / (deltaTime / 1000d),
+        (currentPose().getY() - lastPose.getY()) / (deltaTime / 1000d));
+    lastPose = swerveDrivePoseEstimator.getEstimatedPosition();
+    lastPoseTimestamp = System.currentTimeMillis();
+
+    SmartDashboard.putNumber("Speed X", currentSpeed.getX());
+    SmartDashboard.putNumber("Speed Y", currentSpeed.getY());
+
     SmartDashboard.putString("Estimated Pose", this.getFormattedPose());
   }
 

@@ -47,6 +47,7 @@ public final class Constants {
         public static int CONTINUOUS_CURRENT_LIMIT = 40;
         public static boolean ANGLE_INVERT = true;
         public static boolean DRIVE_INVERT = false;
+        public static boolean isGyroInverted = true;
         public static IdleMode IDLE_MODE = IdleMode.kBrake;
 
         /* Drivetrain Constants */
@@ -54,7 +55,6 @@ public final class Constants {
         public static final double WHEEL_BASE = 0.61;
         public static final double WHEEL_DIAMETER = Units.inchesToMeters(4.0);
         public static final double WHEEL_CIRCUMFERENCE = WHEEL_DIAMETER * Math.PI;
-        public static final PIDConstants DRIVE_PID = new PIDConstants(0.1, 0.0, 0.0); // you need to tune me yay :D
         public static final SwerveDriveKinematics swerveKinematics = new SwerveDriveKinematics(
                 new Translation2d(WHEEL_BASE / 2.0, TRACK_WIDTH / 2.0),
                 new Translation2d(WHEEL_BASE / 2.0, -TRACK_WIDTH / 2.0),
@@ -68,15 +68,15 @@ public final class Constants {
         public static final double DRIVE_CONVERSION_VELOCITY_FACTOR = DRIVE_CONVERSION_POSITION_FACTOR / 60.0;
         public static final double ANGLE_CONVERSION_FACTOR = 360.0 / ANGLE_GEAR_RATIO;
         // public static final double MAX_SPEED = 14.5 / 3.28084;
-        public static final double MAX_SPEED = 0.4;
+        public static final double MAX_SPEED = Swerve.AutoConstants.maxSpeed;
 
         /*
          * Ideally these should be independent but for getting started same pid/ff
          * values should work just fine
          */
-        public static final PIDConstants drivePID = new PIDConstants(0.001, 0.00005, 0.0005);
-        public static final SimpleMotorFeedforward driveSVA = new SimpleMotorFeedforward(0.05, 2.5, 0.5);
-        public static final PIDConstants anglePID = new PIDConstants(0.02, 0.0, 0.005);
+        public static final PIDConstants drivePID = new PIDConstants(0.3, 0.0000, 0.0045);
+        public static final SimpleMotorFeedforward driveSVA = new SimpleMotorFeedforward(0.1, 3, 0.4);
+        public static final PIDConstants anglePID = new PIDConstants(0.023, 0.000001, 0.0);
 
         /* Custom PID Controllers */
         public static final OrbitPID robotRotationPID = new OrbitPID(0.1, 0, 0.00005);
@@ -86,7 +86,7 @@ public final class Constants {
             public static final int driveMotorID = 10;
             public static final int angleMotorID = 11;
             public static final int magEncoderID = 0;
-            public static final double angleOffset = -130;
+            public static final double angleOffset = 130.0;
             public static final SwerveModuleConstants constants = new SwerveModuleConstants(driveMotorID, angleMotorID,
                     magEncoderID, angleOffset, anglePID, drivePID, driveSVA);
         }
@@ -96,7 +96,8 @@ public final class Constants {
             public static final int driveMotorID = 20;
             public static final int angleMotorID = 21;
             public static final int magEncoderID = 1;
-            public static final double angleOffset = -40;
+            public static final double angleOffset = 40.3;
+
             public static final SwerveModuleConstants constants = new SwerveModuleConstants(driveMotorID, angleMotorID,
                     magEncoderID, angleOffset, anglePID, drivePID, driveSVA);
         }
@@ -106,7 +107,7 @@ public final class Constants {
             public static final int driveMotorID = 30;
             public static final int angleMotorID = 31;
             public static final int magEncoderID = 2;
-            public static final double angleOffset = -252;
+            public static final double angleOffset = 252.2;
             public static final SwerveModuleConstants constants = new SwerveModuleConstants(driveMotorID, angleMotorID,
                     magEncoderID, angleOffset, anglePID, drivePID, driveSVA);
         }
@@ -116,9 +117,19 @@ public final class Constants {
             public static final int driveMotorID = 40;
             public static final int angleMotorID = 41;
             public static final int magEncoderID = 3;
-            public static final double angleOffset = -326;
+            public static final double angleOffset = 326.85;
+
             public static final SwerveModuleConstants constants = new SwerveModuleConstants(driveMotorID, angleMotorID,
                     magEncoderID, angleOffset, anglePID, drivePID, driveSVA);
+        }
+
+        public static final class AutoConstants {
+            // PID values to follow paths. NOT *DIRECTLY* FOR MODULE SPEED, try DRIVE_PID
+            // and ANGLE_PID first
+            public static PIDConstants translation = new PIDConstants(0, 0, 0);
+            public static PIDConstants rotation = new PIDConstants(0, 0, 0);
+            public static double maxSpeed = 4; // meters
+            public static double maxAcceleration = 2; // m/s^2
         }
 
     }
@@ -146,7 +157,7 @@ public final class Constants {
      */
     // Here we calculate the theoretical maximum angular velocity. You can also
     // replace this with a measured amount.
-    public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = ROBOT_MAX_VELOCITY_METERS_PER_SECOND /
+    public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = 1 /
             Math.hypot(DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DRIVETRAIN_WHEELBASE_METERS / 2.0);
 
     // SDS Module Configurations
@@ -233,7 +244,7 @@ public final class Constants {
     // HOME_POSITION
     public static final double HOME_POSITION_WRIST = 175.0; // Originally 170.0
     public static final double HOME_POSITION_ARM = 0.0;
-    public static final double HOME_POSITION_SHOULDER = -90.0;
+    public static final double HOME_POSITION_SHOULDER = -80.0;
 
     // CONE_INTAKE_POSITION
     public static final double CONE_INTAKE_POSITION_WRIST = 53.0;

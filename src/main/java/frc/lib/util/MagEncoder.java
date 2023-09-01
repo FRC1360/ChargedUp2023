@@ -16,7 +16,7 @@ public class MagEncoder {
   }
 
   public double getAbsoluteAngle() {
-    double angle = Math.toRadians(360.0 * encoder.getOutput() + this.offset);
+    double angle = Math.toRadians(360.0 * encoder.getOutput() - this.offset);
     if (angle < 0) {
       angle = Math.PI * 2 + angle;
     }

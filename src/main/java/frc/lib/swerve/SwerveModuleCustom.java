@@ -40,6 +40,8 @@ public class SwerveModuleCustom {
     public final PIDConstants anglePID;
     public final SimpleMotorFeedforward driveSVA;
     public SimpleMotorFeedforward feedforward;
+    public double targetSpeed = 0;
+    public double targetAngle = 0;
 
     public SwerveModuleCustom(int moduleNumber, SwerveModuleConstants moduleConstants) {
         this.moduleNumber = moduleNumber;
@@ -117,7 +119,7 @@ public class SwerveModuleCustom {
         driveMotor.setIdleMode(Constants.Swerve.IDLE_MODE);
         driveEncoder.setVelocityConversionFactor(Constants.Swerve.DRIVE_CONVERSION_VELOCITY_FACTOR);
         driveEncoder.setPositionConversionFactor(Constants.Swerve.DRIVE_CONVERSION_POSITION_FACTOR);
-        Constants.Swerve.DRIVE_PID.applyPID(this.driveController);
+        Constants.Swerve.drivePID.applyPID(this.driveController);
         driveController.setFF(0);
         this.feedforward = driveSVA;
         driveMotor.enableVoltageCompensation(12.0);
@@ -133,6 +135,7 @@ public class SwerveModuleCustom {
             double percentOutput = desiredState.speedMetersPerSecond / Constants.ROBOT_MAX_VELOCITY_METERS_PER_SECOND;
             driveMotor.set(percentOutput);
         } else {
+            this.targetSpeed = desiredState.speedMetersPerSecond;
             driveController.setReference(
                     desiredState.speedMetersPerSecond,
                     ControlType.kVelocity,
@@ -153,6 +156,7 @@ public class SwerveModuleCustom {
 
         angleController.setReference(angle, ControlType.kPosition);
         lastAngle = angle;
+        this.targetAngle = angle;
     }
 
     public void goToHome() {
@@ -166,7 +170,7 @@ public class SwerveModuleCustom {
         return Rotation2d.fromRadians(this.angleEncoder.getAbsoluteAngle());
     }
 
-    private Rotation2d getAngle() {
+    public Rotation2d getAngle() {
         return Rotation2d.fromDegrees(this.integratedAngleEncoder.getPosition());
     }
 

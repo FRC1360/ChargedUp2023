@@ -26,6 +26,10 @@ public class Robot extends TimedRobot {
 
   private RobotContainer m_robotContainer;
 
+  public Robot() {
+    super(0.1);
+  }
+
   /**
    * This function is run when the robot is first started up and should be used
    * for any
@@ -87,6 +91,8 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
+    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    m_autonomousCommand.schedule();
     // START
 
     // m_robotContainer.wristSubsystem.setIdleMode(IdleMode.kCoast);
