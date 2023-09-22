@@ -77,10 +77,11 @@ public final class Constants {
     public static final int SHOULDER_MOTOR_SLAVE = 51;
     public static final int SHOULDER_ENCODER = 0;
     // public static final double SHOULDER_ENCODER_OFFSET = 0.542;
-    public static final double SHOULDER_ENCODER_OFFSET = 0.045 - 0.027 - 0.102777 - 0.02777 + 0.05 + 0.03888 + 0.02777
-            - 0.02
-            - 0.07222 + 0.041666; // Measure
-    // when
+    public static final double SHOULDER_ENCODER_OFFSET = 0.519;
+    // 0.045 - 0.027 - 0.102777 - 0.02777 + 0.05 + 0.03888 + 0.02777
+    //         - 0.02
+    //         - 0.07222 + 0.041666; // Measure
+    // // when
     // arm
     // is
     // parallel to
@@ -118,7 +119,7 @@ public final class Constants {
     // HOME_POSITION
     public static final double HOME_POSITION_WRIST = 170.0; // Originally 175.0
     public static final double HOME_POSITION_ARM = 0.0;
-    public static final double HOME_POSITION_SHOULDER = -70.0; // -90.0, changed it for ribfest so that the neo doesn't
+    public static final double HOME_POSITION_SHOULDER = -90.0; // -90.0, changed it for ribfest so that the neo doesn't
                                                                // hit the superstructure
 
     // CONE_INTAKE_POSITION
