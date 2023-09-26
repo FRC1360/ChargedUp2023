@@ -1,7 +1,7 @@
 package frc.robot.autos.basic;
 
 import frc.robot.Constants;
-import frc.robot.subsystems.DrivetrainSubsystem;
+import frc.robot.subsystems.SwerveDrive.DrivetrainSubsystem;
 import frc.robot.util.OrbitPID;
 import frc.robot.util.OrbitTimer;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -138,7 +138,7 @@ public class DriveAndRotate extends CommandBase {
 
         ChassisSpeeds speed = ChassisSpeeds.fromFieldRelativeSpeeds(this.speeds, dt.getGyroscopeRotation()); 
 
-        dt.drive(speed);
+        dt.drive(speed, true);
     }
     
     @Override

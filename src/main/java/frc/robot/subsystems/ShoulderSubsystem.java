@@ -17,18 +17,17 @@ import frc.robot.Constants;
 import frc.robot.util.OrbitPID;
 
 public class ShoulderSubsystem extends SubsystemBase {
-    
+
     private CANSparkMax shoulderMotorMaster;
     private CANSparkMax shoulderMotorSlave;
     private double targetAngle;
 
-    public OrbitPID holdPIDController;  // PID Controller for HoldToTarget
-    public OrbitPID movePIDController;  // PID Controller for following Trapazoid Motion Profile
+    public OrbitPID holdPIDController; // PID Controller for HoldToTarget
+    public OrbitPID movePIDController; // PID Controller for following Trapazoid Motion Profile
     public TrapezoidProfile.Constraints shoulderUpMotionProfileConstraints;
     public TrapezoidProfile.Constraints shoulderDownMotionProfileConstraints;
 
-
-    private double angularVelocity;  // angular velocity in deg / second
+    private double angularVelocity; // angular velocity in deg / second
     private double lastAngle;
     private long lastTime;
 
@@ -40,25 +39,25 @@ public class ShoulderSubsystem extends SubsystemBase {
 
     private AnalogEncoder absoluteEncoder;
 
-    public ArmFeedforward shoulderFeedForward;  
-    
+    public ArmFeedforward shoulderFeedForward;
+
     private boolean inIntakePosition;
 
-    private boolean isSafe; 
+    private boolean isSafe;
 
     public ShoulderSubsystem(DoubleSupplier manualOffset, BooleanSupplier manualOffsetEnable) {
-        this.holdPIDController = new OrbitPID(0.035, 0.0000075, 0.0); //kP = 0.045
-        this.movePIDController = new OrbitPID(0.0632, 0.0, 0.0);  // kP = 0.02
+        this.holdPIDController = new OrbitPID(0.035, 0.0000075, 0.0); // kP = 0.045
+        this.movePIDController = new OrbitPID(0.0632, 0.0, 0.0); // kP = 0.02
 
         // This units are deg / second for velocity and deg / sec^2 for acceleration
-        this.shoulderUpMotionProfileConstraints = new TrapezoidProfile.Constraints(200.0, 450.0); 
-        this.shoulderDownMotionProfileConstraints = new TrapezoidProfile.Constraints(100.0, 250.0); 
+        this.shoulderUpMotionProfileConstraints = new TrapezoidProfile.Constraints(200.0, 450.0);
+        this.shoulderDownMotionProfileConstraints = new TrapezoidProfile.Constraints(100.0, 250.0);
         this.targetAngle = Constants.HOME_POSITION_SHOULDER;
 
         this.shoulderMotorMaster = new CANSparkMax(Constants.SHOULDER_MOTOR_MASTER, MotorType.kBrushless);
-        this.shoulderMotorSlave = new CANSparkMax(Constants.SHOULDER_MOTOR_SLAVE, MotorType.kBrushless); 
+        this.shoulderMotorSlave = new CANSparkMax(Constants.SHOULDER_MOTOR_SLAVE, MotorType.kBrushless);
 
-        this.shoulderFeedForward = new ArmFeedforward(0.0, 0.0005, 0.0); //kG = 0.001
+        this.shoulderFeedForward = new ArmFeedforward(0.0, 0.0005, 0.0); // kG = 0.001
 
         this.shoulderMotorMaster.restoreFactoryDefaults();
         this.shoulderMotorSlave.restoreFactoryDefaults();
@@ -69,7 +68,7 @@ public class ShoulderSubsystem extends SubsystemBase {
         this.shoulderMotorMaster.setSmartCurrentLimit(80);
         this.shoulderMotorSlave.setSmartCurrentLimit(80);
 
-        //this.shoulderMotorSlave.follow(this.shoulderMotorMaster);
+        // this.shoulderMotorSlave.follow(this.shoulderMotorMaster);
 
         this.transitioning = false;
         this.scheduledAngle = Double.NaN;
@@ -80,14 +79,14 @@ public class ShoulderSubsystem extends SubsystemBase {
         this.absoluteEncoder = new AnalogEncoder(Constants.SHOULDER_ENCODER);
 
         this.inIntakePosition = false;
-        this.isSafe = true; 
+        this.isSafe = true;
 
         resetMotorRotations();
-        
+
     }
 
-    public void checkSafety() { 
-        this.isSafe = true; 
+    public void checkSafety() {
+        this.isSafe = true;
     }
 
     public double getMotorRotations() {
@@ -99,47 +98,49 @@ public class ShoulderSubsystem extends SubsystemBase {
     }
 
     public void setShoulderSpeed(double speed) {
-        if (this.getShoulderAngle() > Constants.MAX_SHOULDER_ANGLE
-             || this.getShoulderAngle() < Constants.MIN_SHOULDER_ANGLE) 
-                speed = 0.0; 
-        
+        // if (this.getShoulderAngle() > Constants.MAX_SHOULDER_ANGLE
+        // || this.getShoulderAngle() < Constants.MIN_SHOULDER_ANGLE)
+        speed = 0.0;
+
         this.shoulderMotorMaster.set(-speed);
         this.shoulderMotorSlave.set(-speed);
     }
 
     public void resetMotorRotations() {
-        // 
-        double newPos = -((absoluteEncoder.getAbsolutePosition() - Constants.SHOULDER_ENCODER_OFFSET) / Constants.SHOULDER_GEAR_RATIO);  
-        
+        //
+        double newPos = -((absoluteEncoder.getAbsolutePosition() - Constants.SHOULDER_ENCODER_OFFSET)
+                / Constants.SHOULDER_GEAR_RATIO);
+
         SmartDashboard.putNumber("New_Pos", newPos);
 
-        if(this.shoulderMotorMaster.getEncoder().setPosition(newPos) == REVLibError.kOk) {
+        if (this.shoulderMotorMaster.getEncoder().setPosition(newPos) == REVLibError.kOk) {
             System.out.println("Reset Shoulder Rotations");
-            SmartDashboard.putBoolean("Shoulder_Encoder_Updated", true); 
+            SmartDashboard.putBoolean("Shoulder_Encoder_Updated", true);
         } else {
             System.out.println("Failed to reset Shoulder Rotations");
-            SmartDashboard.putBoolean("Shoulder_Encoder_Updated", false); 
+            SmartDashboard.putBoolean("Shoulder_Encoder_Updated", false);
         }
-        
+
     }
 
     /*
      * Sets arm voltage based off 0.0 - 12.0
      */
     public void setShoulderVoltage(double voltage) {
-        if (this.getShoulderAngle() > Constants.MAX_SHOULDER_ANGLE
-             || this.getShoulderAngle() < Constants.MIN_SHOULDER_ANGLE) 
-                voltage = 0.0;
-        
+        // if (this.getShoulderAngle() > Constants.MAX_SHOULDER_ANGLE
+        // || this.getShoulderAngle() < Constants.MIN_SHOULDER_ANGLE)
+        voltage = 0.0;
+
         this.shoulderMotorMaster.setVoltage(voltage);
         this.shoulderMotorSlave.setVoltage(voltage);
     }
 
     /*
-     * Sets arm voltage based off 0.0 - 1.0 
+     * Sets arm voltage based off 0.0 - 1.0
      */
     public void setShoulderNormalizedVoltage(double voltage) {
-        this.setShoulderVoltage(voltage * 12.0);  // Should probably change this to a constant somewhere for ARM_VOLTAGE
+        // this.setShoulderVoltage(voltage * 12.0); // Should probably change this to a
+        // constant somewhere for ARM_VOLTAGE
     }
 
     public void setTargetAngle(double targetAngle) {
@@ -151,7 +152,7 @@ public class ShoulderSubsystem extends SubsystemBase {
     }
 
     /*
-     * Converts motor rotations  to angle (0 - 360)
+     * Converts motor rotations to angle (0 - 360)
      */
     public double rotationsToAngleConversion(double encoderPosition) {
         // encoderPosition * 360.0 = angle of motor rotation
@@ -175,7 +176,7 @@ public class ShoulderSubsystem extends SubsystemBase {
     }
 
     public boolean atTarget() {
-        return Math.abs(this.getTargetAngle() - this.getShoulderAngle()) <= 3.0;  // Should make this a constant
+        return Math.abs(this.getTargetAngle() - this.getShoulderAngle()) <= 3.0; // Should make this a constant
     }
 
     public BooleanSupplier inTransitionState() {
@@ -191,7 +192,9 @@ public class ShoulderSubsystem extends SubsystemBase {
     }
 
     public void checkTransitioning() {
-        transitioning = !(Math.abs(this.getShoulderAngle()) < 2) && (this.getScheduledAngle() > 0.0 && this.getShoulderAngle() < 0.0) || (this.getScheduledAngle() < 0.0 && this.getShoulderAngle() > 0.0);
+        transitioning = !(Math.abs(this.getShoulderAngle()) < 2)
+                && (this.getScheduledAngle() > 0.0 && this.getShoulderAngle() < 0.0)
+                || (this.getScheduledAngle() < 0.0 && this.getShoulderAngle() > 0.0);
     }
 
     public boolean getInIntakePosition() {
@@ -206,10 +209,10 @@ public class ShoulderSubsystem extends SubsystemBase {
     public void periodic() {
         updateAngularVelocity();
 
-        if(!transitioning)
+        if (!transitioning)
             checkTransitioning();
 
-        if(transitioning && this.atTarget() && (this.getScheduledAngle() == this.getTargetAngle())) {
+        if (transitioning && this.atTarget() && (this.getScheduledAngle() == this.getTargetAngle())) {
             transitioning = false;
             this.setScheduledAngle(Double.NaN);
         }
@@ -222,14 +225,19 @@ public class ShoulderSubsystem extends SubsystemBase {
 
         SmartDashboard.putNumber("Shoulder_Target_Angle", this.getTargetAngle());
         SmartDashboard.putNumber("Shoulder_Angle", this.getShoulderAngle());
-        // SmartDashboard.putNumber("Shoulder_Manual_Offset", this.manualOffset.getAsDouble());
-        // SmartDashboard.putNumber("Shoulder_Scheduled_Angle", this.getScheduledAngle());
+        // SmartDashboard.putNumber("Shoulder_Manual_Offset",
+        // this.manualOffset.getAsDouble());
+        // SmartDashboard.putNumber("Shoulder_Scheduled_Angle",
+        // this.getScheduledAngle());
 
         SmartDashboard.putNumber("Shoulder_Angular_Velocity", this.getAngluarVelocity());
 
-        // SmartDashboard.putNumber("Shoulder_Move_P_Gain", this.movePIDController.getPTerm());
-        // SmartDashboard.putNumber("Shoulder_Move_I_Gain", this.movePIDController.getITerm());
-        // SmartDashboard.putNumber("Shoulder_Move_D_Gain", this.movePIDController.getDTerm());
+        // SmartDashboard.putNumber("Shoulder_Move_P_Gain",
+        // this.movePIDController.getPTerm());
+        // SmartDashboard.putNumber("Shoulder_Move_I_Gain",
+        // this.movePIDController.getITerm());
+        // SmartDashboard.putNumber("Shoulder_Move_D_Gain",
+        // this.movePIDController.getDTerm());
 
         // SmartDashboard.putBoolean("Shoulder_Transition_State", transitioning);
 
@@ -243,7 +251,7 @@ public class ShoulderSubsystem extends SubsystemBase {
     public class ShoulderWristMessenger {
         public double getShoulderAngle() {
             return ShoulderSubsystem.this.getShoulderAngle();
-        } 
+        }
 
         public double getTargetAngle() {
             return ShoulderSubsystem.this.getTargetAngle();

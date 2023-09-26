@@ -4,10 +4,14 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+import java.io.File;
+
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -18,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.autos.AutoBalance;
 import frc.robot.autos.CubeHighAndBalanceAuto;
 import frc.robot.autos.DriveStraightAuto;
+import frc.robot.autos.pathplanner_autos.DriveForwardAuto;
 import frc.robot.autos.ConeHighAndDriveAuto;
 import frc.robot.autos.procedures.ConeScoreHighAuto;
 import frc.robot.commands.DefaultDriveCommand;
@@ -42,11 +47,12 @@ import frc.robot.commands.wrist.WristGoToPositionCommand;
 import frc.robot.commands.wrist.WristHoldCommand;
 import frc.robot.simulation.Simulator;
 import frc.robot.subsystems.ArmSubsystem;
-import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.util.StateMachine;
 import frc.robot.subsystems.ShoulderSubsystem;
+import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.WristSubsystem;
+import frc.robot.subsystems.SwerveDrive.DrivetrainSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LEDSubsystem;
 
@@ -65,7 +71,12 @@ public class RobotContainer {
   private final CommandXboxController operatorController = new CommandXboxController(2);
 
   // The robot's subsystems and commands are defined here...
-  public final DrivetrainSubsystem m_drivetrainSubsystem = new DrivetrainSubsystem();
+  // public final DrivetrainSubsystem m_drivetrainSubsystem = new
+  // DrivetrainSubsystem();
+  public final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
+  // public final DrivetrainSubsystem m_drivetrainSubsystem = new
+  // DrivetrainSubsystem(
+  // new File(Filesystem.getDeployDirectory(), "swerve/neo"));
   public final ShoulderSubsystem shoulderSubsystem = new ShoulderSubsystem(
       () -> operatorController.getRightY() * Constants.SHOULDER_MANUAL_OVERRIDE_RANGE,
       operatorController.rightBumper());
@@ -82,20 +93,20 @@ public class RobotContainer {
 
   public final SendableChooser<Command> autoChooser = new SendableChooser<Command>();
 
-  private final CubeHighAndBalanceAuto highConeAndBalanceAuto = new CubeHighAndBalanceAuto(m_drivetrainSubsystem,
+  private final CubeHighAndBalanceAuto highConeAndBalanceAuto = new CubeHighAndBalanceAuto(swerveSubsystem,
       shoulderSubsystem, shoulderMessenger,
       wristSubsystem, armSubsystem, intakeSubsystem, armMessenger, ledSubsystem, sm);
-  private final ConeHighAndDriveAuto highConeAndDriveAuto = new ConeHighAndDriveAuto(m_drivetrainSubsystem,
+  private final ConeHighAndDriveAuto highConeAndDriveAuto = new ConeHighAndDriveAuto(swerveSubsystem,
       shoulderSubsystem, shoulderMessenger,
       wristSubsystem, armSubsystem, intakeSubsystem, armMessenger, ledSubsystem, sm);
 
-  private final ConeScoreHighAuto highConeAuto = new ConeScoreHighAuto(m_drivetrainSubsystem, shoulderSubsystem,
+  private final ConeScoreHighAuto highConeAuto = new ConeScoreHighAuto(swerveSubsystem, shoulderSubsystem,
       shoulderMessenger, wristSubsystem,
       armSubsystem, intakeSubsystem, armMessenger, ledSubsystem, sm);
 
-  private final DriveStraightAuto driveStraightAuto = new DriveStraightAuto(m_drivetrainSubsystem);
+  private final DriveStraightAuto driveStraightAuto = new DriveStraightAuto(swerveSubsystem);
 
-  private final Simulator sim = new Simulator(m_drivetrainSubsystem);
+  private final Simulator sim = new Simulator(swerveSubsystem);
 
   // private final DriveStraightAuto driveStraightAuto = new
   // DriveStraightAuto(m_drivetrainSubsystem, wristSubsystem);
@@ -111,19 +122,19 @@ public class RobotContainer {
     // Left stick Y axis -> forward and backwards movement
     // Left stick X axis -> left and right movement
     // Right stick X axis -> rotation
-    m_drivetrainSubsystem.setDefaultCommand(new DefaultDriveCommand(
-        m_drivetrainSubsystem,
-        () -> -modifyAxis(left_controller.getY()) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-        () -> -modifyAxis(left_controller.getX()) * DrivetrainSubsystem.MAX_VELOCITY_METERS_PER_SECOND,
-        () -> modifyAxis(right_controller.getX()) * DrivetrainSubsystem.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND,
+    swerveSubsystem.setDefaultCommand(new DefaultDriveCommand(
+        swerveSubsystem,
+        () -> -modifyAxis(left_controller.getY()) * Constants.ROBOT_MAX_VELOCITY_METERS_PER_SECOND,
+        () -> -modifyAxis(left_controller.getX()) * Constants.ROBOT_MAX_VELOCITY_METERS_PER_SECOND,
+        () -> modifyAxis(right_controller.getX()) * Constants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND,
         right_controller));
 
-    shoulderSubsystem.setDefaultCommand(
-        new ShoulderHoldCommand(shoulderSubsystem, armMessenger, () -> this.operatorController.getLeftTriggerAxis()));
+    shoulderSubsystem.setDefaultCommand(new ShoulderHoldCommand(shoulderSubsystem, armMessenger,
+        () -> this.operatorController.getLeftTriggerAxis())); 
     // shoulderSubsystem.setDefaultCommand(new ShoulderMoveManual(shoulderSubsystem,
     // () -> this.operatorController.getLeftY()));
-    wristSubsystem
-        .setDefaultCommand(new WristHoldCommand(wristSubsystem, () -> this.operatorController.getLeftTriggerAxis()));
+    wristSubsystem.setDefaultCommand(
+        new WristHoldCommand(wristSubsystem, () -> this.operatorController.getLeftTriggerAxis()));
     armSubsystem.setDefaultCommand(new ArmHoldCommand(this.armSubsystem));
     intakeSubsystem.setDefaultCommand(new IntakeHoldCommand(this.intakeSubsystem));
 
@@ -158,7 +169,7 @@ public class RobotContainer {
      * .onTrue(new InstantCommand(m_drivetrainSubsystem::zeroGyroscope));
      */
 
-    left_controller.button(1).onTrue(new InstantCommand(m_drivetrainSubsystem::zeroGyroscope));
+    left_controller.button(1).onTrue(new InstantCommand(swerveSubsystem.navX::resetGyro));
 
     operatorController.a().and(() -> sm.getAtHome()).onTrue((new AssemblyGoToCubeIntakeCommand(shoulderSubsystem,
         shoulderMessenger, wristSubsystem, armSubsystem, armMessenger, intakeSubsystem, ledSubsystem, sm)));
@@ -184,20 +195,7 @@ public class RobotContainer {
     // left_controller.button(2).whileTrue(new StrafeAlign(m_drivetrainSubsystem,
     // vision, left_controller::getX, left_controller::getY));
     right_controller.button(1).whileTrue(new ManualPutdownCommand(intakeSubsystem, () -> 1.0));
-    left_controller.button(3).whileTrue(new InstantCommand(() -> m_drivetrainSubsystem.lockWheels = true))
-        .whileFalse(new InstantCommand(() -> m_drivetrainSubsystem.lockWheels = false));
-
-    // operatorController.a().onTrue(new ArmGoToPositionCommand(armSubsystem,
-    // shoulderMessenger, 0.5));
-    // operatorController.b().onTrue(new ArmGoToPositionCommand(armSubsystem,
-    // shoulderMessenger, 10.0));
-
-    /*
-     * operatorController.a().onTrue(new
-     * ShoulderGoToPositionCommand(shoulderSubsystem, -90.0));
-     * operatorController.b().onTrue(new
-     * ShoulderGoToPositionCommand(shoulderSubsystem,0.0));
-     */
+    left_controller.button(3).whileTrue(new InstantCommand(swerveSubsystem::brake));
   }
 
   /**
@@ -208,8 +206,11 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
     // return null;
-    return autoChooser.getSelected();
+    // return autoChooser.getSelected();
     // return highConeAndBalanceAuto;
+
+    // return driveStraightAuto;
+    return new DriveForwardAuto(swerveSubsystem).getCommand();
   }
 
   public Command getArmHomeCommand() {

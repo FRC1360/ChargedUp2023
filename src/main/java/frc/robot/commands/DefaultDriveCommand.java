@@ -1,23 +1,26 @@
 package frc.robot.commands;
 
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
-import frc.robot.subsystems.DrivetrainSubsystem;
+import frc.robot.Constants;
+import frc.robot.subsystems.SwerveSubsystem;
+import frc.robot.subsystems.SwerveDrive.DrivetrainSubsystem;
 import frc.robot.util.OrbitPID;
 
 import java.util.function.DoubleSupplier;
 
 public class DefaultDriveCommand extends CommandBase {
-    private final DrivetrainSubsystem m_drivetrainSubsystem;
+    private final SwerveSubsystem m_drivetrainSubsystem;
 
     private final DoubleSupplier m_translationXSupplier;
     private final DoubleSupplier m_translationYSupplier;
     private final DoubleSupplier m_rotationSupplier;
     private final CommandJoystick rotationJoystick;
 
-    public DefaultDriveCommand(DrivetrainSubsystem drivetrainSubsystem,
+    public DefaultDriveCommand(SwerveSubsystem drivetrainSubsystem,
             DoubleSupplier translationXSupplier,
             DoubleSupplier translationYSupplier,
             DoubleSupplier rotationSupplier,
@@ -36,11 +39,11 @@ public class DefaultDriveCommand extends CommandBase {
         // You can use `new ChassisSpeeds(...)` for robot-oriented movement instead of
         // field-oriented movement
 
-        double rotSpeed = m_rotationSupplier.getAsDouble();
+        double rotSpeed = -m_rotationSupplier.getAsDouble();
 
-        double curAngle = m_drivetrainSubsystem.getGyroscopeRotation().getDegrees() % 360.0;
+        double curAngle = m_drivetrainSubsystem.navX.getYaw().getDegrees() % 360.0;
 
-        double curAngle2 = (m_drivetrainSubsystem.getGyroscopeRotation().getDegrees() + 180.0) % 360.0;
+        double curAngle2 = (m_drivetrainSubsystem.navX.getYaw().getDegrees() + 180.0) % 360.0;
 
         SmartDashboard.putNumber("Default_Drive_Command_Cur_Angle", curAngle);
         // 2 -> 0 (180deg in alternative frame of reference)
@@ -49,31 +52,26 @@ public class DefaultDriveCommand extends CommandBase {
         // 4 -> 270
 
         if (this.rotationJoystick.button(3).getAsBoolean())
-            rotSpeed = -this.m_drivetrainSubsystem.driveRotPID.calculate(180.0, curAngle);
+            rotSpeed = -Constants.Swerve.robotRotationPID.calculate(180.0, curAngle);
         else if (this.rotationJoystick.button(2).getAsBoolean())
-            rotSpeed = -this.m_drivetrainSubsystem.driveRotPID.calculate(180.0, curAngle2);
+            rotSpeed = -Constants.Swerve.robotRotationPID.calculate(180.0, curAngle2);
         else if (this.rotationJoystick.button(5).getAsBoolean())
-            rotSpeed = -this.m_drivetrainSubsystem.driveRotPID.calculate(90.0, curAngle);
+            rotSpeed = -Constants.Swerve.robotRotationPID.calculate(90.0, curAngle);
         else if (this.rotationJoystick.button(4).getAsBoolean()) {
-            rotSpeed = -this.m_drivetrainSubsystem.driveRotPID.calculate(270.0,
+            rotSpeed = -Constants.Swerve.robotRotationPID.calculate(270.0,
                     curAngle + (Math.abs(270 - curAngle) > 180 ? 360 : 0));
         }
 
-        ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-                -m_translationXSupplier.getAsDouble(),
-                -m_translationYSupplier.getAsDouble(),
-                rotSpeed,
-                m_drivetrainSubsystem.getGyroscopeRotation());
-
-        // System.out.println(speeds.toString());
-
         m_drivetrainSubsystem.drive(
-                speeds);
+                new Translation2d(m_translationXSupplier.getAsDouble(),
+                        m_translationYSupplier.getAsDouble()),
+                rotSpeed,
+                true, false);
     }
 
     @Override
     public void end(boolean interrupted) {
-        m_drivetrainSubsystem.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
+        m_drivetrainSubsystem.drive(new Translation2d(), 0, true, true);
     }
 
     private double getDirection(double target, double current) {

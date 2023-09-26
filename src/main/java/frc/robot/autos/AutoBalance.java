@@ -3,14 +3,15 @@ package frc.robot.autos;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.BuiltInAccelerometer;
-import frc.robot.subsystems.DrivetrainSubsystem;
+import frc.robot.subsystems.SwerveSubsystem;
+import frc.robot.subsystems.SwerveDrive.DrivetrainSubsystem;
 
 public class AutoBalance {
     public BuiltInAccelerometer mRioAccel;
-    public AHRS mNavx; 
+    public AHRS mNavx;
     public int state;
     public int debounceCount;
-    public int wobbleCount; 
+    public int wobbleCount;
     private double robotSpeedSlow;
     private double robotSpeedFast;
     private double onChargeStationDegree;
@@ -19,13 +20,14 @@ public class AutoBalance {
     private double singleTapTime;
     private double scoringBackUpTime;
     private double doubleTapTime;
+    private SwerveSubsystem dt;
 
-    public AutoBalance(DrivetrainSubsystem dt) {
+    public AutoBalance(SwerveSubsystem dt) {
         mRioAccel = new BuiltInAccelerometer();
-        this.mNavx = dt.getNavx(); 
+        this.dt = dt;
         state = 2;
         debounceCount = 0;
-        wobbleCount = 0; 
+        wobbleCount = 0;
 
         /**********
          * CONFIG *
@@ -69,26 +71,28 @@ public class AutoBalance {
     public double getPitch() {
         return Math.atan2((-mRioAccel.getX()),
                 Math.sqrt(mRioAccel.getY() * mRioAccel.getY() + mRioAccel.getZ() * mRioAccel.getZ())) * 57.3;
-        // return mNavx.getPitch(); 
+        // return mNavx.getPitch();
     }
 
     public double getRoll() {
         return Math.atan2(mRioAccel.getY(), mRioAccel.getZ()) * 57.3;
-        //return mNavx.getRoll(); 
+        // return mNavx.getRoll();
     }
 
     // returns the magnititude of the robot's tilt calculated by the root of
     // pitch^2 + roll^2, used to compensate for diagonally mounted rio
     public double getTilt() {
-        /*double pitch = getPitch();
-        double roll = getRoll();
-        if ((pitch + roll) >= 0) {
-            return Math.sqrt(pitch * pitch + roll * roll);
-        } else {
-            return -Math.sqrt(pitch * pitch + roll * roll);
-        }*/
+        /*
+         * double pitch = getPitch();
+         * double roll = getRoll();
+         * if ((pitch + roll) >= 0) {
+         * return Math.sqrt(pitch * pitch + roll * roll);
+         * } else {
+         * return -Math.sqrt(pitch * pitch + roll * roll);
+         * }
+         */
         System.out.println("NavX Pitch " + this.mNavx.getRoll());
-        return this.mNavx.getRoll();
+        return this.dt.navX.getRoll().getDegrees();
     }
 
     public int secondsToTicks(double time) {
@@ -99,11 +103,11 @@ public class AutoBalance {
     // returns a value from -1.0 to 1.0, which left and right motors should be set
     // to.
     public double autoBalanceRoutine() {
-        //System.out.println("Before Switch");
+        // System.out.println("Before Switch");
         switch (state) {
             // drive forwards to approach station, exit when tilt is detected
             case 0:
-                //System.out.println("In case staement 0");
+                // System.out.println("In case staement 0");
                 if (getTilt() < -onChargeStationDegree) {
                     debounceCount++;
                 }
@@ -124,8 +128,8 @@ public class AutoBalance {
                     return 0;
                 }
                 return robotSpeedSlow;
-            case 2: 
-                // on charge station, stop motors and wait for end of auto 
+            case 2:
+                // on charge station, stop motors and wait for end of auto
                 if (Math.abs(getTilt()) <= levelDegree) {
                     debounceCount++;
                 }
@@ -143,7 +147,7 @@ public class AutoBalance {
                     System.out.println("Negative Speed");
                     return -(robotSpeedSlow / 2.5);
                 }
-                return 0.0; 
+                return 0.0;
             case 3:
                 return 0.0;
         }
