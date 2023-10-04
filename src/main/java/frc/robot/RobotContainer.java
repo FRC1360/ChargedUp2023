@@ -60,6 +60,17 @@ import frc.robot.subsystems.LEDSubsystem;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
+  enum OuttakeLevels { // the set points that can be set by operator
+    MEDIUMCONE,
+    MEDIUMCUBE,
+    HIGHCONE,
+    HIGHCUBE
+  }
+
+  OuttakeLevels level = OuttakeLevels.MEDIUMCONE;
+
+  
+
   private final CommandJoystick left_controller = new CommandJoystick(0);
   private final CommandJoystick right_controller = new CommandJoystick(1);
   private final CommandXboxController operatorController = new CommandXboxController(2);
@@ -151,53 +162,50 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    // Back button zeros the gyroscope
-    /*
-     * new Trigger(m_controller::getBackButton)
-     * // No requirements because we don't need to interrupt anything
-     * .onTrue(new InstantCommand(m_drivetrainSubsystem::zeroGyroscope));
-     */
 
-    left_controller.button(1).onTrue(new InstantCommand(m_drivetrainSubsystem::zeroGyroscope));
+    /*new Trigger(m_controller::getBackButton)
+            // No requirements because we don't need to interrupt anything
+            .onTrue(new InstantCommand(m_drivetrainSubsystem::zeroGyroscope));*/
+    
+    left_controller.button(6).onTrue(new InstantCommand(m_drivetrainSubsystem::zeroGyroscope));
 
-    operatorController.a().and(() -> sm.getAtHome()).onTrue((new AssemblyGoToCubeIntakeCommand(shoulderSubsystem,
-        shoulderMessenger, wristSubsystem, armSubsystem, armMessenger, intakeSubsystem, ledSubsystem, sm)));
-    operatorController.y().and(() -> sm.getAtHome()).onTrue(new AssemblyGoToConeIntakeCommand(shoulderSubsystem,
-        shoulderMessenger, wristSubsystem, armSubsystem, armMessenger, intakeSubsystem, ledSubsystem, sm));
-    operatorController.b().and(() -> sm.getAtHome())
-        .onTrue(new AssemblyMidScoreCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem,
-            armMessenger, ledSubsystem, () -> operatorController.leftBumper().getAsBoolean(), sm));
-    operatorController.x().and(() -> !sm.getAtHome()).onTrue(new AssemblyHomePositionCommand(shoulderSubsystem,
-        shoulderMessenger, wristSubsystem, armSubsystem, armMessenger, ledSubsystem, sm));
-    operatorController.povUp().and(() -> sm.getAtHome())
-        .onTrue(new AssemblyHighScoreCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem,
-            armMessenger, () -> operatorController.leftBumper().getAsBoolean(), ledSubsystem, sm));
-    operatorController.povDown().and(() -> sm.getAtHome())
-        .onTrue(new AssemblyPickUpSingleSubstationCommand(shoulderSubsystem, wristSubsystem, armSubsystem,
-            shoulderMessenger, armMessenger, intakeSubsystem, ledSubsystem, sm));
+    left_controller.button(4).onTrue((new AssemblyGoToCubeIntakeCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger, intakeSubsystem, ledSubsystem, sm)));
+    left_controller.button(5).onTrue(new AssemblyGoToConeIntakeCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger, intakeSubsystem, ledSubsystem, sm));
+    left_controller.button(2).onTrue(new AssemblyPickUpSingleSubstationCommand(shoulderSubsystem, wristSubsystem, armSubsystem, shoulderMessenger, armMessenger, intakeSubsystem, ledSubsystem, sm)); 
+    left_controller.button(3).onTrue(getOuttakeLevel(level));
+
+    left_controller.button(2).onFalse(new AssemblyHomePositionCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger, ledSubsystem, sm));
+    left_controller.button(5).onFalse(new AssemblyHomePositionCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger, ledSubsystem, sm));
+    left_controller.button(3).onFalse(new AssemblyHomePositionCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger, ledSubsystem, sm));
+    left_controller.button(4).onFalse(new AssemblyHomePositionCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger, ledSubsystem, sm)); 
+
+
+    /*operatorController.a().and(() -> sm.getAtHome()).onTrue((new AssemblyGoToCubeIntakeCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger, intakeSubsystem, ledSubsystem, sm)));
+    operatorController.y().and(() -> sm.getAtHome()).onTrue(new AssemblyGoToConeIntakeCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger, intakeSubsystem, ledSubsystem, sm));
+    operatorController.b().and(() -> sm.getAtHome()).onTrue(new AssemblyMidScoreCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger, ledSubsystem, () -> operatorController.leftBumper().getAsBoolean(), sm)); 
+    operatorController.x().and(() -> !sm.getAtHome()).onTrue(new AssemblyHomePositionCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger, ledSubsystem, sm)); 
+    operatorController.povUp().and(() -> sm.getAtHome()).onTrue(new AssemblyHighScoreCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger, () -> operatorController.leftBumper().getAsBoolean(), ledSubsystem, sm)); 
+    operatorController.povDown().and(() -> sm.getAtHome()).onTrue(new AssemblyPickUpSingleSubstationCommand(shoulderSubsystem, wristSubsystem, armSubsystem, shoulderMessenger, armMessenger, intakeSubsystem, ledSubsystem, sm)); 
+    */
 
     new Trigger(() -> operatorController.getLeftTriggerAxis() > 0.05)
         .whileTrue(new ManualIntakeCommand(intakeSubsystem, () -> operatorController.getLeftTriggerAxis()));
     new Trigger(() -> operatorController.getRightTriggerAxis() > 0.05)
-        .whileTrue(new ManualPutdownCommand(intakeSubsystem, () -> operatorController.getRightTriggerAxis()));
+     .whileTrue(new ManualPutdownCommand(intakeSubsystem, () -> operatorController.getRightTriggerAxis()));
 
-    // left_controller.button(2).whileTrue(new StrafeAlign(m_drivetrainSubsystem,
-    // vision, left_controller::getX, left_controller::getY));
-    right_controller.button(1).whileTrue(new ManualPutdownCommand(intakeSubsystem, () -> 1.0));
-    left_controller.button(3).whileTrue(new InstantCommand(() -> m_drivetrainSubsystem.lockWheels = true))
-        .whileFalse(new InstantCommand(() -> m_drivetrainSubsystem.lockWheels = false));
+    //left_controller.button(2).whileTrue(new StrafeAlign(m_drivetrainSubsystem, vision, left_controller::getX, left_controller::getY));
+    left_controller.button(1).whileTrue(new ManualIntakeCommand(intakeSubsystem, () -> 1.0));
+    right_controller.button(1).whileTrue(new ManualPutdownCommand(intakeSubsystem, () -> 1.0)); 
+    left_controller.button(7).whileTrue(new InstantCommand( () -> m_drivetrainSubsystem.lockWheels = true)).whileFalse( new InstantCommand( () -> m_drivetrainSubsystem.lockWheels = false));
+    
+    operatorController.a().onTrue(new InstantCommand( () -> level = OuttakeLevels.HIGHCONE));
+    operatorController.b().onTrue(new InstantCommand( () -> level = OuttakeLevels.HIGHCUBE));
 
-    // operatorController.a().onTrue(new ArmGoToPositionCommand(armSubsystem,
-    // shoulderMessenger, 0.5));
-    // operatorController.b().onTrue(new ArmGoToPositionCommand(armSubsystem,
-    // shoulderMessenger, 10.0));
+    operatorController.x().onTrue(new InstantCommand( () -> level = OuttakeLevels.MEDIUMCONE));
+    operatorController.y().onTrue(new InstantCommand( () -> level = OuttakeLevels.MEDIUMCUBE));
 
-    /*
-     * operatorController.a().onTrue(new
-     * ShoulderGoToPositionCommand(shoulderSubsystem, -90.0));
-     * operatorController.b().onTrue(new
-     * ShoulderGoToPositionCommand(shoulderSubsystem,0.0));
-     */
+    
+    
   }
 
   /**
@@ -212,8 +220,22 @@ public class RobotContainer {
     // return highConeAndBalanceAuto;
   }
 
-  public Command getArmHomeCommand() {
-    return new ArmHomeCommand(armSubsystem);
+  public Command getOuttakeLevel(OuttakeLevels level) {
+    if (level == OuttakeLevels.MEDIUMCONE){
+      return new AssemblyMidScoreCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger, ledSubsystem, () -> false, sm);
+    } else if (level == OuttakeLevels.MEDIUMCUBE) {
+      return new AssemblyMidScoreCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger, ledSubsystem, () -> true, sm);
+    }  else if (level == OuttakeLevels.HIGHCONE) {
+      return new AssemblyHighScoreCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger, () -> false, ledSubsystem, sm);
+    } else if (level == OuttakeLevels.HIGHCUBE) {
+      return new AssemblyHighScoreCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger, () -> true, ledSubsystem, sm);
+    } else {
+      return null;
+    }
+  }
+
+  public Command getArmHomeCommand() { 
+    return new ArmHomeCommand(armSubsystem); 
   }
 
   public Command getShoulderZeroCommand() {

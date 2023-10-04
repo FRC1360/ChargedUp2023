@@ -86,6 +86,7 @@ public final class Constants {
     // is
     // parallel to
     // floor
+
     public static final double SHOULDER_GEAR_RATIO = (11.0 / 52.0) * (30.0 / 68.0) * (12.0 / 60.0);
     public static final double SHOULDER_MANUAL_OVERRIDE_RANGE = 20.0;
     public static final double MAX_SHOULDER_ANGLE = 90.0;
