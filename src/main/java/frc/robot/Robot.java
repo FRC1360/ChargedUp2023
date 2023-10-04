@@ -114,6 +114,7 @@ public class Robot extends TimedRobot {
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
     // this line or comment it out.
+
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
 
@@ -133,6 +134,13 @@ public class Robot extends TimedRobot {
         .andThen(m_robotContainer.setSMHomeCommand())).schedule(); 
     }
 
+    // For Tuning
+    /*m_robotContainer.wristSubsystem.setIdleMode(IdleMode.kCoast);
+    m_robotContainer.shoulderSubsystem.resetMotorRotations();
+    m_robotContainer.wristSubsystem.resetMotorRotations();
+    m_robotContainer.wristSubsystem.holdPIDController.reset();
+    m_robotContainer.getGoToZeroWristCommand().schedule();*/
+
     
     // m_robotContainer.shoulderSubsystem.holdPIDController.reset();
     
@@ -144,8 +152,8 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     m_robotContainer.shoulderSubsystem.updateSmartDashboard();
-    // m_robotContainer.wristSubsystem.updateSmartDashboard();
-    // m_robotContainer.armSubsystem.updateSmartDashboard();
+    m_robotContainer.wristSubsystem.updateSmartDashboard();
+    m_robotContainer.armSubsystem.updateSmartDashboard();
 
   }
 

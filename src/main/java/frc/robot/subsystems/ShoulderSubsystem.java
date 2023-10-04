@@ -51,7 +51,7 @@ public class ShoulderSubsystem extends SubsystemBase {
         this.movePIDController = new OrbitPID(0.0632, 0.0, 0.0);  // kP = 0.02
 
         // This units are deg / second for velocity and deg / sec^2 for acceleration
-        this.shoulderUpMotionProfileConstraints = new TrapezoidProfile.Constraints(200.0, 500.0);  // TODO - Tune.
+        this.shoulderUpMotionProfileConstraints = new TrapezoidProfile.Constraints(200.0, 450.0); 
         this.shoulderDownMotionProfileConstraints = new TrapezoidProfile.Constraints(100.0, 250.0); 
         this.targetAngle = Constants.HOME_POSITION_SHOULDER;
 
