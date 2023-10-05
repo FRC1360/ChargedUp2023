@@ -1,5 +1,7 @@
 package frc.robot.commands.assembly;
 
+import java.util.function.Supplier;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ArmSubsystem;
@@ -30,9 +32,9 @@ public class AssemblySchedulerCommand extends CommandBase {
     private LEDSubsystem led;
     private StateMachine sm;
 
-    public AssemblySchedulerCommand(ASSEMBLY_LEVEL level, ShoulderSubsystem shoulder, WristSubsystem wrist, ArmSubsystem arm,
+    public AssemblySchedulerCommand(Supplier<ASSEMBLY_LEVEL> level, ShoulderSubsystem shoulder, WristSubsystem wrist, ArmSubsystem arm,
         ArmShoulderMessenger armMessenger, ShoulderWristMessenger shoulderMessenger, LEDSubsystem led, StateMachine sm) {
-        this.level = level;
+        this.level = level.get();
         this.shoulder = shoulder;
         this.wrist = wrist;
         this.arm = arm;

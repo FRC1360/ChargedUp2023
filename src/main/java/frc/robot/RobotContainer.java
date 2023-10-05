@@ -167,7 +167,7 @@ public class RobotContainer {
     left_controller.button(4).onTrue((new AssemblyGoToCubeIntakeCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger, intakeSubsystem, ledSubsystem, sm)));
     left_controller.button(5).onTrue(new AssemblyGoToConeIntakeCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger, intakeSubsystem, ledSubsystem, sm));
     left_controller.button(2).onTrue(new AssemblyPickUpSingleSubstationCommand(shoulderSubsystem, wristSubsystem, armSubsystem, shoulderMessenger, armMessenger, intakeSubsystem, ledSubsystem, sm)); 
-    left_controller.button(3).onTrue(new AssemblySchedulerCommand(LEVEL, shoulderSubsystem, wristSubsystem, armSubsystem, armMessenger, shoulderMessenger, ledSubsystem, sm));
+    left_controller.button(3).onTrue(new AssemblySchedulerCommand(() -> LEVEL, shoulderSubsystem, wristSubsystem, armSubsystem, armMessenger, shoulderMessenger, ledSubsystem, sm));
 
     left_controller.button(2).onFalse(new AssemblyHomePositionCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger, ledSubsystem, sm));
     left_controller.button(5).onFalse(new AssemblyHomePositionCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger, ledSubsystem, sm));
