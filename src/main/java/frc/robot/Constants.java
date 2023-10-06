@@ -146,7 +146,7 @@ public final class Constants {
     // SCORE_MID_POSITION
     public static final double CONE_SCORE_MID_POSITION_WRIST = -35.0;
     public static final double CONE_SCORE_MID_POSITION_ARM = HOME_POSITION_ARM;
-    public static final double CONE_SCORE_MID_POSITION_SHOULDER = 30.0;
+    public static final double CONE_SCORE_MID_POSITION_SHOULDER = -30.0;
 
     // CUBE_SCORE_MID_POSITION
     public static final double CUBE_SCORE_MID_POSITION_WRIST = 170.0;

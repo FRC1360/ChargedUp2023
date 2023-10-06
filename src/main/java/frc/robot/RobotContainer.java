@@ -64,7 +64,7 @@ import frc.robot.subsystems.LEDSubsystem;
 public class RobotContainer {
   
 
-  ASSEMBLY_LEVEL LEVEL = ASSEMBLY_LEVEL.MEDIUM_CONE;
+  public ASSEMBLY_LEVEL LEVEL = ASSEMBLY_LEVEL.MEDIUM_CONE;
 
   private final CommandJoystick left_controller = new CommandJoystick(0);
   private final CommandJoystick right_controller = new CommandJoystick(1);
@@ -164,10 +164,10 @@ public class RobotContainer {
     
     left_controller.button(6).onTrue(new InstantCommand(m_drivetrainSubsystem::zeroGyroscope));
 
-    left_controller.button(4).onTrue((new AssemblyGoToCubeIntakeCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger, intakeSubsystem, ledSubsystem, sm)));
+    left_controller.button(4).onTrue(new AssemblyGoToCubeIntakeCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger, intakeSubsystem, ledSubsystem, sm));
     left_controller.button(5).onTrue(new AssemblyGoToConeIntakeCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger, intakeSubsystem, ledSubsystem, sm));
     left_controller.button(2).onTrue(new AssemblyPickUpSingleSubstationCommand(shoulderSubsystem, wristSubsystem, armSubsystem, shoulderMessenger, armMessenger, intakeSubsystem, ledSubsystem, sm)); 
-    left_controller.button(3).onTrue(new AssemblySchedulerCommand(() -> LEVEL, shoulderSubsystem, wristSubsystem, armSubsystem, armMessenger, shoulderMessenger, ledSubsystem, sm));
+    left_controller.button(3).onTrue(new InstantCommand(() -> new AssemblySchedulerCommand(() -> LEVEL, shoulderSubsystem, wristSubsystem, armSubsystem, armMessenger, shoulderMessenger, ledSubsystem, sm).initialize()));
 
     left_controller.button(2).onFalse(new AssemblyHomePositionCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger, ledSubsystem, sm));
     left_controller.button(5).onFalse(new AssemblyHomePositionCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger, ledSubsystem, sm));
@@ -198,9 +198,6 @@ public class RobotContainer {
 
     operatorController.x().onTrue(new InstantCommand( () -> this.LEVEL = ASSEMBLY_LEVEL.MEDIUM_CONE));
     operatorController.y().onTrue(new InstantCommand( () -> this.LEVEL = ASSEMBLY_LEVEL.MEDIUM_CUBE));
-
-    
-    
   }
 
   /**

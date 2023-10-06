@@ -2,6 +2,7 @@ package frc.robot.commands.assembly;
 
 import java.util.function.Supplier;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ArmSubsystem;
@@ -22,7 +23,7 @@ public class AssemblySchedulerCommand extends CommandBase {
     }
 
     private Command assemblyCommand;
-    private ASSEMBLY_LEVEL level;
+    private Supplier<ASSEMBLY_LEVEL> level;
 
     private ShoulderSubsystem shoulder;
     private WristSubsystem wrist;
@@ -31,10 +32,11 @@ public class AssemblySchedulerCommand extends CommandBase {
     private ShoulderWristMessenger shoulderMessenger;
     private LEDSubsystem led;
     private StateMachine sm;
+    private int n = 0;
 
     public AssemblySchedulerCommand(Supplier<ASSEMBLY_LEVEL> level, ShoulderSubsystem shoulder, WristSubsystem wrist, ArmSubsystem arm,
         ArmShoulderMessenger armMessenger, ShoulderWristMessenger shoulderMessenger, LEDSubsystem led, StateMachine sm) {
-        this.level = level.get();
+        this.level = level;
         this.shoulder = shoulder;
         this.wrist = wrist;
         this.arm = arm;
@@ -46,7 +48,8 @@ public class AssemblySchedulerCommand extends CommandBase {
 
     @Override
     public void initialize() {
-        switch(this.level) {
+        SmartDashboard.putNumber("AssSchedCmdN", n++);
+        switch(level.get()) {
             case MEDIUM_CONE:
                 this.assemblyCommand = new AssemblyMidScoreCommand(shoulder, shoulderMessenger, wrist, arm, armMessenger, led, () -> false, sm);
                 break;
