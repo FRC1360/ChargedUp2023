@@ -191,7 +191,7 @@ public class RobotContainer {
     //left_controller.button(2).whileTrue(new StrafeAlign(m_drivetrainSubsystem, vision, left_controller::getX, left_controller::getY));
     left_controller.button(1).whileTrue(new ManualIntakeCommand(intakeSubsystem, () -> 1.0));
     right_controller.button(1).whileTrue(new ManualPutdownCommand(intakeSubsystem, () -> 1.0)); 
-    left_controller.button(7).whileTrue(new InstantCommand( () -> m_drivetrainSubsystem.lockWheels = true)).whileFalse( new InstantCommand( () -> m_drivetrainSubsystem.lockWheels = false));
+    right_controller.button(3).whileTrue(new InstantCommand( () -> m_drivetrainSubsystem.lockWheels = true)).whileFalse( new InstantCommand( () -> m_drivetrainSubsystem.lockWheels = false));
     
     operatorController.a().onTrue(new InstantCommand( () -> this.LEVEL = ASSEMBLY_LEVEL.HIGH_CONE));
     operatorController.b().onTrue(new InstantCommand( () -> this.LEVEL = ASSEMBLY_LEVEL.HIGH_CUBE));
@@ -232,21 +232,21 @@ public class RobotContainer {
     return new InstantCommand(() -> sm.setAtHome(true));
   }
 
-  private static double deadband(double value, double deadband) {
-    if (Math.abs(value) > deadband) {
-      if (value > 0.0) {
-        return (value - deadband) / (1.0 - deadband);
-      } else {
-        return (value + deadband) / (1.0 - deadband);
-      }
+  private static double deadband(double input, double deadband) {
+    double slope = 1 / (1-deadband); // m = rise/run
+    double offset = 1 - slope; // b = y - mx
+    if (input < 0.0) {
+        return Math.abs(input) > deadband? (-1 * (slope * Math.abs(input) + offset)) : 0.0;
+    } else if (input > 0.0) {
+        return Math.abs(input) > deadband? (slope * Math.abs(input) + offset): 0.0;
     } else {
-      return 0.0;
+        return 0.0;
     }
   }
 
   private static double modifyAxis(double value) {
     // Deadband
-    value = deadband(value, 0.05);
+    value = deadband(value, 0.1);
 
     // Square the axis
     value = Math.copySign(value * value, value);

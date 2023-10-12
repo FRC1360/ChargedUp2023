@@ -50,8 +50,12 @@ public class ShoulderSubsystem extends SubsystemBase {
         this.holdPIDController = new OrbitPID(0.035, 0.0000075, 0.0); //kP = 0.045
         this.movePIDController = new OrbitPID(0.0632, 0.0, 0.0);  // kP = 0.02
 
+        SmartDashboard.putNumber("ShoulderMoveKp", movePIDController.kP);
+        SmartDashboard.putNumber("ShoulderMoveKi", movePIDController.kI);
+        SmartDashboard.putNumber("ShoulderMoveKd", movePIDController.kD);
+
         // This units are deg / second for velocity and deg / sec^2 for acceleration
-        this.shoulderUpMotionProfileConstraints = new TrapezoidProfile.Constraints(200.0, 450.0); 
+        this.shoulderUpMotionProfileConstraints = new TrapezoidProfile.Constraints(200.0, 400.0); 
         this.shoulderDownMotionProfileConstraints = new TrapezoidProfile.Constraints(100.0, 250.0); 
         this.targetAngle = Constants.HOME_POSITION_SHOULDER;
 
@@ -59,6 +63,7 @@ public class ShoulderSubsystem extends SubsystemBase {
         this.shoulderMotorSlave = new CANSparkMax(Constants.SHOULDER_MOTOR_SLAVE, MotorType.kBrushless); 
 
         this.shoulderFeedForward = new ArmFeedforward(0.0, 0.0005, 0.0); //kG = 0.001
+        SmartDashboard.putNumber("ShoulderMoveKg", shoulderFeedForward.kg);
 
         this.shoulderMotorMaster.restoreFactoryDefaults();
         this.shoulderMotorSlave.restoreFactoryDefaults();
@@ -238,6 +243,11 @@ public class ShoulderSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Shoulder_Motor_Encoder", this.shoulderMotorMaster.getEncoder().getPosition());
 
         SmartDashboard.putNumber("Shoulder_Master_Current", this.shoulderMotorMaster.getOutputCurrent());
+
+        movePIDController.kP = SmartDashboard.getNumber("ShoulderMoveKp", movePIDController.kP);
+        movePIDController.kI = SmartDashboard.getNumber("ShoulderMoveKi", movePIDController.kI);
+        movePIDController.kD = SmartDashboard.getNumber("ShoulderMoveKd", movePIDController.kD);
+        shoulderFeedForward = new ArmFeedforward(0, SmartDashboard.getNumber("ShoulderMoveKg", shoulderFeedForward.kg), 0);
     }
 
     public class ShoulderWristMessenger {
