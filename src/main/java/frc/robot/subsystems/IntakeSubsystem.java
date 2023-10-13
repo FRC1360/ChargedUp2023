@@ -39,10 +39,6 @@ public class IntakeSubsystem extends SubsystemBase {
 
     public void setAtSubstationState(boolean state) { 
         this.atSubstation = state; 
-    }
-
-    public boolean getAtSubstationState() { 
-        return this.atSubstation; 
-    }
+   
 
 }
