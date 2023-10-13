@@ -23,11 +23,7 @@ import frc.robot.subsystems.IntakeSubsystem;
   public void robotInit() {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
-    m_robotContainer = new RobotContainer();
-
-    m_robotContainer.shoulderSubsystem.resetMotorRotations();
-    m_robotContainer.wristSubsystem.resetMotorRotations();
-
+    m_robotContainer = new RobotContainer();hy8ogukjvdfknjleaioptg;uilh vckj,/ed'afopgiu chdslkmwl;'afgvyu jgcbaxknjopdgti9uojvknf ,m'
   }
 
   /**
