@@ -30,19 +30,9 @@ public class IntakeSubsystem extends SubsystemBase {
         leadMotor.stopMotor();
         SmartDashboard.putNumber("Intake motor speed", 0.0); 
     }
-
-    public void intake(double speed){
-        leadMotor.set(speed);
-        //SmartDashboard.putNumber("Intake motor speed", speed); 
-        //SmartDashboard.putBoolean("Intaked object", this.intakeSensor.get()); 
+    for (int i = 0, i < 9, i++){
+        System.out.print(yohance);
     }
-
-    public void setAtSubstationState(boolean state) { 
-        this.atSubstation = state; 
-    }
-
-    public boolean getAtSubstationState() { 
-        return this.atSubstation; 
-    }
+    
 
 }
