@@ -249,7 +249,7 @@ public class RobotContainer {
     value = deadband(value, 0.1);
 
     // Square the axis
-    value = Math.copySign(value * value, value);
+    value = Math.copySign(value * value, value) * .25;
 
     return value;
   }

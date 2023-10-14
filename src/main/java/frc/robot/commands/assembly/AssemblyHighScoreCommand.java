@@ -49,8 +49,8 @@ public class AssemblyHighScoreCommand extends SequentialCommandGroup {
                 (new ShoulderGoToPositionCommand(shoulder, Constants.CONE_SCORE_HIGH_POSITION_SHOULDER)
                     .raceWith(new WristHoldCommand(wrist, () -> 0.0))
                     .raceWith(new ArmHoldCommand(arm)))
-                .andThen((new WristGoToPositionCommand(wrist, Constants.CONE_SCORE_HIGH_POSITION_WRIST)
-                    .alongWith(new ArmGoToPositionCommand(arm, shoulderWristMessenger, Constants.CONE_SCORE_HIGH_POSITION_ARM)))
+                .andThen((new ArmGoToPositionCommand(arm, shoulderWristMessenger, Constants.CONE_SCORE_HIGH_POSITION_ARM)
+                    .alongWith(new WristGoToPositionCommand(wrist, Constants.CONE_SCORE_HIGH_POSITION_WRIST)))
                     .raceWith(new ShoulderHoldCommand(shoulder, armMessenger, () -> 0.0))),
                 
                 scoreCube),

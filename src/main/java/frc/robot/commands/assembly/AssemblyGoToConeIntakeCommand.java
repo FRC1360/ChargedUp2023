@@ -39,7 +39,7 @@ public class AssemblyGoToConeIntakeCommand extends SequentialCommandGroup {
                 .alongWith(new WristGoToPositionCommand(wrist, Constants.CONE_INTAKE_POSITION_WRIST))
                 .raceWith(new ShoulderHoldCommand(shoulder, armMessenger, () -> 0.0)),
 
-            new ShoulderGoToPositionCommand(shoulder, Constants.CONE_INTAKE_POSITION_SHOULDER - 5)
+            new ShoulderGoToPositionCommand(shoulder, Constants.CONE_INTAKE_POSITION_SHOULDER - 10)
                 .raceWith(new WristHoldCommand(wrist, () -> 0.0))
                 .raceWith(new ArmHoldCommand(arm)), 
             
