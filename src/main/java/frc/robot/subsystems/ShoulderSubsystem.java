@@ -55,7 +55,7 @@ public class ShoulderSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("ShoulderMoveKd", movePIDController.kD);
 
         // This units are deg / second for velocity and deg / sec^2 for acceleration
-        this.shoulderUpMotionProfileConstraints = new TrapezoidProfile.Constraints(200.0, 400.0); 
+        this.shoulderUpMotionProfileConstraints = new TrapezoidProfile.Constraints(200.0, 350.0); 
         this.shoulderDownMotionProfileConstraints = new TrapezoidProfile.Constraints(100.0, 250.0); 
         this.targetAngle = Constants.HOME_POSITION_SHOULDER;
 
