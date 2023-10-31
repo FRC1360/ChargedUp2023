@@ -244,7 +244,7 @@ public final class Constants {
     // HOME_POSITION
     public static final double HOME_POSITION_WRIST = 175.0; // Originally 170.0
     public static final double HOME_POSITION_ARM = 0.0;
-    public static final double HOME_POSITION_SHOULDER = -80.0;
+    public static final double HOME_POSITION_SHOULDER = -90.0;
 
     // CONE_INTAKE_POSITION
     public static final double CONE_INTAKE_POSITION_WRIST = 53.0;
