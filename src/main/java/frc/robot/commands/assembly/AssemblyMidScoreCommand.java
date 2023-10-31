@@ -47,7 +47,7 @@ public class AssemblyMidScoreCommand extends SequentialCommandGroup {
                                         .raceWith(new ShoulderHoldCommand(shoulder, armMessenger, () -> 0.0))
                                         .raceWith(new ArmHoldCommand(arm))),
 
-                        // Score Cone
+                        // Score Cone - false condition
 
                         (new ArmGoToPositionCommand(arm, shoulderWristMessenger, Constants.CONE_SCORE_MID_POSITION_ARM)
                                 .raceWith(new ShoulderHoldCommand(shoulder, armMessenger, () -> 0.0))

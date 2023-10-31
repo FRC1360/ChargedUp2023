@@ -19,6 +19,7 @@ import frc.robot.autos.AutoBalance;
 import frc.robot.autos.CubeHighAndBalanceAuto;
 import frc.robot.autos.DriveStraightAuto;
 import frc.robot.autos.ConeHighAndDriveAuto;
+import frc.robot.autos.ConeMidAndDriveAuto;
 import frc.robot.autos.procedures.ConeScoreHighAuto;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.arm.ArmGoToPositionCommand;
@@ -94,6 +95,10 @@ public class RobotContainer {
   private final ConeHighAndDriveAuto highConeAndDriveAuto = new ConeHighAndDriveAuto(m_drivetrainSubsystem,
       shoulderSubsystem, shoulderMessenger,
       wristSubsystem, armSubsystem, intakeSubsystem, armMessenger, ledSubsystem, sm);
+  
+  private final ConeMidAndDriveAuto midConeAndDriveAuto = new ConeMidAndDriveAuto(m_drivetrainSubsystem, shoulderSubsystem,
+      shoulderMessenger, wristSubsystem,
+      armSubsystem, intakeSubsystem, armMessenger, ledSubsystem, sm); 
 
   private final ConeScoreHighAuto highConeAuto = new ConeScoreHighAuto(m_drivetrainSubsystem, shoulderSubsystem,
       shoulderMessenger, wristSubsystem,
@@ -141,6 +146,7 @@ public class RobotContainer {
   public void initializeRobot() {
     // autoChooser.setDefaultOption ("One side, two cargo, balance", leftConeAuto);
     autoChooser.setDefaultOption("No auto", new WaitCommand(15));
+    autoChooser.addOption("Mid cone and drive straight", midConeAndDriveAuto);
     autoChooser.addOption("High cube and balance", highConeAndBalanceAuto);
     autoChooser.addOption("High cone and drive straight", highConeAndDriveAuto);
     autoChooser.addOption("Only high cone score", highConeAuto);

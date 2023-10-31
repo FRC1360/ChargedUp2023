@@ -3,6 +3,7 @@ package frc.robot.autos;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.Constants;
 import frc.robot.autos.basic.Drive;
 import frc.robot.autos.basic.LockWheels;
 import frc.robot.autos.procedures.ConeScoreHighAuto;
@@ -30,7 +31,7 @@ public class ConeHighAndDriveAuto extends SequentialCommandGroup {
                                         StateMachine sm) { 
         
         addCommands(new ConeScoreHighAuto(dt, shoulder, shoulderWristMessenger, wrist, arm, intake, armMessenger, ledSubsystem, sm), 
-                    new Drive(dt, 8.2, 0.0)
+                    new Drive(dt, Constants.DRIVE_STRAIGHT_DISTANCE, 0.0)
                         .raceWith(new ShoulderHoldCommand(shoulder, armMessenger, () -> 0.0))
                         .raceWith(new WristHoldCommand(wrist, () -> 0.0))
                         .raceWith(new ArmHoldCommand(arm))

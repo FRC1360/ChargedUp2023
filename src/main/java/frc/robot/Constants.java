@@ -117,6 +117,8 @@ public final class Constants {
 
     public static final int LIMIT_SWITCH_ARM = 4; // TODO SET THE CORRECT INPUT
 
+    public static final double DRIVE_STRAIGHT_DISTANCE = 8.2; 
+
     // HOME_POSITION
     public static final double HOME_POSITION_WRIST = 170.0; // Originally 175.0
     public static final double HOME_POSITION_ARM = 0.0;
