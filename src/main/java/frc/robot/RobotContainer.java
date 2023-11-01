@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.autos.AutoBalance;
 import frc.robot.autos.CubeHighAndBalanceAuto;
+import frc.robot.autos.CubeHighAndDriveAuto;
 import frc.robot.autos.DriveStraightAuto;
 import frc.robot.autos.ConeHighAndDriveAuto;
 import frc.robot.autos.ConeMidAndDriveAuto;
@@ -100,6 +101,14 @@ public class RobotContainer {
       shoulderMessenger, wristSubsystem,
       armSubsystem, intakeSubsystem, armMessenger, ledSubsystem, sm); 
 
+  private final CubeHighAndDriveAuto cubeHighAndDriveLeftSideAuto = new CubeHighAndDriveAuto(m_drivetrainSubsystem, shoulderSubsystem, shoulderMessenger, 
+                                                                        wristSubsystem, armSubsystem, intakeSubsystem, armMessenger, 
+                                                                        ledSubsystem, sm, () -> true); 
+
+  private final CubeHighAndDriveAuto cubeHighAndDriveRightSideAuto = new CubeHighAndDriveAuto(m_drivetrainSubsystem, shoulderSubsystem, shoulderMessenger, 
+                                                                            wristSubsystem, armSubsystem, intakeSubsystem, armMessenger, 
+                                                                            ledSubsystem, sm, () -> false); 
+
   private final ConeScoreHighAuto highConeAuto = new ConeScoreHighAuto(m_drivetrainSubsystem, shoulderSubsystem,
       shoulderMessenger, wristSubsystem,
       armSubsystem, intakeSubsystem, armMessenger, ledSubsystem, sm);
@@ -147,9 +156,11 @@ public class RobotContainer {
     // autoChooser.setDefaultOption ("One side, two cargo, balance", leftConeAuto);
     autoChooser.setDefaultOption("No auto", new WaitCommand(15));
     autoChooser.addOption("Mid cone and drive straight", midConeAndDriveAuto);
+    autoChooser.addOption("High cube and drive straight (left)", cubeHighAndDriveLeftSideAuto);
+    autoChooser.addOption("High cube and drive straight (right)", cubeHighAndDriveRightSideAuto);
     autoChooser.addOption("High cube and balance", highConeAndBalanceAuto);
-    autoChooser.addOption("High cone and drive straight", highConeAndDriveAuto);
-    autoChooser.addOption("Only high cone score", highConeAuto);
+    //autoChooser.addOption("High cone and drive straight", highConeAndDriveAuto);
+    //autoChooser.addOption("Only high cone score", highConeAuto);
     autoChooser.addOption("Only drive straight", driveStraightAuto);
     SmartDashboard.putData("Auto Chooser", autoChooser);
   }
@@ -173,11 +184,13 @@ public class RobotContainer {
     right_controller.button(4).onTrue(new AssemblyGoToCubeIntakeCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger, intakeSubsystem, ledSubsystem, sm));
     right_controller.button(5).onTrue(new AssemblyGoToConeIntakeCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger, intakeSubsystem, ledSubsystem, sm));
     right_controller.button(2).onTrue(new AssemblyPickUpSingleSubstationCommand(shoulderSubsystem, wristSubsystem, armSubsystem, shoulderMessenger, armMessenger, intakeSubsystem, ledSubsystem, sm)); 
-    right_controller.button(3).onTrue(new InstantCommand(() -> new AssemblySchedulerCommand(() -> LEVEL, shoulderSubsystem, wristSubsystem, armSubsystem, armMessenger, shoulderMessenger, ledSubsystem, sm).initialize()));
+    right_controller.button(3).onTrue(new InstantCommand(() -> new AssemblySchedulerCommand(() -> LEVEL, shoulderSubsystem, wristSubsystem, armSubsystem, armMessenger, shoulderMessenger, ledSubsystem, sm).initialize())
+                                                  .alongWith(new InstantCommand(() -> m_drivetrainSubsystem.lockWheels = true)));
 
     right_controller.button(2).onFalse(new AssemblyHomePositionCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger, ledSubsystem, sm));
     right_controller.button(5).onFalse(new AssemblyHomePositionCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger, ledSubsystem, sm));
-    right_controller.button(3).onFalse(new AssemblyHomePositionCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger, ledSubsystem, sm));
+    right_controller.button(3).onFalse(new AssemblyHomePositionCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger, ledSubsystem, sm)
+                                                .alongWith(new InstantCommand(() -> m_drivetrainSubsystem.lockWheels = false)));
     right_controller.button(4).onFalse(new AssemblyHomePositionCommand(shoulderSubsystem, shoulderMessenger, wristSubsystem, armSubsystem, armMessenger, ledSubsystem, sm)); 
 
     new Trigger(() -> operatorController.getLeftTriggerAxis() > 0.05)
@@ -190,11 +203,11 @@ public class RobotContainer {
     right_controller.button(1).whileTrue(new ManualPutdownCommand(intakeSubsystem, () -> 1.0)); 
     left_controller.button(6).whileTrue(new InstantCommand( () -> m_drivetrainSubsystem.lockWheels = true)).whileFalse( new InstantCommand( () -> m_drivetrainSubsystem.lockWheels = false));
     
-    operatorController.a().onTrue(new InstantCommand( () -> this.LEVEL = ASSEMBLY_LEVEL.HIGH_CONE));
-    operatorController.b().onTrue(new InstantCommand( () -> this.LEVEL = ASSEMBLY_LEVEL.HIGH_CUBE));
+    operatorController.y().onTrue(new InstantCommand( () -> this.LEVEL = ASSEMBLY_LEVEL.HIGH_CONE));
+    operatorController.x().onTrue(new InstantCommand( () -> this.LEVEL = ASSEMBLY_LEVEL.HIGH_CUBE));
 
-    operatorController.x().onTrue(new InstantCommand( () -> this.LEVEL = ASSEMBLY_LEVEL.MEDIUM_CONE));
-    operatorController.y().onTrue(new InstantCommand( () -> this.LEVEL = ASSEMBLY_LEVEL.MEDIUM_CUBE));
+    operatorController.a().onTrue(new InstantCommand( () -> this.LEVEL = ASSEMBLY_LEVEL.MEDIUM_CONE));
+    operatorController.b().onTrue(new InstantCommand( () -> this.LEVEL = ASSEMBLY_LEVEL.MEDIUM_CUBE));
   }
 
   /**
@@ -246,7 +259,7 @@ public class RobotContainer {
     value = deadband(value, 0.1);
 
     // Square the axis
-    value = Math.copySign(value * value, value) * .25;
+    value = Math.copySign(value * value, value); //* .25;
 
     return value;
   }

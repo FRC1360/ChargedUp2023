@@ -77,7 +77,7 @@ public final class Constants {
     public static final int SHOULDER_MOTOR_SLAVE = 51;
     public static final int SHOULDER_ENCODER = 0;
     // public static final double SHOULDER_ENCODER_OFFSET = 0.542;
-    public static final double SHOULDER_ENCODER_OFFSET = 0.519;
+    public static final double SHOULDER_ENCODER_OFFSET = 0.492;
     // 0.045 - 0.027 - 0.102777 - 0.02777 + 0.05 + 0.03888 + 0.02777
     //         - 0.02
     //         - 0.07222 + 0.041666; // Measure
@@ -138,7 +138,7 @@ public final class Constants {
     // CONE_SCORE_HIGH_POSITION
     public static final double CONE_SCORE_HIGH_POSITION_WRIST = -33.5;
     public static final double CONE_SCORE_HIGH_POSITION_ARM = 12; // Originally 20
-    public static final double CONE_SCORE_HIGH_POSITION_SHOULDER = 42;
+    public static final double CONE_SCORE_HIGH_POSITION_SHOULDER = 42.0;
 
     // CUBE_SCORE_HIGH_POSITION
     public static final double CUBE_SCORE_HIGH_POSITION_WRIST = 130.0;
@@ -148,7 +148,7 @@ public final class Constants {
     // SCORE_MID_POSITION
     public static final double CONE_SCORE_MID_POSITION_WRIST = -35.0; // -35
     public static final double CONE_SCORE_MID_POSITION_ARM = HOME_POSITION_ARM;
-    public static final double CONE_SCORE_MID_POSITION_SHOULDER = 35.0; // this was negative before for some reason lol
+    public static final double CONE_SCORE_MID_POSITION_SHOULDER = 31.0; // this was negative before for some reason lol
 
     // CUBE_SCORE_MID_POSITION
     public static final double CUBE_SCORE_MID_POSITION_WRIST = 170.0;

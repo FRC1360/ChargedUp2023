@@ -48,13 +48,13 @@ public class DefaultDriveCommand extends CommandBase {
         // 3 -> 180
         // 4 -> 270
 
-        if (this.rotationJoystick.button(3).getAsBoolean())
+        if (this.rotationJoystick.button(2).getAsBoolean())
             rotSpeed = -this.m_drivetrainSubsystem.driveRotPID.calculate(180.0, curAngle);
-        else if (this.rotationJoystick.button(2).getAsBoolean())
+        else if (this.rotationJoystick.button(3).getAsBoolean())
             rotSpeed = -this.m_drivetrainSubsystem.driveRotPID.calculate(180.0, curAngle2);
-        else if (this.rotationJoystick.button(5).getAsBoolean())
+        else if (this.rotationJoystick.button(4).getAsBoolean())
             rotSpeed = -this.m_drivetrainSubsystem.driveRotPID.calculate(90.0, curAngle);
-        else if (this.rotationJoystick.button(4).getAsBoolean()) {
+        else if (this.rotationJoystick.button(5).getAsBoolean()) {
             rotSpeed = -this.m_drivetrainSubsystem.driveRotPID.calculate(270.0,
                     curAngle + (Math.abs(270 - curAngle) > 180 ? 360 : 0));
         }
