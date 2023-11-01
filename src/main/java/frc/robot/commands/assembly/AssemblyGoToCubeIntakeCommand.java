@@ -32,13 +32,17 @@ public class AssemblyGoToCubeIntakeCommand extends SequentialCommandGroup {
                 new InstantCommand( () -> intake.setAtSubstationState(false)), 
                 new InstantCommand(ledSubsystem::setLEDDisable),
                 
-                new ShoulderGoToPositionCommand(shoulder, Constants.CUBE_INTAKE_POSITION_SHOULDER)
+                new ShoulderGoToPositionCommand(shoulder, Constants.CUBE_INTAKE_POSITION_SHOULDER + 10)
                         .raceWith(new WristHoldCommand(wrist, () -> 0.0))
                         .raceWith(new ArmHoldCommand(arm)), 
                                             
-                (new ArmGoToPositionCommand(arm, shoulderWristMessenger, Constants.CUBE_INTAKE_POSITION_ARM)
-                        .alongWith(new WristGoToPositionCommand(wrist, Constants.CUBE_INTAKE_POSITION_WRIST)))
+                new ArmGoToPositionCommand(arm, shoulderWristMessenger, Constants.CUBE_INTAKE_POSITION_ARM)
+                        .alongWith(new WristGoToPositionCommand(wrist, Constants.CUBE_INTAKE_POSITION_WRIST))
                         .raceWith(new ShoulderHoldCommand(shoulder, armMessenger, () -> 0.0)),
+
+                new ShoulderGoToPositionCommand(shoulder, Constants.CUBE_INTAKE_POSITION_SHOULDER)
+                        .raceWith(new WristHoldCommand(wrist, () -> 0.0))
+                        .raceWith(new ArmHoldCommand(arm)), 
                 
                 new InstantCommand(() -> shoulder.setInIntakePosition(true)),
                 new InstantCommand(ledSubsystem::setLEDEnable)

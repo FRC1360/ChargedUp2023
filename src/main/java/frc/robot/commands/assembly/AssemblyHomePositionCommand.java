@@ -1,5 +1,6 @@
 package frc.robot.commands.assembly;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
@@ -28,15 +29,19 @@ public class AssemblyHomePositionCommand extends SequentialCommandGroup {
             
             (new ArmGoToPositionCommand(arm, shoulderWristMessenger, Constants.HOME_POSITION_ARM)
                 .alongWith(new WristGoToPositionCommand(wrist, Constants.HOME_POSITION_WRIST - 20.0)))
-                .raceWith(new ShoulderHoldCommand(shoulder, armMessenger, () -> 0.0)),
+                .raceWith(new ShoulderHoldCommand(shoulder, armMessenger, () -> 0.0))
+                .alongWith(new InstantCommand(() -> SmartDashboard.putString("Homing stage", "STAGE 1"))),
             new WristGoToPositionCommand(wrist, Constants.HOME_POSITION_WRIST)
                 .raceWith(new ShoulderHoldCommand(shoulder, armMessenger, () -> 0.0))
-                .raceWith(new ArmHoldCommand(arm)),
+                .raceWith(new ArmHoldCommand(arm))
+                .alongWith(new InstantCommand(() -> SmartDashboard.putString("Homing stage", "STAGE 2"))),
             new ShoulderGoToPositionCommand(shoulder, Constants.HOME_POSITION_SHOULDER)
                 .raceWith(new WristHoldCommand(wrist, () -> 0.0))
-                .raceWith(new ArmHoldCommand(arm)),
+                .raceWith(new ArmHoldCommand(arm))
+                .alongWith(new InstantCommand(() -> SmartDashboard.putString("Homing stage", "STAGE 3"))),
 
             new InstantCommand(ledSubsystem::setLEDEnable),
+            new InstantCommand(() -> SmartDashboard.putString("Homing stage", "DONE")),
             new InstantCommand( () -> sm.setAtHome(true))
             );
         
