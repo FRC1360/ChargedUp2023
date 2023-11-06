@@ -77,7 +77,7 @@ public final class Constants {
     public static final int SHOULDER_MOTOR_SLAVE = 51;
     public static final int SHOULDER_ENCODER = 0;
     // public static final double SHOULDER_ENCODER_OFFSET = 0.542;
-    public static final double SHOULDER_ENCODER_OFFSET = 0.492;
+    public static final double SHOULDER_ENCODER_OFFSET = 0.472;
     // 0.045 - 0.027 - 0.102777 - 0.02777 + 0.05 + 0.03888 + 0.02777
     //         - 0.02
     //         - 0.07222 + 0.041666; // Measure
@@ -88,7 +88,7 @@ public final class Constants {
     // floor
 
     public static final double SHOULDER_GEAR_RATIO = (11.0 / 52.0) * (30.0 / 68.0) * (12.0 / 60.0);
-    public static final double SHOULDER_MANUAL_OVERRIDE_RANGE = 20.0;
+    public static final double SHOULDER_MANUAL_OVERRIDE_RANGE = 10.0;
     public static final double MAX_SHOULDER_ANGLE = 90.0;
     public static final double MIN_SHOULDER_ANGLE = -150.0;
 

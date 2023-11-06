@@ -7,29 +7,56 @@ public class LEDSubsystem extends SubsystemBase{
 
     private Spark LEDController;
     private double LEDColour;
-    private boolean enableLED;
+    private LEDStates LEDstate;
+
+    public enum LEDStates {
+        ENABLED, DISABLED, CONE, CUBE, SPECIAL
+    }
     
     
     public LEDSubsystem() {
         this.LEDController = new Spark(0);  // TODO - Change PWM port
         this.LEDColour = 0.0;
-        this.enableLED = true;
+        this.LEDstate = LEDStates.ENABLED;
     }
 
     public void setLEDEnable() {
-        this.enableLED = true;
+        this.LEDstate = LEDStates.ENABLED;
     }
 
     public void setLEDDisable() {
-        this.enableLED = false;
+        this.LEDstate = LEDStates.DISABLED;
+    }
+
+    public void setLEDCone() {
+        this.LEDstate = LEDStates.CONE;
+    }
+
+    public void setLEDCube() {
+        this.LEDstate = LEDStates.CUBE;
+    }
+
+    public void setLEDSpecial() {
+        this.LEDstate = LEDStates.SPECIAL;
     }
 
     @Override
     public void periodic() {
-        if(this.enableLED) {
-            this.LEDColour = 0.95;
-        } else {
-            this.LEDColour = 0.61;
+        switch(this.LEDstate) {
+            case ENABLED:
+                this.LEDColour = 0.95; // GRAY
+                break;
+            case DISABLED:
+                this.LEDColour = 0.61; // RED
+                break;
+            case CONE:
+                this.LEDColour = 0.69; // YELLOW
+                break;
+            case CUBE:
+                this.LEDColour = 0.91; // VIOLET
+                break;
+            case SPECIAL:
+                this.LEDColour = 0.73; // LIME
         }
 
         this.LEDController.set(this.LEDColour);
