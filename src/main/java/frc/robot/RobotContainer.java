@@ -75,7 +75,7 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   public final DrivetrainSubsystem m_drivetrainSubsystem = new DrivetrainSubsystem();
   public final ShoulderSubsystem shoulderSubsystem = new ShoulderSubsystem(
-      () -> operatorController.getRightY() * Constants.SHOULDER_MANUAL_OVERRIDE_RANGE,
+      () -> -(operatorController.getRightY()) * Constants.SHOULDER_MANUAL_OVERRIDE_RANGE,
       operatorController.rightBumper());
   private final ShoulderSubsystem.ShoulderWristMessenger shoulderMessenger = shoulderSubsystem.new ShoulderWristMessenger();
   public final WristSubsystem wristSubsystem = new WristSubsystem(shoulderMessenger,
@@ -201,13 +201,18 @@ public class RobotContainer {
     //left_controller.button(2).whileTrue(new StrafeAlign(m_drivetrainSubsystem, vision, left_controller::getX, left_controller::getY));
     left_controller.button(1).whileTrue(new ManualIntakeCommand(intakeSubsystem, () -> 1.0));
     right_controller.button(1).whileTrue(new ManualPutdownCommand(intakeSubsystem, () -> 1.0)); 
-    left_controller.button(6).whileTrue(new InstantCommand( () -> m_drivetrainSubsystem.lockWheels = true)).whileFalse( new InstantCommand( () -> m_drivetrainSubsystem.lockWheels = false));
+    right_controller.button(10).whileTrue(new InstantCommand( () -> m_drivetrainSubsystem.lockWheels = true)).whileFalse( new InstantCommand( () -> m_drivetrainSubsystem.lockWheels = false));
     
     operatorController.y().onTrue(new InstantCommand( () -> this.LEVEL = ASSEMBLY_LEVEL.HIGH_CONE));
     operatorController.x().onTrue(new InstantCommand( () -> this.LEVEL = ASSEMBLY_LEVEL.HIGH_CUBE));
 
     operatorController.a().onTrue(new InstantCommand( () -> this.LEVEL = ASSEMBLY_LEVEL.MEDIUM_CONE));
     operatorController.b().onTrue(new InstantCommand( () -> this.LEVEL = ASSEMBLY_LEVEL.MEDIUM_CUBE));
+
+    // LED controls, down is cone (yellow), up is cube (purple), right is special (lime)
+    operatorController.povDown().onTrue(new InstantCommand(() -> this.ledSubsystem.setLEDCone())).onFalse(new InstantCommand(() -> this.ledSubsystem.setLEDEnable()));
+    operatorController.povUp().onTrue(new InstantCommand(() -> this.ledSubsystem.setLEDCube())).onFalse(new InstantCommand(() -> this.ledSubsystem.setLEDEnable()));
+    operatorController.povRight().onTrue(new InstantCommand(() -> this.ledSubsystem.setLEDSpecial())).onFalse(new InstantCommand(() -> this.ledSubsystem.setLEDEnable()));
   }
 
   /**

@@ -172,7 +172,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
       // We will only get valid fused headings if the magnetometer is calibrated
             return Rotation2d.fromDegrees(m_navx.getFusedHeading());
    }*/
-//      
+//   
 //    // We have to invert the angle of the NavX so that rotating the robot counter-clockwise makes the angle increase
     return Rotation2d.fromDegrees(360.0 - m_navx.getYaw());
   }
@@ -238,5 +238,11 @@ public class DrivetrainSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("NavX roll", this.m_navx.getRoll()); 
     SmartDashboard.putNumber("Drivetrain_Speed_X", m_chassisSpeeds.vxMetersPerSecond); 
     SmartDashboard.putNumber("Drivetrain_Speed_Y", m_chassisSpeeds.vyMetersPerSecond); 
+
+    SmartDashboard.putNumber("Swerve Module 0 angle", states[0].angle.getDegrees()); 
+    SmartDashboard.putNumber("Swerve Module 1 angle", states[1].angle.getDegrees()); 
+    SmartDashboard.putNumber("Swerve Module 2 angle", states[2].angle.getDegrees()); 
+    SmartDashboard.putNumber("Swerve Module 3 angle", states[3].angle.getDegrees()); 
+
   } 
 }
