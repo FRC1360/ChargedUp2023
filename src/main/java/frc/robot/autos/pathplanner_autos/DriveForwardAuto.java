@@ -9,15 +9,18 @@ import com.pathplanner.lib.auto.SwerveAutoBuilder;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
+import frc.robot.commands.intake.AutoPutDownCommand;
+import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 
 public class DriveForwardAuto extends AutoBase {
-    public DriveForwardAuto(SwerveSubsystem swerve) {
+    public DriveForwardAuto(SwerveSubsystem swerve, IntakeSubsystem intake) {
         pathGroup = PathPlanner.loadPathGroup("driveforward", new PathConstraints(
                 Constants.Swerve.AutoConstants.maxSpeed,
                 Constants.Swerve.AutoConstants.maxAcceleration));
 
         eventMap = new HashMap<>();
+        eventMap.put("event", new AutoPutDownCommand(intake, 0.5)); 
         // no events for now
 
         swerveAutoBuilder = new SwerveAutoBuilder(swerve::currentPose, swerve::setCurrentPose,

@@ -155,10 +155,12 @@ public class Robot extends TimedRobot {
       //     .andThen(m_robotContainer.getShoulderZeroCommand())
       //     .andThen(m_robotContainer.setSMHomeCommand())).schedule();
     }
-    (m_robotContainer.getArmHomeCommand()
-    .andThen(m_robotContainer.getGoToZeroWristCommand())
-    .andThen(m_robotContainer.getShoulderZeroCommand())
-    .andThen(m_robotContainer.setSMHomeCommand())).schedule();
+
+    // UNCOMMENT
+    // (m_robotContainer.getArmHomeCommand()
+    // .andThen(m_robotContainer.getGoToZeroWristCommand())
+    // .andThen(m_robotContainer.getShoulderZeroCommand())
+    // .andThen(m_robotContainer.setSMHomeCommand())).schedule();
 
     // For Tuning
     /*

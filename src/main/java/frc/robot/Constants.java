@@ -126,8 +126,8 @@ public final class Constants {
         public static final class AutoConstants {
             // PID values to follow paths. NOT *DIRECTLY* FOR MODULE SPEED, try DRIVE_PID
             // and ANGLE_PID first
-            public static PIDConstants translation = new PIDConstants(0, 0, 0);
-            public static PIDConstants rotation = new PIDConstants(0, 0, 0);
+            public static PIDConstants translation = new PIDConstants(0.13, 0, 0.0045);
+            public static PIDConstants rotation = new PIDConstants(0.013, 0.000001, 0);
             public static double maxSpeed = 4; // meters
             public static double maxAcceleration = 2; // m/s^2
         }

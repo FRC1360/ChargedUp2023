@@ -210,7 +210,7 @@ public class RobotContainer {
     // return highConeAndBalanceAuto;
 
     // return driveStraightAuto;
-    return new DriveForwardAuto(swerveSubsystem).getCommand();
+    return new DriveForwardAuto(swerveSubsystem, intakeSubsystem).getCommand();
   }
 
   public Command getArmHomeCommand() {
