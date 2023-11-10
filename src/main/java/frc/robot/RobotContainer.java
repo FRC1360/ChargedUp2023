@@ -11,10 +11,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import java.io.File;
+import java.time.Instant;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -210,7 +212,8 @@ public class RobotContainer {
     // return highConeAndBalanceAuto;
 
     // return driveStraightAuto;
-    return new DriveForwardAuto(swerveSubsystem, intakeSubsystem).getCommand();
+    return new SequentialCommandGroup(new InstantCommand(swerveSubsystem.navX::resetGyro), 
+                                    new DriveForwardAuto(swerveSubsystem, intakeSubsystem).getCommand());
   }
 
   public Command getArmHomeCommand() {

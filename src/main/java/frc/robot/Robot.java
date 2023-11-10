@@ -91,6 +91,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
+    m_robotContainer.swerveSubsystem.navX.resetGyro();
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
     m_autonomousCommand.schedule();
     // START
@@ -155,6 +156,10 @@ public class Robot extends TimedRobot {
       //     .andThen(m_robotContainer.getShoulderZeroCommand())
       //     .andThen(m_robotContainer.setSMHomeCommand())).schedule();
     }
+
+    m_robotContainer.swerveSubsystem.navX.resetGyro();
+
+
 
     // UNCOMMENT
     // (m_robotContainer.getArmHomeCommand()

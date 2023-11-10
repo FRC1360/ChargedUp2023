@@ -35,7 +35,6 @@ public class SwerveSubsystem extends SubsystemBase {
     // Gyro setup
     navX = new NavX();
     navX.setInverted(Constants.Swerve.isGyroInverted);
-    navX.resetGyro();
 
     // Swerve module setup
     swerveModules = new SwerveModuleCustom[] {
