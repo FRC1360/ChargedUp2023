@@ -44,7 +44,6 @@ import frc.robot.commands.intake.ManualPutdownCommand;
 import frc.robot.commands.shoulder.ShoulderGoToPositionCommand;
 import frc.robot.commands.shoulder.ShoulderHoldCommand;
 import frc.robot.commands.shoulder.ShoulderMoveManual;
-import frc.robot.commands.vision.StrafeAlign;
 import frc.robot.commands.wrist.WristGoToPositionCommand;
 import frc.robot.commands.wrist.WristHoldCommand;
 import frc.robot.simulation.Simulator;
