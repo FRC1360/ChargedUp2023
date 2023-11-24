@@ -37,13 +37,11 @@ import frc.robot.commands.assembly.AssemblyHighScoreCommand;
 import frc.robot.commands.assembly.AssemblyHomePositionCommand;
 import frc.robot.commands.assembly.AssemblyMidScoreCommand;
 import frc.robot.commands.assembly.AssemblyPickUpSingleSubstationCommand;
-import frc.robot.commands.assembly.autoAssembly.AutoAssemblyConeHighScoreCommand;
 import frc.robot.commands.intake.IntakeHoldCommand;
 import frc.robot.commands.intake.ManualIntakeCommand;
 import frc.robot.commands.intake.ManualPutdownCommand;
 import frc.robot.commands.shoulder.ShoulderGoToPositionCommand;
 import frc.robot.commands.shoulder.ShoulderHoldCommand;
-import frc.robot.commands.shoulder.ShoulderMoveManual;
 import frc.robot.commands.wrist.WristGoToPositionCommand;
 import frc.robot.commands.wrist.WristHoldCommand;
 import frc.robot.simulation.Simulator;
@@ -53,7 +51,6 @@ import frc.robot.util.StateMachine;
 import frc.robot.subsystems.ShoulderSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.WristSubsystem;
-import frc.robot.subsystems.SwerveDrive.DrivetrainSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LEDSubsystem;
 
@@ -255,5 +252,18 @@ public class RobotContainer {
     value = Math.copySign(value * value, value);
 
     return value;
+  }
+
+  public void updateSwerveDrive() {
+    // Correct pose estimate with vision measurements
+    var visionEst = vision.getEstimatedGlobalPose();
+    visionEst.ifPresent(
+    est -> {
+      var estPose = est.estimatedPose.toPose2d();
+      // Change our trust in the measurement based on the tags we can see
+      var estStdDevs = vision.getEstimationStdDevs(estPose);
+
+      swerveSubsystem.addVisionMeasurement( est.estimatedPose.toPose2d(), est.timestampSeconds, estStdDevs);
+    });
   }
 }
