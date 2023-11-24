@@ -1,90 +1,115 @@
+/*
+* MIT License
+*
+* Copyright (c) PhotonVision
+*
+* Permission is hereby granted, free of charge, to any person obtaining a copy
+* of this software and associated documentation files (the "Software"), to deal
+* in the Software without restriction, including without limitation the rights
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to permit persons to whom the Software is
+* furnished to do so, subject to the following conditions:
+*
+* The above copyright notice and this permission notice shall be included in all
+* copies or substantial portions of the Software.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+* SOFTWARE.
+*/
+
 package frc.robot.subsystems.vision;
 
+import static frc.robot.Constants.Vision.*;
+
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.networktables.DoubleArraySubscriber;
-import edu.wpi.first.networktables.DoubleSubscriber;
-import edu.wpi.first.networktables.IntegerPublisher;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
 
+import java.io.IOException;
+import java.util.Optional;
+import org.photonvision.EstimatedRobotPose;
+import org.photonvision.PhotonCamera;
+import org.photonvision.PhotonPoseEstimator;
+import org.photonvision.PhotonPoseEstimator.PoseStrategy;
+import org.photonvision.targeting.PhotonPipelineResult;
 
-public class Vision extends SubsystemBase {
-
-    // get the ll net table
-    private final NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
-
-    /*
-    * API reference:
-    * 
-    * Integers:
-    * tv: is there a valid target (0 or 1)
-    * tid: primary target ID
-    * 
-    * Doubles:
-    * tx/ty: target pos in screen space
-    * 
-    * Arrays:
-    * botpose: robot transform in field-space. Translation (X,Y,Z) Rotation(Roll,Pitch,Yaw), total latency (cl+tl)
-    * targetpose_cameraspace: transform of primary target in camera space. Translation (X,Y,Z) Rotation(Roll,Pitch,Yaw), total latency (cl+tl)
-    */
-
-    private DoubleSubscriber tv, tid;
-    private DoubleSubscriber tx, ty;
-    private DoubleArraySubscriber botpose, targetpose_cameraspace;
-
-    private IntegerPublisher ledMode, cammMode, pipeline, stream, snapshot;
+public class Vision {
+    private final PhotonCamera camera;
+    private final PhotonPoseEstimator photonEstimator;
+    private double lastEstTimestamp = 0;
+    private AprilTagFieldLayout kTagLayout;
 
     public Vision() {
-        // integer topics
-        tv = table.getDoubleTopic("tv").subscribe(0);
-        tid = table.getDoubleTopic("tid").subscribe(-1);
-        
-        // double topics
-        tx = table.getDoubleTopic("tx").subscribe(0);
-        ty = table.getDoubleTopic("ty").subscribe(0);
+        try {
+            kTagLayout = AprilTagFields.kDefaultField.loadAprilTagLayoutField();
+        }
+        catch(IOException e) {
+            ; // do nothing lmao we dont care
+        }
 
-        // array topics
-        botpose = table.getDoubleArrayTopic("botpose").subscribe(new double[] {});
-        targetpose_cameraspace = table.getDoubleArrayTopic("targetpose_cameraspace").subscribe(new double[] {});
+        camera = new PhotonCamera("photonvision");
+
+        photonEstimator = new PhotonPoseEstimator(kTagLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, camera, new Transform3d());
+        photonEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
     }
 
-    public boolean hasTargets() { 
-        return tv.get() > 0;
+    public PhotonPipelineResult getLatestResult() {
+        return camera.getLatestResult();
     }
 
-    public double getX() { 
-        // Positive is to the left        
-        return tx.get(); 
+    /**
+     * The latest estimated robot pose on the field from vision data. This may be empty. This should
+    * only be called once per loop.
+    *
+    * @return An {@link EstimatedRobotPose} with an estimated pose, estimate timestamp, and targets
+    *     used for estimation.
+    */
+    public Optional<EstimatedRobotPose> getEstimatedGlobalPose() {
+        var visionEst = photonEstimator.update();
+        double latestTimestamp = camera.getLatestResult().getTimestampSeconds();
+        boolean newResult = Math.abs(latestTimestamp - lastEstTimestamp) > 1e-5;
+        if (newResult) lastEstTimestamp = latestTimestamp;
+        return visionEst;
     }
 
-    public double getY() { 
-        return ty.get();
-    }
+    /**
+     * The standard deviations of the estimated pose from {@link #getEstimatedGlobalPose()}, for use
+    * with {@link edu.wpi.first.math.estimator.SwerveDrivePoseEstimator SwerveDrivePoseEstimator}.
+    * This should only be used when there are targets visible.
+    *
+    * @param estimatedPose The estimated pose to guess standard deviations for.
+    */
+    public Matrix<N3, N1> getEstimationStdDevs(Pose2d estimatedPose) {
+        var estStdDevs = kSingleTagStdDevs;
+        var targets = getLatestResult().getTargets();
+        int numTags = 0;
+        double avgDist = 0;
+        for (var tgt : targets) {
+            var tagPose = photonEstimator.getFieldTags().getTagPose(tgt.getFiducialId());
+            if (tagPose.isEmpty()) continue;
+            numTags++;
+            avgDist +=
+                    tagPose.get().toPose2d().getTranslation().getDistance(estimatedPose.getTranslation());
+        }
+        if (numTags == 0) return estStdDevs;
+        avgDist /= numTags;
+        // Decrease std devs if multiple targets are visible
+        if (numTags > 1) estStdDevs = kMultiTagStdDevs;
+        // Increase std devs based on (average) distance
+        if (numTags == 1 && avgDist > 4)
+            estStdDevs = VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
+        else estStdDevs = estStdDevs.times(1 + (avgDist * avgDist / 30));
 
-    public int getTagID() { 
-        // Get AprilTag ID, returns -1 if not found
-        //TODO: if incompatible type, i.e., it returns -1 always, try getInteger()
-        return (int) tid.get();
-    }
-
-    public Pose2d getPoseFromTarget() {
-        //Pose returns [tx, ty, tz, rx, ry, rz]
-        double[] pose = botpose.get();
-        
-        return new Pose2d(pose[0], pose[1], new Rotation2d(pose[3], pose[4])); 
-    }
-
-    public void updateSmartDashboard() {
-        SmartDashboard.putNumber("tid", table.getEntry("tid").getInteger(-1));
-        SmartDashboard.putNumberArray("targetpose_cameraspace", targetpose_cameraspace.get());
-    }
-
-    @Override
-    public void periodic() {
-        // update SmartDashboard with numbers constantly
-        updateSmartDashboard();
+        return estStdDevs;
     }
 }
