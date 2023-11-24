@@ -2,10 +2,12 @@ package frc.robot.subsystems;
 
 import java.lang.reflect.Field;
 
+import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.numbers.*;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -169,6 +171,15 @@ public class SwerveSubsystem extends SubsystemBase {
         pose.getX(),
         pose.getY(),
         pose.getRotation().getDegrees());
+  }
+
+  /** Stolen from photonlib's examples */
+  public void addVisionMeasurement(Pose2d visionMeasurement, double timestampSeconds) {
+    swerveDrivePoseEstimator.addVisionMeasurement(visionMeasurement, timestampSeconds);
+  }
+
+  public void addVisionMeasurement(Pose2d visionMeasurement, double timestampSeconds, Matrix<N3, N1> stdDevs) {
+    swerveDrivePoseEstimator.addVisionMeasurement(visionMeasurement, timestampSeconds, stdDevs);
   }
 
   @Override
