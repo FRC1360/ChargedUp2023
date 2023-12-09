@@ -57,7 +57,7 @@ public class Vision {
             ; // do nothing lmao we dont care
         }
 
-        camera = new PhotonCamera("photonvision");
+        camera = new PhotonCamera("OV5647");
 
         photonEstimator = new PhotonPoseEstimator(kTagLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, camera, new Transform3d());
         photonEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
