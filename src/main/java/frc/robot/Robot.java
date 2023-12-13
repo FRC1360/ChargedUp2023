@@ -192,7 +192,7 @@ public class Robot extends TimedRobot {
     m_robotContainer.shoulderSubsystem.updateSmartDashboard();
     m_robotContainer.wristSubsystem.updateSmartDashboard();
     m_robotContainer.armSubsystem.updateSmartDashboard();
-
+    
   }
 
   @Override
