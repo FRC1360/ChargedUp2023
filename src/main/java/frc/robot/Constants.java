@@ -10,7 +10,11 @@ import edu.wpi.first.math.MatBuilder;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
@@ -33,6 +37,17 @@ import frc.robot.util.OrbitPID;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+
+    public static class VisionConstants {
+        public static final Transform3d robotToCam =
+                new Transform3d(
+                        new Translation3d(-0.0762, 0.2286, 0.70485), //forward is positive X, left is positive Y, and up is positive Z.
+                        new Rotation3d(
+                                0, 0,
+                                0)); // Cam mounted facing forward, half a meter forward of center, half a meter up
+        // from center.
+        public static final String cameraName = "OV5647";
+    }
 
     /*
      * Swerve Constants (newly added ones)

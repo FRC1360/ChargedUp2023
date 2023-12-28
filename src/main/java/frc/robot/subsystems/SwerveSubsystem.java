@@ -1,6 +1,10 @@
 package frc.robot.subsystems;
 
 import java.lang.reflect.Field;
+import java.util.Optional;
+
+import org.photonvision.EstimatedRobotPose;
+import org.photonvision.PhotonCamera;
 
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -29,13 +33,17 @@ public class SwerveSubsystem extends SubsystemBase {
   private Pose2d lastPose = new Pose2d(0, 0, new Rotation2d());
   private long lastPoseTimestamp = System.currentTimeMillis();
   public Translation2d currentSpeed = new Translation2d(0, 0);
-  private PIDConstants anglePID = Constants.Swerve.anglePID;
+  private PIDConstants anglePID = Constants.Swerve.anglePID; 
+
+  PhotonCameraWrapper pCameraWrapper; 
 
   public SwerveSubsystem() {
     // Gyro setup
     navX = new NavX();
     navX.setInverted(Constants.Swerve.isGyroInverted);
 
+
+    pCameraWrapper = new PhotonCameraWrapper(); 
     // Swerve module setup
     swerveModules = new SwerveModuleCustom[] {
         new SwerveModuleCustom(0, Constants.Swerve.Mod0.constants),
@@ -187,6 +195,17 @@ public class SwerveSubsystem extends SubsystemBase {
 
     // Estimator update
     swerveDrivePoseEstimator.update(navX.getYaw(), getPositions());
+
+    Optional<EstimatedRobotPose> result =
+                pCameraWrapper.getEstimatedGlobalPose(swerveDrivePoseEstimator.getEstimatedPosition());
+
+    if (result.isPresent()) {
+        EstimatedRobotPose camPose = result.get();
+        swerveDrivePoseEstimator.addVisionMeasurement(
+                camPose.estimatedPose.toPose2d(), camPose.timestampSeconds);
+    }
+
+
     field.setRobotPose(swerveDrivePoseEstimator.getEstimatedPosition());
 
     // get speed
